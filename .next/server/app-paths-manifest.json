@@ -1,0 +1,6 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(paths)/manager/page": "app/(paths)/manager/page.js",
+  "/(paths)/cashier/page": "app/(paths)/cashier/page.js",
+  "/page": "app/page.js"
+}
