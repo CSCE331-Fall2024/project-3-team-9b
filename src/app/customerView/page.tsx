@@ -1,5 +1,7 @@
+import Link from "next/link";
+
 export default function CustomerView() {
-    return (
-      <div className="flex flex-col justify-center items-center">CustomerView</div>
-    );
-  }
+  return (
+    <div className="flex flex-col justify-center items-center">CustomerView</div>
+  );
+}
