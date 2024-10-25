@@ -511,12 +511,6 @@ video {
 .h-screen {
   height: 100vh;
 }
-.w-1\/4 {
-  width: 25%;
-}
-.w-1\/12 {
-  width: 8.333333%;
-}
 .w-1\/6 {
   width: 16.666667%;
 }
@@ -537,10 +531,6 @@ video {
 }
 .rounded {
   border-radius: 0.25rem;
-}
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 .bg-red-400 {
   --tw-bg-opacity: 1;
