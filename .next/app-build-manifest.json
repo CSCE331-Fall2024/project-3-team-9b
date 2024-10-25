@@ -11,15 +11,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/(paths)/manager/page": [
+    "/cashierView/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(paths)/manager/page.js"
+      "static/chunks/app/cashierView/page.js"
     ],
-    "/(paths)/cashier/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(paths)/cashier/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }
