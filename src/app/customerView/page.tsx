@@ -10,6 +10,8 @@ interface Size {
   price: number;
 }
 
+import Link from "next/link";
+
 export default function CustomerView() {
   const [sizes, setSizes] = useState<Size[]>([]);
   const [error, setError] = useState<string | null>(null);

@@ -1,6 +1,5 @@
 {
-  "/page": "app/page.js",
-  "/cashierView/page": "app/cashierView/page.js",
+  "/menuBoardView/page": "app/menuBoardView/page.js",
   "/customerView/page": "app/customerView/page.js",
-  "/managerView/page": "app/managerView/page.js"
+  "/page": "app/page.js"
 }
