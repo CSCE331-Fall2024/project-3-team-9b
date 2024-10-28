@@ -17,6 +17,9 @@ export default function Home() {
         <Link href = "/cashierView" className="w-1/6 py-10 bg-red-600 text-white rounded hover:scale-110 hover:duration-300 text-center">Cashier</Link>
         <Link href = "/managerView" className="w-1/6 py-10 bg-red-600 text-white rounded hover:scale-110 hover:duration-300 text-center">Manager</Link>
       </div>
+      <div className="text-2xl mt-22">
+        <Link href = "/menuBoardView">Or View Menu</Link>
+      </div>
     </div>
   );
 }

@@ -16,15 +16,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/customerView/page.js"
     ],
-    "/cashierView/page": [
+    "/menuBoardView/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/cashierView/page.js"
+      "static/chunks/app/menuBoardView/page.js"
     ],
     "/managerView/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/managerView/page.js"
+    ],
+    "/cashierView/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cashierView/page.js"
     ]
   }
 }
