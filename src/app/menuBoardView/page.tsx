@@ -1,4 +1,6 @@
+"use client"
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function foodDisplaySquare(urlName: string, name: string){
   return(
@@ -14,8 +16,10 @@ function foodDisplaySquare(urlName: string, name: string){
   );
 }
 export default function MenuBoardView() {
+  const router = useRouter();
   return (
     <div className="flex flex-col items-center h-fit rounded-full bg-red-700">
+      <button className="absolute left-10 top-10 bg-red-600 p-10 rounded-xl" onClick={() => router.back()}>Go Back</button>
       <div className="text-6xl mt-10">Menu Board</div>
       <div className="text-2xl my-10 underline">Sides</div>
       <div className="flex flex-row justify-center items-center flex-wrap gap-5">
