@@ -495,6 +495,18 @@ video {
 [hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
+.absolute {
+  position: absolute;
+}
+.left-0 {
+  left: 0px;
+}
+.left-10 {
+  left: 2.5rem;
+}
+.top-10 {
+  top: 2.5rem;
+}
 .m-2 {
   margin: 0.5rem;
 }
@@ -527,11 +539,17 @@ video {
 .mt-auto {
   margin-top: auto;
 }
+.block {
+  display: block;
+}
 .flex {
   display: flex;
 }
 .grid {
   display: grid;
+}
+.hidden {
+  display: none;
 }
 .h-fit {
   height: fit-content;
@@ -670,6 +688,9 @@ video {
 }
 .p-4 {
   padding: 1rem;
+}
+.p-10 {
+  padding: 2.5rem;
 }
 .px-4 {
   padding-left: 1rem;
