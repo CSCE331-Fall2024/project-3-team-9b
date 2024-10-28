@@ -82,7 +82,7 @@ export default function CashierView() {
 
         {/* Sub-Header Panel: Size Selection */}
         <div className="flex space-x-4 mb-4 border-b pb-2">
-          {['Bowl', 'Plate', 'Larger Plate'].map((size) => (
+          {['Bowl', 'Plate', 'Bigger Plate'].map((size) => (
             <button
               key={size}
               className={`px-4 py-2 font-semibold ${

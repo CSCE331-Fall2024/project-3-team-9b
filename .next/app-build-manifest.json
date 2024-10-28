@@ -11,20 +11,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/menuBoardView/page": [
+    "/cashierView/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/menuBoardView/page.js"
+      "static/chunks/app/cashierView/page.js"
+    ],
+    "/managerView/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/managerView/page.js"
     ],
     "/customerView/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/customerView/page.js"
     ],
-    "/_not-found/page": [
+    "/menuBoardView/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/menuBoardView/page.js"
     ]
   }
 }
