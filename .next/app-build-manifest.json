@@ -6,25 +6,15 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/page": [
+    "/employees/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/employees/page.js"
     ],
-    "/customerView/page": [
+    "/api/employees/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/customerView/page.js"
-    ],
-    "/cashierView/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/cashierView/page.js"
-    ],
-    "/managerView/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/managerView/page.js"
+      "static/chunks/app/api/employees/route.js"
     ]
   }
 }
