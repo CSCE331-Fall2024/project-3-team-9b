@@ -19,7 +19,7 @@ type ApiResponse = {
 };
 
 export default function CashierView() {
-  const [activeTab, setActiveTab] = useState('entrees');
+  const [activeTab, setActiveTab] = useState('sides');
   const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | null>(null);
   const [currentOrder, setCurrentOrder] = useState<string[]>([]);
   const [totalCost, setTotalCost] = useState(0);
@@ -28,8 +28,8 @@ export default function CashierView() {
   const [error, setError] = useState<string | null>(null);
 
   const sizeLimits = {
-    Bowl: { sides: 1, entrees: 1 },
-    Plate: { sides: 1, entrees: 2 },
+    'Bowl': { sides: 1, entrees: 1 },
+    'Plate': { sides: 1, entrees: 2 },
     'Bigger Plate': { sides: 1, entrees: 3 },
   };
 
@@ -84,26 +84,42 @@ export default function CashierView() {
 
   const handleAddToOrder = (item: Food) => {
     if (!selectedSize) return;
-
+  
     // Count the current sides and entrees in the order
-    const sidesCount = currentOrder.filter((orderItem) => orderItem.startsWith('Side')).length;
-    const entreesCount = currentOrder.filter((orderItem) => orderItem.startsWith('Entree')).length;
-
+    const sidesCount = currentOrder.filter((orderItem) => {
+      const orderedItem = items.find(i => i.food_name === orderItem);
+      return orderedItem?.type === 'side';
+    }).length;
+  
+    const entreesCount = currentOrder.filter((orderItem) => {
+      const orderedItem = items.find(i => i.food_name === orderItem);
+      return orderedItem?.type === 'entree';
+    }).length;
+  
+    // Debug statements to track counts and selected size
+    console.log(`Current Order: ${JSON.stringify(currentOrder)}`);
+    console.log(`Selected Size: ${selectedSize}`);
+    console.log(`Sides Count: ${sidesCount}, Entrees Count: ${entreesCount}`);
+  
     // Check if item exceeds the allowed sides or entrees for the selected size
+    console.log("item type: " + item.type)
     if (
-      (item.type === 'Side' && sidesCount >= sizeLimits[selectedSize].sides) ||
-      (item.type === 'Entree' && entreesCount >= sizeLimits[selectedSize].entrees)
+      (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
+      (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees)
     ) {
+      console.log(`Cannot add ${item.food_name}. Exceeds limit for ${item.type}.`);
       return;
     }
-
+  
     // Calculate additional cost for premium items
     const additionalCost = item.premium ? 2 : 0;
-
+  
     // Add item to order and update total cost
     setCurrentOrder([...currentOrder, item.food_name]);
     setTotalCost(totalCost + (itemPrices[item.food_name] || 0) + additionalCost);
+    console.log(`Added ${item.food_name} to order. New Total: $${(totalCost + (itemPrices[item.food_name] || 0) + additionalCost).toFixed(2)}`);
   };
+  
 
   return (
     <div className="flex h-screen">
@@ -167,29 +183,41 @@ export default function CashierView() {
           </div>
         )}
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
+<div className="grid grid-cols-3 gap-4 mb-4">
           {!loading &&
             !error &&
-            items.map((item) => (
-              <button
-                key={item.food_id}
-                className={`p-4 rounded ${
-                  (!selectedSize ||
-                    (item.type === 'Side' && currentOrder.filter((orderItem) => orderItem.startsWith('Side')).length >= sizeLimits[selectedSize].sides) ||
-                    (item.type === 'Entree' && currentOrder.filter((orderItem) => orderItem.startsWith('Entree')).length >= sizeLimits[selectedSize].entrees))
-                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
-                }`}
-                onClick={() => handleAddToOrder(item)}
-                disabled={
-                  !selectedSize ||
-                  (item.type === 'Side' && currentOrder.filter((orderItem) => orderItem.startsWith('Side')).length >= sizeLimits[selectedSize].sides) ||
-                  (item.type === 'Entree' && currentOrder.filter((orderItem) => orderItem.startsWith('Entree')).length >= sizeLimits[selectedSize].entrees)
-                }
-              >
-                {item.food_name} {item.premium && '(+ $2 Premium)'}
-              </button>
-            ))}
+            items.map((item) => {
+              // Count current sides and entrees
+              const sidesCount = currentOrder.filter((orderItem) => {
+                const orderedItem = items.find(i => i.food_name === orderItem);
+                return orderedItem?.type === 'side';
+              }).length;
+
+              const entreesCount = currentOrder.filter((orderItem) => {
+                const orderedItem = items.find(i => i.food_name === orderItem);
+                return orderedItem?.type === 'entree';
+              }).length;
+
+              const isDisabled = 
+                !selectedSize ||
+                (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
+                (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees);
+
+              return (
+                <button
+                  key={item.food_id}
+                  className={`p-4 rounded ${
+                    isDisabled
+                      ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  }`}
+                  onClick={() => handleAddToOrder(item)}
+                  disabled={isDisabled}
+                >
+                  {item.food_name} {item.premium && '(+ $2 Premium)'}
+                </button>
+              );
+            })}
         </div>
 
         <div className="flex space-x-4 mt-auto">
