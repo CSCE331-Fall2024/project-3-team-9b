@@ -50,11 +50,12 @@ export default function CashierView() {
         {/* List of items with flex-grow to push total cost to bottom */}
         <ul className="space-y-2 flex-grow">
           {currentOrder.map((item, index) => (
-            <li key={index} className="p-2 bg-white rounded shadow">
+            <li key={index} className="p-2 bg-white rounded shadow text-gray-800">
               {item} - ${itemPrices[item].toFixed(2)}
             </li>
           ))}
         </ul>
+
         
         {/* Total Cost Display at the Bottom */}
         <div className="mt-4 text-lg font-bold text-blue-600">
