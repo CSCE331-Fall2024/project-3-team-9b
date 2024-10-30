@@ -14,7 +14,7 @@ export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
-    fetch("/api/employees")
+    fetch("/api/fetchEmployees")
       .then((response) => response.json())
       .then((data) => setEmployees(data.employees))
       .catch((error) => console.error("Error fetching employees:", error));

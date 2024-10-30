@@ -27,7 +27,7 @@ export default function Entrees() {
   useEffect(() => {
     const fetchEntrees = async () => {
       try {
-        const response = await fetch('/api/entrees');
+        const response = await fetch('/api/fetchEntrees');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

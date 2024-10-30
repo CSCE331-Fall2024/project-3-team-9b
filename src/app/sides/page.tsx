@@ -27,7 +27,7 @@ export default function Sides() {
   useEffect(() => {
     const fetchSides = async () => {
       try {
-        const response = await fetch('/api/sides');
+        const response = await fetch('/api/fetchSides');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
