@@ -179,14 +179,14 @@ export default function Appetizers() {
         <Link
           href="/sides"
           className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label="Back to entrees"
+          aria-label="Back to appetizers"
         >
           Back
         </Link>
         <Link
           href="/appetizers"
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          aria-label="Go to drinks"
+          aria-label="Go to checkout"
         >
           Next
         </Link>
