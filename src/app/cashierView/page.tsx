@@ -82,7 +82,7 @@ export default function CashierView() {
   const handleSizeSelection = (size: 'Bowl' | 'Plate' | 'Bigger Plate') => {
     setSelectedSize(size);
     setCurrentOrder([]);
-    setTotalCost(0);
+    setTotalCost(basePrices[size]);
   };
 
   const handleAddToOrder = (item: Food) => {
@@ -113,7 +113,7 @@ export default function CashierView() {
 
     // Add item to order and update total cost
     setCurrentOrder([...currentOrder, item.food_name]);
-    setTotalCost(totalCost + itemBasePrice + additionalCost);
+    setTotalCost(totalCost + additionalCost);
   };
 
   const handleSubmitOrder = () => {
