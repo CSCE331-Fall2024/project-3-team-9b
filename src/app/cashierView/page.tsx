@@ -21,7 +21,7 @@ type ApiResponse = {
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
   const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | null>(null);
-  const [currentOrder, setCurrentOrder] = useState<string[]>([]);
+  const [currentOrder, setCurrentOrder] = useState<Food[]>([]);
   const [totalCost, setTotalCost] = useState(0);
   const [items, setItems] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,18 +88,9 @@ export default function CashierView() {
   const handleAddToOrder = (item: Food) => {
     if (!selectedSize) return;
 
-    // Count the current sides and entrees in the order
-    const sidesCount = currentOrder.filter((orderItem) => {
-      const orderedItem = items.find(i => i.food_name === orderItem);
-      return orderedItem?.type === 'side';
-    }).length;
+    const sidesCount = currentOrder.filter(i => i.type === 'side').length;
+    const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
 
-    const entreesCount = currentOrder.filter((orderItem) => {
-      const orderedItem = items.find(i => i.food_name === orderItem);
-      return orderedItem?.type === 'entree';
-    }).length;
-
-    // Check if item exceeds the allowed sides or entrees for the selected size
     if (
       (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
       (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees)
@@ -107,22 +98,18 @@ export default function CashierView() {
       return;
     }
 
-    // Calculate additional cost for premium items
     const additionalCost = item.premium ? 2 : 0;
-    const itemBasePrice = basePrices[selectedSize];
+    const appetizersExtraCost = item.type === 'appetizer' ? 2 : 0;
 
-    // Add item to order and update total cost
-    setCurrentOrder([...currentOrder, item.food_name]);
-    setTotalCost(totalCost + additionalCost);
+    setCurrentOrder([...currentOrder, item]);
+    setTotalCost(totalCost + additionalCost + appetizersExtraCost);
   };
 
   const handleSubmitOrder = () => {
-    alert('Order submitted: ' + currentOrder.join(', '));
-    // Here you can add logic to save the current order to the database
+    alert('Order submitted: ' + currentOrder.map(item => item.food_name).join(', '));
   };
 
   const handleFinishTransaction = () => {
-    // Here you will add logic to finish the transaction and save it to the database
     alert('Transaction finished! All orders will be saved.');
   };
 
@@ -139,19 +126,22 @@ export default function CashierView() {
         {selectedSize && <div className="text-lg font-semibold text-blue-600">{selectedSize}</div>}
         <ul className="space-y-2 flex-grow">
           {currentOrder.map((item, index) => {
-            const orderedItem = items.find(i => i.food_name === item);
-            const itemBasePrice = basePrices[selectedSize || 'Bowl'] || 0; // Default to Bowl price if selectedSize is null
-            const additionalCost = orderedItem?.premium ? 2 : 0;
+            const itemBasePrice = basePrices[selectedSize || 'Bowl'] || 0;
+            const additionalCost = item.premium ? 2 : 0;
+            const appetizersExtraCost = item.type === 'appetizer' ? 2 : 0;
 
             return (
               <li key={index} className="p-2 bg-white rounded shadow text-gray-800">
-                {item}
+                {item.food_name}
                 {itemBasePrice > 0 && (
                   <span className="text-gray-500">
-                    {' - $' + (itemBasePrice + additionalCost).toFixed(2)}
+                    {' - $' + (itemBasePrice + additionalCost + appetizersExtraCost).toFixed(2)}
                   </span>
                 )}
-                {orderedItem?.premium && (
+                {item.premium && (
+                  <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
+                )}
+                {item.type === 'appetizer' && (
                   <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
                 )}
               </li>
@@ -178,8 +168,15 @@ export default function CashierView() {
           {['Bowl', 'Plate', 'Bigger Plate'].map((size) => (
             <button
               key={size}
-              className={`px-4 py-2 font-semibold ${selectedSize === size ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-500'}`}
-              onClick={() => handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
+              className={`px-4 py-2 font-semibold ${
+                selectedSize === size
+                  ? 'text-blue-500 border-b-2 border-blue-500'
+                  : selectedSize
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'text-gray-500'
+              }`}
+              onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
+              disabled={!!selectedSize && selectedSize !== size}
             >
               {size}
             </button>
@@ -209,16 +206,8 @@ export default function CashierView() {
           {!loading &&
             !error &&
             items.map((item) => {
-              // Count current sides and entrees
-              const sidesCount = currentOrder.filter((orderItem) => {
-                const orderedItem = items.find(i => i.food_name === orderItem);
-                return orderedItem?.type === 'side';
-              }).length;
-
-              const entreesCount = currentOrder.filter((orderItem) => {
-                const orderedItem = items.find(i => i.food_name === orderItem);
-                return orderedItem?.type === 'entree';
-              }).length;
+              const sidesCount = currentOrder.filter(i => i.type === 'side').length;
+              const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
 
               const isDisabled = 
                 !selectedSize ||
@@ -236,7 +225,9 @@ export default function CashierView() {
                   onClick={() => handleAddToOrder(item)}
                   disabled={isDisabled}
                 >
-                  {item.food_name} {item.premium && '(+ $2 Premium)'}
+                  {item.food_name} 
+                  {item.premium && '(+ $2 Premium)'}
+                  {item.type === 'appetizer' && '(+ $2 Extra)'}
                 </button>
               );
             })}
@@ -251,17 +242,16 @@ export default function CashierView() {
           </button>
           <button
             className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 text-white"
-            onClick={() => alert('Order submitted!')}
+            onClick={handleSubmitOrder}
           >
             Submit Order
           </button>
           <button
             className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-400 text-white"
-            onClick={() => alert('Transaction finished!')}
+            onClick={handleFinishTransaction}
           >
             Finish Transaction
           </button>
-
         </div>
       </div>
     </div>
