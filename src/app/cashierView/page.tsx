@@ -128,11 +128,48 @@ export default function CashierView() {
     }
   };
 
-  const handleFinishTransaction = () => {
-    alert('Transaction finished! Total: $' + totalCost.toFixed(2));
-    setPreviousOrders([]);
-    setTotalCost(0);
-    setCurrentOrderSubtotal(0);
+  const handleFinishTransaction = async () => {
+    if (previousOrders.length === 0 && currentOrder.length === 0) {
+      alert('No orders to submit.');
+      return;
+    }
+  
+    const employeeId = prompt('Please enter your employee ID:');
+    if (!employeeId) {
+      alert('Employee ID is required to finish the transaction.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('/api/finishCashierTransaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          employeeId,
+          orders: [...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }],
+          totalPrice: totalCost,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit transaction');
+      }
+  
+      const result = await response.json();
+      alert(`Transaction finished! Transaction ID: ${result.transactionId}`);
+      
+      // Reset the state
+      setPreviousOrders([]);
+      setSelectedSize(null);
+      setCurrentOrder([]);
+      setTotalCost(0);
+      setCurrentOrderSubtotal(0);
+    } catch (error) {
+      console.error('Error submitting transaction:', error);
+      alert('Failed to submit transaction. Please try again.');
+    }
   };
 
   const handleReset = () => {
