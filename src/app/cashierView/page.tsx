@@ -11,6 +11,12 @@ type Food = {
   premium: boolean;
 };
 
+type OrderItem = {
+  name: string;
+  type: string;
+  premium: boolean;
+};
+
 type ApiResponse = {
   sides?: Food[];
   entrees?: Food[];
@@ -21,8 +27,10 @@ type ApiResponse = {
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
   const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | null>(null);
-  const [currentOrder, setCurrentOrder] = useState<Food[]>([]);
+  const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
+  const [previousOrders, setPreviousOrders] = useState<Array<{ size: string, items: OrderItem[], subtotal: number }>>([]);
   const [totalCost, setTotalCost] = useState(0);
+  const [currentOrderSubtotal, setCurrentOrderSubtotal] = useState(0);
   const [items, setItems] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +90,8 @@ export default function CashierView() {
   const handleSizeSelection = (size: 'Bowl' | 'Plate' | 'Bigger Plate') => {
     setSelectedSize(size);
     setCurrentOrder([]);
-    setTotalCost(basePrices[size]);
+    setCurrentOrderSubtotal(basePrices[size]);
+    setTotalCost(prevTotal => prevTotal + basePrices[size]);
   };
 
   const handleAddToOrder = (item: Food) => {
@@ -99,56 +108,77 @@ export default function CashierView() {
     }
 
     const additionalCost = item.premium ? 2 : 0;
-    const appetizersExtraCost = item.type === 'appetizer' ? 2 : 0;
+    const appetizerCost = item.type === 'appetizer' ? 2 : 0;
+    const itemCost = additionalCost + appetizerCost;
 
-    setCurrentOrder([...currentOrder, item]);
-    setTotalCost(totalCost + additionalCost + appetizersExtraCost);
+    setCurrentOrder([...currentOrder, { name: item.food_name, type: item.type, premium: item.premium }]);
+    setCurrentOrderSubtotal(prevSubtotal => prevSubtotal + itemCost);
+    setTotalCost(prevTotal => prevTotal + itemCost);
   };
 
   const handleSubmitOrder = () => {
-    alert('Order submitted: ' + currentOrder.map(item => item.food_name).join(', '));
+    if (currentOrder.length > 0) {
+      alert('Order submitted: ' + currentOrder.map(item => item.name).join(', ') + ' - Subtotal: $' + currentOrderSubtotal.toFixed(2));
+      setPreviousOrders([...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }]);
+      setSelectedSize(null);
+      setCurrentOrder([]);
+      setCurrentOrderSubtotal(0);
+    } else {
+      alert('Please add items to your order before submitting.');
+    }
   };
 
   const handleFinishTransaction = () => {
-    alert('Transaction finished! All orders will be saved.');
+    alert('Transaction finished! Total: $' + totalCost.toFixed(2));
+    setPreviousOrders([]);
+    setTotalCost(0);
+    setCurrentOrderSubtotal(0);
   };
 
   const handleReset = () => {
     setSelectedSize(null);
     setCurrentOrder([]);
-    setTotalCost(0);
+    setTotalCost(prevTotal => prevTotal - currentOrderSubtotal);
+    setCurrentOrderSubtotal(0);
   };
 
   return (
     <div className="flex h-screen">
       <div className="w-1/4 p-4 bg-gray-100 border-r flex flex-col">
         <h2 className="text-lg text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
+        {previousOrders.map((order, index) => (
+          <div key={index} className="mb-4">
+            <h3 className="font-semibold text-gray-700">Order {index + 1} - {order.size}</h3>
+            <ul className="pl-4">
+              {order.items.map((item, itemIndex) => (
+                <li key={itemIndex} className="text-gray-600">
+                  {item.name}
+                  {item.premium && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
+                  {item.type === 'appetizer' && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
+                </li>
+              ))}
+            </ul>
+            <div className="text-right text-gray-600">Subtotal: ${order.subtotal.toFixed(2)}</div>
+          </div>
+        ))}
         {selectedSize && <div className="text-lg font-semibold text-blue-600">{selectedSize}</div>}
         <ul className="space-y-2 flex-grow">
-          {currentOrder.map((item, index) => {
-            const itemBasePrice = basePrices[selectedSize || 'Bowl'] || 0;
-            const additionalCost = item.premium ? 2 : 0;
-            const appetizersExtraCost = item.type === 'appetizer' ? 2 : 0;
-
-            return (
-              <li key={index} className="p-2 bg-white rounded shadow text-gray-800">
-                {item.food_name}
-                {itemBasePrice > 0 && (
-                  <span className="text-gray-500">
-                    {' - $' + (itemBasePrice + additionalCost + appetizersExtraCost).toFixed(2)}
-                  </span>
-                )}
-                {item.premium && (
-                  <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
-                )}
-                {item.type === 'appetizer' && (
-                  <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
-                )}
-              </li>
-            );
-          })}
+          {currentOrder.map((item, index) => (
+            <li key={index} className="p-2 bg-white rounded shadow text-gray-800">
+              {item.name}
+              {item.premium && (
+                <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
+              )}
+              {item.type === 'appetizer' && (
+                <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
+              )}
+            </li>
+          ))}
         </ul>
-        <div className="mt-4 text-lg font-bold text-blue-600">Total: ${totalCost.toFixed(2)}</div>
+        {currentOrder.length > 0 && (
+          <div className="mt-2 text-right font-bold text-blue-500">Current Order Subtotal: ${currentOrderSubtotal.toFixed(2)}</div>
+        )}
+        <div className="mt-4 text-right text-lg font-bold text-blue-600">Total: ${totalCost.toFixed(2)}</div>
       </div>
 
       <div className="flex-1 flex flex-col p-4">
