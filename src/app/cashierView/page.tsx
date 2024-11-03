@@ -11,6 +11,12 @@ type Food = {
   premium: boolean;
 };
 
+type OrderItem = {
+  name: string;
+  type: string;
+  premium: boolean;
+};
+
 type ApiResponse = {
   sides?: Food[];
   entrees?: Food[];
@@ -21,8 +27,10 @@ type ApiResponse = {
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
   const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | null>(null);
-  const [currentOrder, setCurrentOrder] = useState<string[]>([]);
+  const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
+  const [previousOrders, setPreviousOrders] = useState<Array<{ size: string, items: OrderItem[], subtotal: number }>>([]);
   const [totalCost, setTotalCost] = useState(0);
+  const [currentOrderSubtotal, setCurrentOrderSubtotal] = useState(0);
   const [items, setItems] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,24 +90,16 @@ export default function CashierView() {
   const handleSizeSelection = (size: 'Bowl' | 'Plate' | 'Bigger Plate') => {
     setSelectedSize(size);
     setCurrentOrder([]);
-    setTotalCost(0);
+    setCurrentOrderSubtotal(basePrices[size]);
+    setTotalCost(prevTotal => prevTotal + basePrices[size]);
   };
 
   const handleAddToOrder = (item: Food) => {
     if (!selectedSize) return;
 
-    // Count the current sides and entrees in the order
-    const sidesCount = currentOrder.filter((orderItem) => {
-      const orderedItem = items.find(i => i.food_name === orderItem);
-      return orderedItem?.type === 'side';
-    }).length;
+    const sidesCount = currentOrder.filter(i => i.type === 'side').length;
+    const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
 
-    const entreesCount = currentOrder.filter((orderItem) => {
-      const orderedItem = items.find(i => i.food_name === orderItem);
-      return orderedItem?.type === 'entree';
-    }).length;
-
-    // Check if item exceeds the allowed sides or entrees for the selected size
     if (
       (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
       (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees)
@@ -107,58 +107,115 @@ export default function CashierView() {
       return;
     }
 
-    // Calculate additional cost for premium items
     const additionalCost = item.premium ? 2 : 0;
-    const itemBasePrice = basePrices[selectedSize];
+    const appetizerCost = item.type === 'appetizer' ? 2 : 0;
+    const itemCost = additionalCost + appetizerCost;
 
-    // Add item to order and update total cost
-    setCurrentOrder([...currentOrder, item.food_name]);
-    setTotalCost(totalCost + itemBasePrice + additionalCost);
+    setCurrentOrder([...currentOrder, { name: item.food_name, type: item.type, premium: item.premium }]);
+    setCurrentOrderSubtotal(prevSubtotal => prevSubtotal + itemCost);
+    setTotalCost(prevTotal => prevTotal + itemCost);
   };
 
   const handleSubmitOrder = () => {
-    alert('Order submitted: ' + currentOrder.join(', '));
-    // Here you can add logic to save the current order to the database
+    if (currentOrder.length > 0) {
+      alert('Order submitted: ' + currentOrder.map(item => item.name).join(', ') + ' - Subtotal: $' + currentOrderSubtotal.toFixed(2));
+      setPreviousOrders([...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }]);
+      setSelectedSize(null);
+      setCurrentOrder([]);
+      setCurrentOrderSubtotal(0);
+    } else {
+      alert('Please add items to your order before submitting.');
+    }
   };
 
-  const handleFinishTransaction = () => {
-    // Here you will add logic to finish the transaction and save it to the database
-    alert('Transaction finished! All orders will be saved.');
+  const handleFinishTransaction = async () => {
+    if (previousOrders.length === 0 && currentOrder.length === 0) {
+      alert('No orders to submit.');
+      return;
+    }
+  
+    const employeeId = prompt('Please enter your employee ID:');
+    if (!employeeId) {
+      alert('Employee ID is required to finish the transaction.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('/api/finishCashierTransaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          employeeId,
+          orders: [...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }],
+          totalPrice: totalCost,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit transaction');
+      }
+  
+      const result = await response.json();
+      alert(`Transaction finished! Transaction ID: ${result.transactionId}`);
+      
+      // Reset the state
+      setPreviousOrders([]);
+      setSelectedSize(null);
+      setCurrentOrder([]);
+      setTotalCost(0);
+      setCurrentOrderSubtotal(0);
+    } catch (error) {
+      console.error('Error submitting transaction:', error);
+      alert('Failed to submit transaction. Please try again.');
+    }
   };
 
   const handleReset = () => {
     setSelectedSize(null);
     setCurrentOrder([]);
-    setTotalCost(0);
+    setTotalCost(prevTotal => prevTotal - currentOrderSubtotal);
+    setCurrentOrderSubtotal(0);
   };
 
   return (
     <div className="flex h-screen">
       <div className="w-1/4 p-4 bg-gray-100 border-r flex flex-col">
         <h2 className="text-lg text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
+        {previousOrders.map((order, index) => (
+          <div key={index} className="mb-4">
+            <h3 className="font-semibold text-gray-700">Order {index + 1} - {order.size}</h3>
+            <ul className="pl-4">
+              {order.items.map((item, itemIndex) => (
+                <li key={itemIndex} className="text-gray-600">
+                  {item.name}
+                  {item.premium && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
+                  {item.type === 'appetizer' && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
+                </li>
+              ))}
+            </ul>
+            <div className="text-right text-gray-600">Subtotal: ${order.subtotal.toFixed(2)}</div>
+          </div>
+        ))}
         {selectedSize && <div className="text-lg font-semibold text-blue-600">{selectedSize}</div>}
         <ul className="space-y-2 flex-grow">
-          {currentOrder.map((item, index) => {
-            const orderedItem = items.find(i => i.food_name === item);
-            const itemBasePrice = basePrices[selectedSize || 'Bowl'] || 0; // Default to Bowl price if selectedSize is null
-            const additionalCost = orderedItem?.premium ? 2 : 0;
-
-            return (
-              <li key={index} className="p-2 bg-white rounded shadow text-gray-800">
-                {item}
-                {itemBasePrice > 0 && (
-                  <span className="text-gray-500">
-                    {' - $' + (itemBasePrice + additionalCost).toFixed(2)}
-                  </span>
-                )}
-                {orderedItem?.premium && (
-                  <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
-                )}
-              </li>
-            );
-          })}
+          {currentOrder.map((item, index) => (
+            <li key={index} className="p-2 bg-white rounded shadow text-gray-800">
+              {item.name}
+              {item.premium && (
+                <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
+              )}
+              {item.type === 'appetizer' && (
+                <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
+              )}
+            </li>
+          ))}
         </ul>
-        <div className="mt-4 text-lg font-bold text-blue-600">Total: ${totalCost.toFixed(2)}</div>
+        {currentOrder.length > 0 && (
+          <div className="mt-2 text-right font-bold text-blue-500">Current Order Subtotal: ${currentOrderSubtotal.toFixed(2)}</div>
+        )}
+        <div className="mt-4 text-right text-lg font-bold text-blue-600">Total: ${totalCost.toFixed(2)}</div>
       </div>
 
       <div className="flex-1 flex flex-col p-4">
@@ -178,8 +235,15 @@ export default function CashierView() {
           {['Bowl', 'Plate', 'Bigger Plate'].map((size) => (
             <button
               key={size}
-              className={`px-4 py-2 font-semibold ${selectedSize === size ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-500'}`}
-              onClick={() => handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
+              className={`px-4 py-2 font-semibold ${
+                selectedSize === size
+                  ? 'text-blue-500 border-b-2 border-blue-500'
+                  : selectedSize
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'text-gray-500'
+              }`}
+              onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
+              disabled={!!selectedSize && selectedSize !== size}
             >
               {size}
             </button>
@@ -209,16 +273,8 @@ export default function CashierView() {
           {!loading &&
             !error &&
             items.map((item) => {
-              // Count current sides and entrees
-              const sidesCount = currentOrder.filter((orderItem) => {
-                const orderedItem = items.find(i => i.food_name === orderItem);
-                return orderedItem?.type === 'side';
-              }).length;
-
-              const entreesCount = currentOrder.filter((orderItem) => {
-                const orderedItem = items.find(i => i.food_name === orderItem);
-                return orderedItem?.type === 'entree';
-              }).length;
+              const sidesCount = currentOrder.filter(i => i.type === 'side').length;
+              const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
 
               const isDisabled = 
                 !selectedSize ||
@@ -236,7 +292,9 @@ export default function CashierView() {
                   onClick={() => handleAddToOrder(item)}
                   disabled={isDisabled}
                 >
-                  {item.food_name} {item.premium && '(+ $2 Premium)'}
+                  {item.food_name} 
+                  {item.premium && '(+ $2 Premium)'}
+                  {item.type === 'appetizer' && '(+ $2 Extra)'}
                 </button>
               );
             })}
@@ -251,17 +309,16 @@ export default function CashierView() {
           </button>
           <button
             className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 text-white"
-            onClick={() => alert('Order submitted!')}
+            onClick={handleSubmitOrder}
           >
             Submit Order
           </button>
           <button
             className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-400 text-white"
-            onClick={() => alert('Transaction finished!')}
+            onClick={handleFinishTransaction}
           >
             Finish Transaction
           </button>
-
         </div>
       </div>
     </div>
