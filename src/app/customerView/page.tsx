@@ -39,18 +39,21 @@ export default function CustomerView() {
           <img src = "/Bowl.png"></img>
           <div className='text-2xl font-bold'>Bowl</div>
           <div className='mt-4'>1 Side & 1 Entree</div>
+          <div>$8.30+</div>
           
         </Link>
         <Link href = "/sides" className="w-1/4 py-10 bg-white text-gray-800 rounded-lg shadow-lg hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
           <img src = "/Plate.png"></img>
           <div className='text-2xl font-bold'>Plate</div>
           <div className='mt-4'>1 Side & 2 Entrees</div>
-
+          <div>$9.80+</div>
         </Link>
+
         <Link href = "/sides" className="w-1/4 py-10 bg-white  text-gray-800 rounded-lg shadow-lg hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
           <img src = "/BiggerPlate.png"></img>
           <div className='text-2xl font-bold'>Bigger Plate</div>
           <div className='mt-4'>1 Side & 3 Entrees</div>
+          <div>$11.30+</div>
         </Link>
       </div>
     </div>
