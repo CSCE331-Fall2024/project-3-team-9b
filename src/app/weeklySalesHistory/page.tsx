@@ -7,7 +7,7 @@ type Week = {
   total_orders: number;
 };
 
-export default function InventoryPage() {
+export default function WeeklySalesHistoryPage() {
   const [weeks, setWeeks] = useState<Week[]>([]);
 
   useEffect(() => {

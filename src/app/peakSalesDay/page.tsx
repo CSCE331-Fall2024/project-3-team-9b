@@ -7,7 +7,7 @@ type Day = {
   total_order_sum: number;
 };
 
-export default function InventoryPage() {
+export default function PeakSalesDayPage() {
   const [days, setDays] = useState<Day[]>([]);
 
   useEffect(() => {

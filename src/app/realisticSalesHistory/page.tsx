@@ -8,7 +8,7 @@ type Hour = {
   total_order_sum: number;
 };
 
-export default function InventoryPage() {
+export default function RealisticSalesHistoryPage() {
   const [hours, setHours] = useState<Hour[]>([]);
 
   useEffect(() => {
