@@ -24,6 +24,10 @@ export default function Appetizers() {
   const [selectedAppetizer, setSelectedAppetizer] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
 
+  function removeSpace(str: string): string {
+    return str.replace(/\s/g, '');
+  }
+
   useEffect(() => {
     const fetchAppetizers = async () => {
       try {
@@ -74,7 +78,7 @@ export default function Appetizers() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen ">
       {/* Static Navigation Section */}
       <div className="fixed top-0 left-0 right-0 flex justify-center py-4 bg-gray-100 z-10">
         <Link href="/menuBoardView" 
@@ -88,11 +92,7 @@ export default function Appetizers() {
       <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Appetizers</h1>
-        
-          {/* Debug Information */}
-          <div className="mb-4 p-2 bg-gray-200 text-sm">
-            Debug: {debug}
-          </div>
+      
 
           {loading && (
             <div className="text-center py-8" role="status" aria-label="Loading">
@@ -122,7 +122,7 @@ export default function Appetizers() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {appetizers.map((item) => (
-            <div key={item.food_id} className="h-64">
+            <div key={item.food_id} className="h-100">
               <div 
                   className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
@@ -136,6 +136,11 @@ export default function Appetizers() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
+                <img 
+                  className="w-full h-48 object-cover"
+                  src={"/" + removeSpace(item.food_name) + ".png"}
+                  alt={item.food_name}
+                />
                 <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                   <h3 id={`appetizer-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                     {item.food_name}

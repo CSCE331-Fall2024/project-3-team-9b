@@ -24,6 +24,11 @@ export default function Sides() {
   const [selectedSide, setSelectedSide] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
 
+  function removeSpace(str: string): string {
+    return str.replace(/\s/g, '');
+  }
+
+
   useEffect(() => {
     const fetchSides = async () => {
       try {
@@ -72,7 +77,7 @@ export default function Sides() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen ">
       {/* Static Navigation Section */}
       <div className="fixed top-0 left-0 right-0 flex justify-center py-4 bg-gray-100 z-10">
         <Link href="/menuBoardView" 
@@ -87,9 +92,7 @@ export default function Sides() {
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Sides</h1>
         
-          <div className="mb-4 p-2 bg-gray-200 text-sm">
-            Debug: {debug}
-          </div>
+          
 
           {loading && (
             <div className="text-center py-8" role="status" aria-label="Loading">
@@ -119,7 +122,7 @@ export default function Sides() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {sides.map((item) => (
-              <div key={item.food_id} className="h-64">
+              <div key={item.food_id} className="h-100">
                 <div 
                   className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
@@ -133,6 +136,8 @@ export default function Sides() {
                   aria-disabled={!item.available}
                   aria-labelledby={`side-${item.food_id}`}
                 >
+                  {/* Top section with image */}  
+                  <img className="object-cover w-full h-48" src= {"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} />
                   {/* Center section with name */}
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`side-${item.food_id}`} className="text-2xl font-bold text-gray-800">
