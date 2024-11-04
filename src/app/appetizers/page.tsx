@@ -78,9 +78,9 @@ export default function Appetizers() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen h-screen rounded-full bg-red-800">
       {/* Static Navigation Section */}
-      <div className="fixed top-0 left-0 right-0 flex justify-center py-4 bg-gray-100 z-10">
+      <div className="fixed top-0 left-0 right-0 flex justify-center py-4 z-10">
         <Link href="/menuBoardView" 
               className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               aria-label="View Menu">
