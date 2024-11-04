@@ -180,18 +180,18 @@ export default function Appetizers() {
 
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-6 left-6 right-6 flex justify-between">
+      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4 bg-gray-100">
         <Link
-          href="/sides"
+          href="/entrees"
           className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label="Back to entrees"
+          aria-label="Back to customer view"
         >
           Back
         </Link>
         <Link
-          href="/appetizers"
+          href="/drinks"
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          aria-label="Go to drinks"
+          aria-label="Go to entrees"
         >
           Next
         </Link>

@@ -22,7 +22,7 @@ export default function CustomerView() {
   return (
     <div className="flex flex-col justify-center items-center space-y-4">
       {/* View Menu link at the top */}
-      <Link href = "/menuBoardView" className="m-2 p-2 bg-red-600 text-white rounded hover:scale-105 hover:duration-300">View Menu</Link> 
+      <Link href = "/menuBoardView" className="px-6 py-3 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">View Menu</Link> 
 
       {/* Meal sizes */}
       <div className="flex flex-row space-x-4">
@@ -35,9 +35,23 @@ export default function CustomerView() {
 
       {/* Additional options for entrees/sides/appetizers */}
       <div className="flex flex-row space-x-4 mt-4 w-full justify-center">
-        <Link href = "/sides" className="w-1/4 py-10 bg-red-600 text-white rounded hover:scale-105 hover:duration-300 text-center">Bowl</Link>
-        <Link href = "/sides" className="w-1/4 py-10 bg-red-600 text-white rounded hover:scale-105 hover:duration-300 text-center">Plate</Link>
-        <Link href = "/sides" className="w-1/4 py-10 bg-red-600 text-white rounded hover:scale-105 hover:duration-300 text-center">Bigger Plate</Link>
+        <Link href = "/sides" className="w-1/4 py-10 bg-white rounded-lg shadow-lg text-gray-800 hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
+          <img src = "/Bowl.png"></img>
+          <div className='text-2xl font-bold'>Bowl</div>
+          <div className='mt-4'>1 Side & 1 Entree</div>
+          
+        </Link>
+        <Link href = "/sides" className="w-1/4 py-10 bg-white text-gray-800 rounded-lg shadow-lg hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
+          <img src = "/Plate.png"></img>
+          <div className='text-2xl font-bold'>Plate</div>
+          <div className='mt-4'>1 Side & 2 Entrees</div>
+
+        </Link>
+        <Link href = "/sides" className="w-1/4 py-10 bg-white  text-gray-800 rounded-lg shadow-lg hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
+          <img src = "/BiggerPlate.png"></img>
+          <div className='text-2xl font-bold'>Bigger Plate</div>
+          <div className='mt-4'>1 Side & 3 Entrees</div>
+        </Link>
       </div>
     </div>
   );
