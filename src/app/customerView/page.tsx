@@ -20,7 +20,7 @@ export default function CustomerView() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center space-y-4">
+    <div className="flex flex-col items-center space-y-4 h-screen rounded-full bg-red-800">
       {/* View Menu link at the top */}
       <Link href = "/menuBoardView" className="px-6 py-3 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">View Menu</Link> 
 
