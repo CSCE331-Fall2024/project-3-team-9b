@@ -21,6 +21,7 @@ type ApiResponse = {
   sides?: Food[];
   entrees?: Food[];
   appetizers?: Food[];
+  drinks?: Food[];
   error?: string;
 };
 
@@ -53,10 +54,15 @@ export default function CashierView() {
         let endpoint = '';
         if (activeTab === 'sides') {
           endpoint = '/api/fetchSides';
-        } else if (activeTab === 'entrees') {
+        } 
+        else if (activeTab === 'entrees') {
           endpoint = '/api/fetchEntrees';
-        } else if (activeTab === 'appetizers') {
+        } 
+        else if (activeTab === 'appetizers') {
           endpoint = '/api/fetchAppetizers';
+        }
+        else if (activeTab === 'drinks') {
+          endpoint = '/api/fetchDrinks';
         }
 
         const response = await fetch(endpoint);
@@ -69,7 +75,7 @@ export default function CashierView() {
           throw new Error(data.error);
         }
 
-        setItems(data.sides || data.entrees || data.appetizers || []);
+        setItems(data.sides || data.entrees || data.appetizers || data.drinks || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred while fetching items');
       } finally {
@@ -109,7 +115,8 @@ export default function CashierView() {
 
     const additionalCost = item.premium ? 2 : 0;
     const appetizerCost = item.type === 'appetizer' ? 2 : 0;
-    const itemCost = additionalCost + appetizerCost;
+    const drinkCost = item.type === 'drink' ? 2 : 0;
+    const itemCost = additionalCost + appetizerCost + drinkCost;
 
     setCurrentOrder([...currentOrder, { name: item.food_name, type: item.type, premium: item.premium }]);
     setCurrentOrderSubtotal(prevSubtotal => prevSubtotal + itemCost);
@@ -192,6 +199,7 @@ export default function CashierView() {
                   {item.name}
                   {item.premium && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
                   {item.type === 'appetizer' && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
+                  {item.type === 'drink' && <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>}
                 </li>
               ))}
             </ul>
@@ -209,6 +217,9 @@ export default function CashierView() {
               {item.type === 'appetizer' && (
                 <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
               )}
+              {item.type === 'drink' && (
+                <span className="text-red-500 text-sm ml-2">(Extra fee: $2.00)</span>
+              )}
             </li>
           ))}
         </ul>
@@ -220,7 +231,7 @@ export default function CashierView() {
 
       <div className="flex-1 flex flex-col p-4">
         <div className="flex space-x-4 mb-2 border-b pb-2">
-          {['sides', 'entrees', 'appetizers'].map((tab) => (
+          {['sides', 'entrees', 'appetizers', 'drinks'].map((tab) => (
             <button
               key={tab}
               className={`px-4 py-2 font-semibold ${activeTab === tab ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-500'}`}
@@ -293,8 +304,9 @@ export default function CashierView() {
                   disabled={isDisabled}
                 >
                   {item.food_name} 
-                  {item.premium && '(+ $2 Premium)'}
-                  {item.type === 'appetizer' && '(+ $2 Extra)'}
+                  {item.premium && ' (+ $2 Premium)'}
+                  {item.type === 'appetizer' && ' (+ $2 Extra)'}
+                  {item.type === 'drink' && (' (+ $2 Extra)')}
                 </button>
               );
             })}
