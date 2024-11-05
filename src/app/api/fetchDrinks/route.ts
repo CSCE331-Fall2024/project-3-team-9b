@@ -15,9 +15,8 @@ const pool = new Pool({
 
 export async function GET() {
   try {
-    // Query to fetch drinks from the food table
+    // Query to fetch only items from the food table where type is 'drink'
     const result = await pool.query('SELECT * FROM food WHERE type = $1;', ['drink']);
-    
     return NextResponse.json({ drinks: result.rows });
   } catch (error) {
     console.error('Error fetching drinks:', error); // This will give us more details about the error
@@ -25,6 +24,7 @@ export async function GET() {
   }
 }
 
+// Log the database configuration for debugging
 console.log("Database Configuration:", {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
