@@ -1,14 +1,15 @@
 import { useState } from "react";
+const currentItems: string[] = [];
+export function addItem(item: string){
+    currentItems.push(item);
+}; 
 
 export default function ShoppingCart(){
     const [cart, showCart] = useState(false);
     const toggleCart = () => {
         showCart(!cart);
     };
-    const currentItems: string[] = [];
-    const addItem = (item: string) => {
-        currentItems.push(item);
-    }; 
+    
     return (
         <>
             <button className="absolute right-2 top-2 z-10" onClick={toggleCart}><img src = "/ShoppingCart.png"></img></button>
