@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
+import ShoppingCart from '@components/shoppingCart';
 
 type Food = {
   food_id: number;
@@ -78,15 +79,15 @@ export default function Appetizers() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen h-screen rounded-full bg-red-800">
+    <>
+    <ShoppingCart/>
+    <div className="flex flex-col min-h-screen h-screen items-center rounded-full bg-red-800">
       {/* Static Navigation Section */}
-      <div className="fixed top-0 left-0 right-0 flex justify-center py-4 z-10">
         <Link href="/menuBoardView" 
-              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="px-6 py-3 w-fit mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               aria-label="View Menu">
           View Menu
         </Link>
-      </div>
 
       {/* Scrollable Content Section */}
       <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
@@ -180,7 +181,7 @@ export default function Appetizers() {
 
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4 bg-gray-100">
+      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
         <Link
           href="/entrees"
           className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
@@ -197,5 +198,6 @@ export default function Appetizers() {
         </Link>
       </div>
     </div>
+    </>
   );
 }
