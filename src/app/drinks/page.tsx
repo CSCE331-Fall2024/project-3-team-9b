@@ -1,17 +1,17 @@
-
 'use client';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 
 type Drink = {
-  drink_id: number;
+  food_id: number; // Unique identifier
   drink_name: string;
-  food_name?: string;
   quantity: number;
   type: string;
+  food_name?: string;
   calories: number;
   available: boolean;
   premium: boolean;
+  image_url: string;
 };
 
 type ApiResponse = {
@@ -35,14 +35,13 @@ export default function Drinks() {
         }
         const data: ApiResponse = await response.json();
 
-        // Normalize drink_name to ensure it is always a string
         const sortedDrinks = (data.drinks || []).map((drink) => ({
           ...drink,
-          drink_name: drink.drink_name || drink.food_name || "Unnamed Drink", // Fallback to default string
-        })).sort((a, b) => a.drink_id - b.drink_id);
+          drink_name: drink.drink_name || drink.food_name || "Unnamed Drink",
+        })).sort((a, b) => a.food_id - b.food_id);
 
         setDrinks(sortedDrinks);
-        setDebug(`Fetched ${sortedDrinks.length} drinks, sorted by drink_id`);
+        setDebug(`Fetched ${sortedDrinks.length} drinks, sorted by food_id`);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred while fetching drinks');
         console.error('Fetch error:', err);
@@ -61,9 +60,9 @@ export default function Drinks() {
     setSelectedDrink(null);
   };
 
-  const handleDrinkSelect = (drinkId: number) => {
-    setSelectedDrink(prevSelected => prevSelected === drinkId ? null : drinkId);
-    setDebug(`Selected drink with ID: ${drinkId}`);
+  const handleDrinkSelect = (foodId: number) => {
+    setSelectedDrink(prevSelected => prevSelected === foodId ? null : foodId);
+    setDebug(`Selected drink with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
@@ -119,36 +118,39 @@ export default function Drinks() {
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {drinks.map((item, index) => (
-              <div key={`${item.drink_id}-${index}`} className="h-64">
+            {drinks.map((item) => (
+              <div key={item.food_id} className="h-64">
                 <div 
                     className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
                                 ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
-                                ${selectedDrink === item.drink_id ? 'ring-4 ring-red-600' : ''}
+                                ${selectedDrink === item.food_id ? 'ring-4 ring-red-600' : ''}
                                 transition-all duration-200 ease-in-out`}
                     role="button"
                     tabIndex={0}
-                    onClick={() => item.available && handleDrinkSelect(item.drink_id)}
-                    onKeyPress={(e) => e.key === 'Enter' && item.available && handleDrinkSelect(item.drink_id)}
-                    aria-pressed={selectedDrink === item.drink_id}
+                    onClick={() => item.available && handleDrinkSelect(item.food_id)}
+                    onKeyPress={(e) => e.key === 'Enter' && item.available && handleDrinkSelect(item.food_id)}
+                    aria-pressed={selectedDrink === item.food_id}
                     aria-disabled={!item.available}
-                    aria-labelledby={`drink-${item.drink_id}`}
+                    aria-labelledby={`drink-${item.food_id}`}
                   >
+                  <img 
+                    src={item.image_url} 
+                    alt={item.drink_name} 
+                    className="w-full h-32 object-cover mb-4 rounded-lg"
+                  />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
-                    <h3 id={`drink-${item.drink_id}`} className="text-2xl font-bold text-gray-800">
+                    <h3 id={`drink-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.drink_name || 'Unnamed Drink'}
                     </h3>
                     {item.premium && (
-                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
-                            role="badge">
+                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full" role="badge">
                         Premium
                       </span>
                     )}
                   </div>
                   <div className="text-sm text-gray-600">
                     <p className="mb-1">Calories: {item.calories}</p>
-                    <p className={item.available ? 'text-green-600' : 'text-red-600'}
-                       role="status">
+                    <p className={item.available ? 'text-green-600' : 'text-red-600'} role="status">
                       {item.available ? 'In Stock' : 'Out of Stock'}
                     </p>
                   </div>
