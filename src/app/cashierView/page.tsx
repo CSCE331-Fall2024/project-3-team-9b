@@ -234,7 +234,7 @@ export default function CashierView() {
           {['sides', 'entrees', 'appetizers', 'drinks'].map((tab) => (
             <button
               key={tab}
-              className={`px-4 py-2 font-semibold ${activeTab === tab ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-500'}`}
+              className={`px-4 py-2 font-semibold ${activeTab === tab ? 'text-blue-500 border-b-2 border-blue-500' : 'text-white-500'}`}
               onClick={() => handleTabChange(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -251,7 +251,7 @@ export default function CashierView() {
                   ? 'text-blue-500 border-b-2 border-blue-500'
                   : selectedSize
                   ? 'text-gray-300 cursor-not-allowed'
-                  : 'text-gray-500'
+                  : 'text-white-500'
               }`}
               onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
               disabled={!!selectedSize && selectedSize !== size}
