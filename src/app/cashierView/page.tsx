@@ -25,6 +25,11 @@ type ApiResponse = {
   error?: string;
 };
 
+type Ingredient = {
+  ingredient_id: number;
+  amount_used: number;
+};
+
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
   const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | null>(null);
@@ -135,6 +140,28 @@ export default function CashierView() {
     }
   };
 
+  const decrementIngredients = async (orders: Array<{ size: string, items: OrderItem[], subtotal: number }>) => {
+    try {
+      const response = await fetch('/api/decrementIngredients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orders }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update inventory');
+      }
+
+      const result = await response.json();
+      console.log('Inventory updated:', result);
+    } catch (error) {
+      console.error('Error updating inventory:', error);
+      alert('Failed to update inventory. Please check with the manager.');
+    }
+  };
+
   const handleFinishTransaction = async () => {
     if (previousOrders.length === 0 && currentOrder.length === 0) {
       alert('No orders to submit.');
@@ -159,13 +186,28 @@ export default function CashierView() {
           totalPrice: totalCost,
         }),
       });
-  
+      
       if (!response.ok) {
         throw new Error('Failed to submit transaction');
       }
   
       const result = await response.json();
       alert(`Transaction finished! Transaction ID: ${result.transactionId}`);
+
+      // update inventory
+      const inventoryResponse = await fetch('/api/decrementIngredients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orders: [...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }],
+        }),
+      });
+  
+      if (!inventoryResponse.ok) {
+        throw new Error('Failed to update inventory');
+      }
       
       // Reset the state
       setPreviousOrders([]);
@@ -185,6 +227,8 @@ export default function CashierView() {
     setTotalCost(prevTotal => prevTotal - currentOrderSubtotal);
     setCurrentOrderSubtotal(0);
   };
+
+  
 
   return (
     <div className="flex h-screen">
