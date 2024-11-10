@@ -55,14 +55,15 @@ export default function CashierView() {
 
   useEffect(() => {
     const fetchItems = async () => {
+      // select correct food items to pull from db
       try {
         let endpoint = '';
         if (activeTab === 'sides') {
           endpoint = '/api/fetchSides';
-        } 
+        }
         else if (activeTab === 'entrees') {
           endpoint = '/api/fetchEntrees';
-        } 
+        }
         else if (activeTab === 'appetizers') {
           endpoint = '/api/fetchAppetizers';
         }
@@ -91,6 +92,7 @@ export default function CashierView() {
     fetchItems();
   }, [activeTab]);
 
+  // switching tabs
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setLoading(true);
@@ -98,6 +100,7 @@ export default function CashierView() {
     setItems([]);
   };
 
+  // choose size for order
   const handleSizeSelection = (size: 'Bowl' | 'Plate' | 'Bigger Plate') => {
     setSelectedSize(size);
     setCurrentOrder([]);
@@ -111,10 +114,10 @@ export default function CashierView() {
     const sidesCount = currentOrder.filter(i => i.type === 'side').length;
     const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
 
-    if (
-      (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
-      (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees)
-    ) {
+    // check if at the sides/entree limit
+    if ((item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) 
+      || (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees)) 
+    {
       return;
     }
 
@@ -129,36 +132,29 @@ export default function CashierView() {
   };
 
   const handleSubmitOrder = () => {
-    if (currentOrder.length > 0) {
+    const sidesCount = currentOrder.filter(i => i.type === 'side').length;
+    const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
+
+    if (!selectedSize) return;
+    
+    // make sure items are selected for order
+    if (currentOrder.length == 0) {
+      alert('Please add items to your order before submitting.');
+    }
+    // ensure sides limit has been reached
+    else if (sidesCount == sizeLimits[selectedSize].sides && entreesCount == sizeLimits[selectedSize].entrees) {
       alert('Order submitted: ' + currentOrder.map(item => item.name).join(', ') + ' - Subtotal: $' + currentOrderSubtotal.toFixed(2));
       setPreviousOrders([...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }]);
       setSelectedSize(null);
       setCurrentOrder([]);
       setCurrentOrderSubtotal(0);
-    } else {
-      alert('Please add items to your order before submitting.');
+    } 
+    // alert user to select more options
+    else if (sidesCount < sizeLimits[selectedSize].sides) {
+      alert('You must select more sides to complete the order.')
     }
-  };
-
-  const decrementIngredients = async (orders: Array<{ size: string, items: OrderItem[], subtotal: number }>) => {
-    try {
-      const response = await fetch('/api/decrementIngredients', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orders }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update inventory');
-      }
-
-      const result = await response.json();
-      console.log('Inventory updated:', result);
-    } catch (error) {
-      console.error('Error updating inventory:', error);
-      alert('Failed to update inventory. Please check with the manager.');
+    else {
+      alert('You must select more entrees to complete the order.')
     }
   };
 
@@ -167,13 +163,13 @@ export default function CashierView() {
       alert('No orders to submit.');
       return;
     }
-  
+
     const employeeId = prompt('Please enter your employee ID:');
     if (!employeeId) {
       alert('Employee ID is required to finish the transaction.');
       return;
     }
-  
+
     try {
       const response = await fetch('/api/finishCashierTransaction', {
         method: 'POST',
@@ -186,15 +182,15 @@ export default function CashierView() {
           totalPrice: totalCost,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to submit transaction');
       }
-  
+
       const result = await response.json();
       alert(`Transaction finished! Transaction ID: ${result.transactionId}`);
 
-      // update inventory
+      // update inventory ingredients quantity
       const inventoryResponse = await fetch('/api/decrementIngredients', {
         method: 'POST',
         headers: {
@@ -204,12 +200,12 @@ export default function CashierView() {
           orders: [...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }],
         }),
       });
-  
+
       if (!inventoryResponse.ok) {
         throw new Error('Failed to update inventory');
       }
-      
-      // Reset the state
+
+      // reset the state
       setPreviousOrders([]);
       setSelectedSize(null);
       setCurrentOrder([]);
@@ -227,8 +223,6 @@ export default function CashierView() {
     setTotalCost(prevTotal => prevTotal - currentOrderSubtotal);
     setCurrentOrderSubtotal(0);
   };
-
-  
 
   return (
     <div className="flex h-screen">
@@ -290,13 +284,12 @@ export default function CashierView() {
           {['Bowl', 'Plate', 'Bigger Plate'].map((size) => (
             <button
               key={size}
-              className={`px-4 py-2 font-semibold ${
-                selectedSize === size
+              className={`px-4 py-2 font-semibold ${selectedSize === size
                   ? 'text-blue-500 border-b-2 border-blue-500'
                   : selectedSize
-                  ? 'text-gray-300 cursor-not-allowed'
-                  : 'text-white-500'
-              }`}
+                    ? 'text-gray-300 cursor-not-allowed'
+                    : 'text-white-500'
+                }`}
               onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
               disabled={!!selectedSize && selectedSize !== size}
             >
@@ -331,7 +324,7 @@ export default function CashierView() {
               const sidesCount = currentOrder.filter(i => i.type === 'side').length;
               const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
 
-              const isDisabled = 
+              const isDisabled =
                 !selectedSize ||
                 (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
                 (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees);
@@ -339,15 +332,14 @@ export default function CashierView() {
               return (
                 <button
                   key={item.food_id}
-                  className={`p-4 rounded ${
-                    isDisabled
+                  className={`p-4 rounded ${isDisabled
                       ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
                       : 'bg-blue-500 text-white hover:bg-blue-600'
-                  }`}
+                    }`}
                   onClick={() => handleAddToOrder(item)}
                   disabled={isDisabled}
                 >
-                  {item.food_name} 
+                  {item.food_name}
                   {item.premium && ' (+ $2 Premium)'}
                   {item.type === 'appetizer' && ' (+ $2 Extra)'}
                   {item.type === 'drink' && (' (+ $2 Extra)')}
