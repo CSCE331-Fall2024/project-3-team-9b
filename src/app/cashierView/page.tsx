@@ -56,40 +56,37 @@ export default function CashierView() {
 
   useEffect(() => {
     const fetchItems = async () => {
-      // select correct food items to pull from db
       try {
         let endpoint = '';
         if (activeTab === 'sides') {
           endpoint = '/api/fetchSides';
-        }
-        else if (activeTab === 'entrees') {
+        } else if (activeTab === 'entrees') {
           endpoint = '/api/fetchEntrees';
-        }
-        else if (activeTab === 'appetizers') {
+        } else if (activeTab === 'appetizers') {
           endpoint = '/api/fetchAppetizers';
-        }
-        else if (activeTab === 'drinks') {
+        } else if (activeTab === 'drinks') {
           endpoint = '/api/fetchDrinks';
         }
-
         const response = await fetch(endpoint);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: ApiResponse = await response.json();
-
         if (data.error) {
           throw new Error(data.error);
         }
-
-        setItems(data.sides || data.entrees || data.appetizers || data.drinks || []);
+        const processedItems = (data.sides || data.entrees || data.appetizers || data.drinks || []).map(item => ({
+          ...item,
+          available: item.quantity > 0
+        }));
+        setItems(processedItems);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred while fetching items');
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchItems();
   }, [activeTab]);
 
@@ -110,7 +107,7 @@ export default function CashierView() {
   };
 
   const handleAddToOrder = (item: Food) => {
-    if (!selectedSize) return;
+    if (!selectedSize || !item.available) return;
 
     const sidesCount = currentOrder.filter(i => i.type === 'side').length;
     const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
@@ -325,35 +322,32 @@ export default function CashierView() {
         )}
 
         <div className="grid grid-cols-3 gap-4 mb-4">
-          {!loading &&
-            !error &&
-            items.map((item) => {
-              const sidesCount = currentOrder.filter(i => i.type === 'side').length;
-              const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
-
-              const isDisabled =
-                !selectedSize ||
-                (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) ||
-                (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees);
-
-              return (
-                <button
-                  key={item.food_id}
-                  className={`p-10 rounded text-sm sm:text-base md:text-lg ${
-                    isDisabled
-                      ? 'bg-gray-300 bg-opacity-70 text-gray-600 cursor-not-allowed'
-                      : 'bg-blue-500 text-white hover:bg-blue-600'
-                  }`}
-                  onClick={() => handleAddToOrder(item)}
-                  disabled={isDisabled}
-                >
-                  {item.food_name}
-                  {item.premium && ' (+ $2 Premium)'}
-                  {item.type === 'appetizer' && ' (+ $2 Extra)'}
-                  {item.type === 'drink' && ' (+ $2 Extra)'}
-                </button>
-              );
-            })}
+          {!loading && !error && items.map((item) => {
+            const sidesCount = currentOrder.filter(i => i.type === 'side').length;
+            const entreesCount = currentOrder.filter(i => i.type === 'entree').length;
+            const isDisabled = !selectedSize || 
+                              !item.available || 
+                              (item.type === 'side' && sidesCount >= sizeLimits[selectedSize].sides) || 
+                              (item.type === 'entree' && entreesCount >= sizeLimits[selectedSize].entrees);
+            return (
+              <button
+                key={item.food_id}
+                className={`p-10 rounded text-sm sm:text-base md:text-lg ${
+                  isDisabled
+                    ? 'bg-gray-300 bg-opacity-70 text-gray-600 cursor-not-allowed'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+                onClick={() => handleAddToOrder(item)}
+                disabled={isDisabled}
+              >
+                {item.food_name}
+                {item.premium && ' (+ $2 Premium)'}
+                {item.type === 'appetizer' && ' (+ $2 Extra)'}
+                {item.type === 'drink' && ' (+ $2 Extra)'}
+                {!item.available && <span className="block text-red-500 text-s mt-1">Out of Stock</span>}
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex justify-center space-x-6 mt-auto">
