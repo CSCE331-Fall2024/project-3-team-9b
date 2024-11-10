@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from "next/link";
 
 type Food = {
   food_id: number;
@@ -227,7 +228,7 @@ export default function CashierView() {
   return (
     <div className="flex h-screen">
       <div className="w-1/4 p-4 bg-gray-100 border-r flex flex-col">
-        <h2 className="text-lg text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
+        <h2 className="text-xl text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
         {previousOrders.map((order, index) => (
           <div key={index} className="mb-4">
             <h3 className="font-semibold text-gray-700">Order {index + 1} - {order.size}</h3>
@@ -267,29 +268,34 @@ export default function CashierView() {
         <div className="mt-4 text-right text-lg font-bold text-blue-600">Total: ${totalCost.toFixed(2)}</div>
       </div>
 
-      <div className="flex-1 flex flex-col p-4">
-        <div className="flex space-x-4 mb-2 border-b pb-2">
+      <div className="flex-1 flex flex-col p-4 bg-red-400">
+      <div className="flex justify-center mb-2 border-b pb-2">
+        <div className="flex space-x-4">
           {['sides', 'entrees', 'appetizers', 'drinks'].map((tab) => (
             <button
               key={tab}
-              className={`px-4 py-2 font-semibold ${activeTab === tab ? 'text-blue-500 border-b-2 border-blue-500' : 'text-white-500'}`}
+              className={`px-4 py-2 font-semibold text-lg ${
+                activeTab === tab ? 'text-blue-500 border-b-2 border-blue-500' : 'text-white-500'
+              }`}
               onClick={() => handleTabChange(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
-
-        <div className="flex space-x-4 mb-4 border-b pb-2">
+      </div>
+      <div className="flex justify-center mb-4 border-b pb-2">
+        <div className="flex space-x-4">
           {['Bowl', 'Plate', 'Bigger Plate'].map((size) => (
             <button
               key={size}
-              className={`px-4 py-2 font-semibold ${selectedSize === size
+              className={`px-4 py-2 font-semibold ${
+                selectedSize === size
                   ? 'text-blue-500 border-b-2 border-blue-500'
                   : selectedSize
-                    ? 'text-gray-300 cursor-not-allowed'
-                    : 'text-white-500'
-                }`}
+                  ? 'text-gray-300 text-opacity-70 cursor-not-allowed'
+                  : 'text-white-500'
+              }`}
               onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
               disabled={!!selectedSize && selectedSize !== size}
             >
@@ -297,6 +303,7 @@ export default function CashierView() {
             </button>
           ))}
         </div>
+      </div>
 
         {loading && (
           <div className="text-center py-8" role="status" aria-label="Loading">
@@ -332,23 +339,24 @@ export default function CashierView() {
               return (
                 <button
                   key={item.food_id}
-                  className={`p-4 rounded ${isDisabled
-                      ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  className={`p-10 rounded text-sm sm:text-base md:text-lg ${
+                    isDisabled
+                      ? 'bg-gray-300 bg-opacity-70 text-gray-600 cursor-not-allowed'
                       : 'bg-blue-500 text-white hover:bg-blue-600'
-                    }`}
+                  }`}
                   onClick={() => handleAddToOrder(item)}
                   disabled={isDisabled}
                 >
                   {item.food_name}
                   {item.premium && ' (+ $2 Premium)'}
                   {item.type === 'appetizer' && ' (+ $2 Extra)'}
-                  {item.type === 'drink' && (' (+ $2 Extra)')}
+                  {item.type === 'drink' && ' (+ $2 Extra)'}
                 </button>
               );
             })}
         </div>
 
-        <div className="flex space-x-4 mt-auto">
+        <div className="flex justify-center space-x-6 mt-auto">
           <button
             className="px-4 py-2 bg-red-500 rounded hover:bg-red-300"
             onClick={handleReset}
@@ -367,6 +375,13 @@ export default function CashierView() {
           >
             Finish Transaction
           </button>
+          <Link
+            href="/"
+            className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 text-white"
+            aria-label="Back to main menu"
+          >
+            Back
+          </Link>
         </div>
       </div>
     </div>
