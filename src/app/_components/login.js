@@ -1,25 +1,25 @@
+// _components/login.js
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';  // Updated import statement
+import { jwtDecode } from 'jwt-decode';
 
 function Login({ onLoginSuccess }) {
-  const onSuccess = (credentialResponse) => {
+  const onSuccess = async (credentialResponse) => {
     try {
-      // Decode the JWT token to get user information
       const decodedToken = jwtDecode(credentialResponse.credential);
       console.log('Login Success. User Info:', decodedToken);
       
-      // Store the token and email
+      // Store both the credential and user info
       localStorage.setItem('token', credentialResponse.credential);
       localStorage.setItem('userEmail', decodedToken.email);
       
       // Show success message
       alert(`Successfully logged in as ${decodedToken.email}`);
       
-      // Call the parent component's success handler
-      onLoginSuccess(decodedToken.email);
+      // Call the parent component's success handler with both email and token
+      onLoginSuccess(decodedToken.email, credentialResponse.credential);
       
     } catch (error) {
-      console.error('Error decoding token:', error);
+      console.error('Error processing login:', error);
       alert('Failed to process login information');
     }
   };
@@ -34,7 +34,10 @@ function Login({ onLoginSuccess }) {
       <GoogleLogin
         onSuccess={onSuccess}
         onError={onError}
-        useOneTap
+        size="large"
+        type="standard"
+        shape="rectangular"
+        width="250"
       />
     </div>
   );

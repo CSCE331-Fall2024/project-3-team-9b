@@ -1,4 +1,3 @@
-// page.tsx
 "use client";
 
 import Link from "next/link";
@@ -13,7 +12,6 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
 
-  // Check login status on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedEmail = localStorage.getItem('userEmail');
@@ -23,17 +21,20 @@ export default function Home() {
     }
   }, []);
 
-  const handleLoginSuccess = (email: string) => {
+  const handleLoginSuccess = (email: string, token: string) => {
     setIsLoggedIn(true);
     setUserEmail(email);
   };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserEmail('');
   };
 
   return (
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider 
+      clientId={clientId}
+    >
       <div className="flex flex-col items-center h-screen rounded-full bg-red-800">
         <div className="text-6xl mt-10">
           Welcome to Panda Express!
@@ -63,7 +64,7 @@ export default function Home() {
         </div>
         <div className="flex gap-4 mt-6">
           <LoginButton onLoginSuccess={handleLoginSuccess} />
-          <LogOutButton onLogoutSuccess={handleLogout} />
+          {isLoggedIn && <LogOutButton onLogoutSuccess={handleLogout} />}
         </div>
       </div>
     </GoogleOAuthProvider>
