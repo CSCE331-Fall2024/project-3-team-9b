@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import WeatherWidget from "./weather/WeatherWidget"; // Adjusted path to match your setup
+
 
 export const metadata: Metadata = {
   title: "Panda Express POS System",
@@ -17,8 +17,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-red-400">
         {children}
-        {/* Add Weather Widget */}
-        <WeatherWidget />
+      
+        
       </body>
     </html>
   );
