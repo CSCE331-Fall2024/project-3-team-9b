@@ -15,6 +15,7 @@
     "gapi-script": "^1.2.0",
     "jwt-decode": "^4.0.0",
     "next": "^15.0.1",
+    "node-fetch": "^3.3.2",
     "pg": "^8.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
