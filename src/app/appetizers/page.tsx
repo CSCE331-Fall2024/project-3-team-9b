@@ -121,10 +121,10 @@ export default function Appetizers() {
             </div>
           )} */}
         <div>
-        <div className='flex flex-col items-center gap-y-5'>
+        <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
         <h1 className="text-3xl font-bold text-gray-800 mt-10">Appetizers</h1>
-        <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-10'>
-          {appetizers.map((item) => (
+        <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
+        {appetizers.map((item) => (
             <div key={item.food_id} className="">
               <div 
                   className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[600px] w-[600px]
@@ -166,9 +166,9 @@ export default function Appetizers() {
             </div>
           ))}
         </div>
-
-        {selectedAppetizer !== null && (
-          <div className="mt-6 text-center">
+          <div>
+          {selectedAppetizer !== null && (
+          <div className="absolute text-center -translate-x-1/2">
             <button
               onClick={handleAddToCart}
               className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -178,6 +178,7 @@ export default function Appetizers() {
             </button>
           </div>
         )}
+        </div>
         </div>
       </div>
 
