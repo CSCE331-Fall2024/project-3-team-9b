@@ -124,9 +124,9 @@ export default function Sides() {
               </div>
             )} */}
           <div>
-            <div className='flex flex-col items-center gap-y-5'>
+            <div className='flex flex-col items-center mb-40 h-full gap-y-5'>
               <h1 className="text-3xl font-bold text-gray-800 mt-10">Sides</h1>
-              <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-10'>
+              <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
               {sides.map((item) => (
                 <div key={item.food_id} className="h-100">
                   <div 
@@ -172,7 +172,7 @@ export default function Sides() {
 
             <div>
               {selectedSide !== null && (
-                <div className="text-center absolute">
+                <div className="text-center absolute -translate-x-1/2">
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"

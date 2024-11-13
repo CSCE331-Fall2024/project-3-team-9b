@@ -169,7 +169,7 @@ export default function Entrees() {
           </div>
           <div>
               {selectedEntree !== null && (
-                <div className="text-center absolute">
+                <div className="text-center absolute -translate-x-1/2">
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
