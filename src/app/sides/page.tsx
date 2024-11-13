@@ -73,6 +73,7 @@ export default function Sides() {
     if (selectedSide) {
       console.log(`Added side with ID ${selectedSide} to cart`);
       setDebug(`Added side with ID ${selectedSide} to cart`);
+      // ShoppingCart.add
       setSelectedSide(null);
     
     }
@@ -81,7 +82,7 @@ export default function Sides() {
   return (
     <>
       <ShoppingCart/>
-      <div className="flex flex-col min-h-screen h-screen items-center rounded-full bg-red-800">
+      <div className="flex flex-col min-h-screen h-fit items-center rounded-full bg-red-800">
         {/* Static Navigation Section */}
         {/* <div className="fixed top-0 left-0 right-0 flex justify-center py-4 z-10"> */}
           <Link href="/menuBoardView" 
@@ -90,7 +91,7 @@ export default function Sides() {
             View Menu
           </Link>
 
-        {/* Scrollable Content Section */}
+        {/* Scrollable Content Section
         <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Sides</h1>
@@ -121,13 +122,15 @@ export default function Sides() {
               <div className="text-center py-8 text-gray-600">
                 No sides available at the moment.
               </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            )} */}
+          <div>
+            <div className='flex flex-col items-center gap-y-5'>
+              <h1 className="text-3xl font-bold text-gray-800 mt-10">Sides</h1>
+              <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-10'>
               {sides.map((item) => (
                 <div key={item.food_id} className="h-100">
                   <div 
-                    className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
+                    className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[600px] w-[600px]
                                 ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
                                 ${selectedSide === item.food_id ? 'ring-4 ring-red-600' : ''}
                                 transition-all duration-200 ease-in-out`}
@@ -140,7 +143,7 @@ export default function Sides() {
                     aria-labelledby={`side-${item.food_id}`}
                   >
                     {/* Top section with image */}  
-                    <img className="object-cover w-full h-48" src= {"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} />
+                    <img className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} />
                     {/* Center section with name */}
                     <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                       <h3 id={`side-${item.food_id}`} className="text-2xl font-bold text-gray-800">
@@ -167,17 +170,19 @@ export default function Sides() {
               ))}
             </div>
 
-            {selectedSide !== null && (
-              <div className="mt-6 text-center">
-                <button
-                  onClick={handleAddToCart}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                  aria-label="Add selected side to cart"
-                >
-                  Add to Cart
-                </button>
+            <div>
+              {selectedSide !== null && (
+                <div className="text-center absolute">
+                  <button
+                    onClick={handleAddToCart}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    aria-label="Add selected entree to cart"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              )}
               </div>
-            )}
           </div>
         </div>
 
