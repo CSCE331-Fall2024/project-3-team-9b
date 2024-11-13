@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
-import { addItem } from '@components/shoppingCart';
 
 type Food = {
   food_id: number;

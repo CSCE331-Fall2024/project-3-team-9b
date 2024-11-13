@@ -16,9 +16,13 @@ export default function ShoppingCart(){
         showCart(!cart);
     };
 
-    const removeItem = (index: number) =>{
-        setCurrentItems(currentItems.slice(0, index));
+    const removeItem = (index: number) => {
+        setCurrentItems([
+            ...currentItems.slice(0, index),
+            ...currentItems.slice(index + 1)
+        ]);
     }
+
     
     function listCartItems(){
         return currentItems.map((item, index) => {
