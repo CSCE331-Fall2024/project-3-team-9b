@@ -5,6 +5,7 @@ import LoginButton from "./_components/login";
 import LogOutButton from "./_components/logout";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
+import WeatherWidget from "./weather/WeatherWidget"; 
 
 const clientId = "32164770538-vg436on3johb97cfdlcpm35nm083s85r.apps.googleusercontent.com"
 
@@ -68,6 +69,7 @@ export default function Home() {
           {isLoggedIn && <LogOutButton onLogoutSuccess={handleLogout} />}
         </div>
       </div>
+      <WeatherWidget/>
     </GoogleOAuthProvider>
   );
 }
