@@ -76,6 +76,8 @@ function getSizeId(size: string): number {
       return 1;
     case 'Bigger Plate':
       return 2;
+    case 'A La Carte':
+      return 3;
     default:
       throw new Error('Invalid size');
   }
