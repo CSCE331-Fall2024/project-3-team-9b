@@ -33,7 +33,7 @@ type Ingredient = {
 
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
-  const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | null>(null);
+  const [selectedSize, setSelectedSize] = useState<'Bowl' | 'Plate' | 'Bigger Plate' | 'A La Carte' | null>(null);
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
   const [previousOrders, setPreviousOrders] = useState<Array<{ size: string, items: OrderItem[], subtotal: number }>>([]);
   const [totalCost, setTotalCost] = useState(0);
@@ -41,17 +41,27 @@ export default function CashierView() {
   const [items, setItems] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isALaCarte, setIsALaCarte] = useState(false);
 
   const sizeLimits = {
     'Bowl': { sides: 1, entrees: 1 },
     'Plate': { sides: 1, entrees: 2 },
     'Bigger Plate': { sides: 1, entrees: 3 },
+    'A La Carte' : { sides: 10000, entrees: 10000},
   };
 
   const basePrices: { [key: string]: number } = {
     'Bowl': 8.30,
     'Plate': 9.80,
     'Bigger Plate': 11.30,
+    'A La Carte' : 0.0,
+  };
+
+  const aLaCartPrices: { [key: string]: number } = {
+    'side' : 4.40,
+    'entree' : 5.20,
+    'drink' : 0.0,
+    'appetizer' : 0.0,
   };
 
   useEffect(() => {
@@ -99,11 +109,13 @@ export default function CashierView() {
   };
 
   // choose size for order
-  const handleSizeSelection = (size: 'Bowl' | 'Plate' | 'Bigger Plate') => {
+  const handleSizeSelection = (size: 'Bowl' | 'Plate' | 'Bigger Plate' | 'A La Carte') => {
     setSelectedSize(size);
+    setIsALaCarte(size === 'A La Carte');
     setCurrentOrder([]);
     setCurrentOrderSubtotal(basePrices[size]);
     setTotalCost(prevTotal => prevTotal + basePrices[size]);
+
   };
 
   const handleAddToOrder = (item: Food) => {
@@ -119,14 +131,21 @@ export default function CashierView() {
       return;
     }
 
+    let aLaCartePrice = 0;
+    // add a la cart pricing
+    if (isALaCarte) {
+      aLaCartePrice = aLaCartPrices[item.type];
+    }
+
+    // set other additional costs
     const additionalCost = item.premium ? 2 : 0;
     const appetizerCost = item.type === 'appetizer' ? 2 : 0;
     const drinkCost = item.type === 'drink' ? 2 : 0;
-    const itemCost = additionalCost + appetizerCost + drinkCost;
+    const itemCost = additionalCost + appetizerCost + drinkCost + aLaCartePrice;
 
     setCurrentOrder([...currentOrder, { name: item.food_name, type: item.type, premium: item.premium }]);
     setCurrentOrderSubtotal(prevSubtotal => prevSubtotal + itemCost);
-    setTotalCost(prevTotal => prevTotal + itemCost);
+    setTotalCost(prevTotal => Number((prevTotal + itemCost).toFixed(2)));
   };
 
   const handleSubmitOrder = () => {
@@ -139,8 +158,9 @@ export default function CashierView() {
     if (currentOrder.length == 0) {
       alert('Please add items to your order before submitting.');
     }
+
     // ensure sides limit has been reached
-    else if (sidesCount == sizeLimits[selectedSize].sides && entreesCount == sizeLimits[selectedSize].entrees) {
+    else if (sidesCount == sizeLimits[selectedSize].sides && entreesCount == sizeLimits[selectedSize].entrees || isALaCarte) {
       alert('Order submitted: ' + currentOrder.map(item => item.name).join(', ') + ' - Subtotal: $' + currentOrderSubtotal.toFixed(2));
       setPreviousOrders([...previousOrders, { size: selectedSize!, items: currentOrder, subtotal: currentOrderSubtotal }]);
       setSelectedSize(null);
@@ -283,7 +303,7 @@ export default function CashierView() {
       </div>
       <div className="flex justify-center mb-4 border-b pb-2">
         <div className="flex space-x-4">
-          {['Bowl', 'Plate', 'Bigger Plate'].map((size) => (
+          {['Bowl', 'Plate', 'Bigger Plate', 'A La Carte'].map((size) => (
             <button
               key={size}
               className={`px-4 py-2 font-semibold ${
@@ -293,7 +313,7 @@ export default function CashierView() {
                   ? 'text-gray-300 text-opacity-70 cursor-not-allowed'
                   : 'text-white-500'
               }`}
-              onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate')}
+              onClick={() => !selectedSize && handleSizeSelection(size as 'Bowl' | 'Plate' | 'Bigger Plate' | 'A La Carte')}
               disabled={!!selectedSize && selectedSize !== size}
             >
               {size}
