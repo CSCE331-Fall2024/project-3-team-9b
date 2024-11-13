@@ -35,7 +35,7 @@ export default function Home() {
     <GoogleOAuthProvider 
       clientId={clientId}
     >
-      <div className="flex flex-col items-center h-screen rounded-full bg-red-800">
+      <div className="flex flex-col items-center h-screen min-h-fit rounded-full bg-red-800">
         <div className="text-6xl mt-10">
           Welcome to Panda Express!
         </div>
@@ -58,6 +58,7 @@ export default function Home() {
           <Link href="/customerView" className="w-1/5 py-10 bg-white rounded-lg shadow-lg  hover:scale-110 hover:duration-300 text-center">Customer</Link>
           <Link href="/cashierView" className="w-1/5 py-10 bg-white rounded-lg shadow-lg   hover:scale-110 hover:duration-300 text-center">Cashier</Link>
           <Link href="/managerView" className="w-1/5 py-10 bg-white rounded-lg shadow-lg  hover:scale-110 hover:duration-300 text-center">Manager</Link>
+          
         </div>
         <div className="text-2xl mt-22">
           <Link href="/menuBoardView">Or View Menu</Link>
