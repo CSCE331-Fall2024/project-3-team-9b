@@ -81,15 +81,15 @@ export default function Appetizers() {
   return (
     <>
     <ShoppingCart/>
-    <div className="flex flex-col min-h-screen h-screen items-center rounded-full bg-red-800">
-      {/* Static Navigation Section */}
+    <div className="flex flex-col min-h-screen h-fit items-center rounded-full bg-red-800">
+    {/* Static Navigation Section */}
         <Link href="/menuBoardView" 
               className="px-6 py-3 w-fit mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               aria-label="View Menu">
           View Menu
         </Link>
 
-      {/* Scrollable Content Section */}
+      {/* Scrollable Content Section
       <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Appetizers</h1>
@@ -119,13 +119,15 @@ export default function Appetizers() {
             <div className="text-center py-8 text-gray-600">
               No entrees available at the moment.
             </div>
-          )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          )} */}
+        <div>
+        <div className='flex flex-col items-center gap-y-5'>
+        <h1 className="text-3xl font-bold text-gray-800 mt-10">Appetizers</h1>
+        <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-10'>
           {appetizers.map((item) => (
-            <div key={item.food_id} className="h-100">
+            <div key={item.food_id} className="">
               <div 
-                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
+                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[600px] w-[600px]
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
                               ${selectedAppetizer === item.food_id ? 'ring-4 ring-red-600' : ''}
                               transition-all duration-200 ease-in-out`}
@@ -138,7 +140,7 @@ export default function Appetizers() {
                   aria-labelledby={`entree-${item.food_id}`}
                 >
                 <img 
-                  className="w-full h-48 object-cover"
+                  className="w-full h-full object-cover"
                   src={"/" + removeSpace(item.food_name) + ".png"}
                   alt={item.food_name}
                 />
@@ -153,7 +155,7 @@ export default function Appetizers() {
                     </span>
                   )}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 text-center">
                   <p className="mb-1">Calories: {item.calories}</p>
                   <p className={item.available ? 'text-green-600' : 'text-red-600'}
                      role="status">

@@ -84,28 +84,28 @@ export default function Entrees() {
   return (
     <>
     <ShoppingCart/>
-    <div className="flex flex-col min-h-screen h-screen items-center rounded-full bg-red-800">
-      {/* Static Navigation Section */}
+    <div className="flex flex-col min-h-screen h-fit items-center rounded-full bg-red-800">
+    {/* Static Navigation Section */}
         <Link href="/menuBoardView" 
               className="px-6 py-3 mt-4 w-fit bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               aria-label="View Menu">
           View Menu
         </Link>
       {/* Scrollable Content Section */}
-      <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
+      {/* <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Entrees</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">Entrees</h1> */}
         
         
 
-          {loading && (
+          {/* {loading && (
             <div className="text-center py-8" role="status" aria-label="Loading">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
               <span className="sr-only">Loading...</span>
             </div>
-          )}
+          )} */}
 
-          {error && (
+          {/* {error && (
             <div className="text-center py-8" role="alert">
               <div className="text-red-600 mb-4">Error loading entrees: {error}</div>
               <button
@@ -122,13 +122,15 @@ export default function Entrees() {
             <div className="text-center py-8 text-gray-600">
               No entrees available at the moment.
             </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          )} */}
+      <div>
+      <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
+          <h1 className="text-3xl font-bold text-gray-800 mt-10">Entrees</h1>
+          <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
             {entrees.map((item) => (
-              <div key={item.food_id} className="h-100">
+              <div key={item.food_id} className="">
                 <div 
-                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
+                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[600px] w-[600px]
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
                               ${selectedEntree === item.food_id ? 'ring-4 ring-red-600' : ''}
                               transition-all duration-200 ease-in-out`}
@@ -140,7 +142,7 @@ export default function Entrees() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                  <img src={"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} className="w-full h-60 object-cover" />
+                  <img src={"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.food_name}
@@ -163,19 +165,21 @@ export default function Entrees() {
                 </div>
               </div>
             ))}
+      
           </div>
-
-          {selectedEntree !== null && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleAddToCart}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                aria-label="Add selected entree to cart"
-              >
-                Add to Cart
-              </button>
-            </div>
-          )}
+          <div>
+              {selectedEntree !== null && (
+                <div className="text-center absolute">
+                  <button
+                    onClick={handleAddToCart}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    aria-label="Add selected entree to cart"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              )}
+              </div>
         </div>
       </div>
 
