@@ -132,7 +132,7 @@ export default function Sides() {
                   <div 
                     className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[600px] w-[600px]
                                 ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
-                                ${selectedSide === item.food_id ? 'ring-4 ring-red-600' : ''}
+                                ${selectedSide === item.food_id ? 'ring-8 ring-green-600' : ''}
                                 transition-all duration-200 ease-in-out`}
                     role="button"
                     tabIndex={0}

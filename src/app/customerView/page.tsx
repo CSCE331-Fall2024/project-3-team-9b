@@ -20,18 +20,19 @@ export default function CustomerView() {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-4 h-screen rounded-full bg-red-800">
+    <div className="flex flex-col items-center h-screen rounded-full bg-red-800 mb-40">
       {/* View Menu link at the top */}
       <Link href = "/menuBoardView" className="px-6 py-3 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">View Menu</Link> 
+      <h1 className="text-3xl font-bold text-gray-800 mt-10">Choose your size</h1>
 
       {/* Meal sizes */}
-      <div className="flex flex-row space-x-4">
+      {/* <div className="flex flex-row space-x-4">
         {sizes.map((size) => (
           <button key={size.size_id} className="p-2 bg-blue-500 text-white rounded">
             {size.size_name} - ${size.price}
           </button>
         ))}
-      </div>
+      </div> */}
 
       {/* Additional options for entrees/sides/appetizers */}
       <div className="flex flex-row space-x-4 mt-4 w-full justify-center">
