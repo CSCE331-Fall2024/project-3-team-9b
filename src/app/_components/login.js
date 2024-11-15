@@ -1,4 +1,3 @@
-// _components/login.js
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
@@ -8,14 +7,14 @@ function Login({ onLoginSuccess }) {
       const decodedToken = jwtDecode(credentialResponse.credential);
       console.log('Login Success. User Info:', decodedToken);
       
-      // Store both the credential and user info
-      localStorage.setItem('token', credentialResponse.credential);
-      localStorage.setItem('userEmail', decodedToken.email);
+      // Store credentials in sessionStorage
+      sessionStorage.setItem('token', credentialResponse.credential);
+      sessionStorage.setItem('userEmail', decodedToken.email);
       
       // Show success message
       alert(`Successfully logged in as ${decodedToken.email}`);
       
-      // Call the parent component's success handler with both email and token
+      // Call the parent component's success handler
       onLoginSuccess(decodedToken.email, credentialResponse.credential);
       
     } catch (error) {
@@ -38,6 +37,11 @@ function Login({ onLoginSuccess }) {
         type="standard"
         shape="rectangular"
         width="250"
+        prompt="select_account consent"
+        auto_select="false"
+        ux_mode="popup"
+        context="signin"
+        hosted_domain=""
       />
     </div>
   );

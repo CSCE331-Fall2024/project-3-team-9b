@@ -14,13 +14,31 @@ export default function Home() {
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedEmail = localStorage.getItem('userEmail');
+    // Check sessionStorage instead of localStorage
+    const token = sessionStorage.getItem('token');
+    const storedEmail = sessionStorage.getItem('userEmail');
     if (token) {
       setIsLoggedIn(true);
       setUserEmail(storedEmail || '');
     }
-  }, []);
+
+    // Add event listener for beforeunload
+    const handleBeforeUnload = () => {
+      // Clear session data
+      sessionStorage.clear();
+      // Perform logout
+      if (isLoggedIn) {
+        (window as any).googleLogout();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isLoggedIn]);
 
   const handleLoginSuccess = (email: string, token: string) => {
     setIsLoggedIn(true);
