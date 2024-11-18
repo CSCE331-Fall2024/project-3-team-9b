@@ -74,9 +74,11 @@ export default function Entrees() {
   };
 
   const handleAddToCart = () => {
-    if (selectedEntree) {
-      console.log(`Added entree with ID ${selectedEntree} to cart`);
-      setDebug(`Added entree with ID ${selectedEntree} to cart`);
+    if (typeof window !== 'undefined' && selectedEntree) {
+      const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
+      if (selectedEntreeItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
+      }
       setSelectedEntree(null);
     }
   };

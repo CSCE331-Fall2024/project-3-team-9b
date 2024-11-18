@@ -70,14 +70,27 @@ export default function Sides() {
   };
 
   const handleAddToCart = () => {
-    if (selectedSide) {
-      console.log(`Added side with ID ${selectedSide} to cart`);
-      setDebug(`Added side with ID ${selectedSide} to cart`);
-      // ShoppingCart.add
+    if (typeof window !== 'undefined' && selectedSide) {
+      const selectedSideItem = sides.find(side => side.food_id === selectedSide);
+      if (selectedSideItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+      }
       setSelectedSide(null);
-    
     }
   };
+  // const handleAddToCart = (addItem: (item: string) => void) => {
+  //   if (selectedSide) {
+  //     const selectedFood = sides.find(side => side.food_id === selectedSide);
+  //     if (selectedFood) {
+  //       addItem(selectedFood.food_name);
+  //       console.log(`Added side with ID ${selectedSide} to cart`);
+  //       setDebug(`Added side with ID ${selectedSide} to cart`);
+  //       setSelectedSide(null);
+  //     }
+  //   }
+  // };
+
+
 
   return (
     <>

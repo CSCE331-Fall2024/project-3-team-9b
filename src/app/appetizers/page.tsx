@@ -70,11 +70,12 @@ export default function Appetizers() {
   };
 
   const handleAddToCart = () => {
-    if (selectedAppetizer) {
-      console.log(`Added appetizer with ID ${selectedAppetizer} to cart`);
-      setDebug(`Added appetizer with ID ${selectedAppetizer} to cart`);
+    if (typeof window !== 'undefined' && selectedAppetizer) {
+      const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
+      if (selectedAppItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name));
+      }
       setSelectedAppetizer(null);
-      // Here you would typically add the logic to actually add the item to the cart
     }
   };
 
