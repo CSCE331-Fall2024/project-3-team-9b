@@ -1,80 +1,80 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
-export default function ChatBotPage() {
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-  const [input, setInput] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+export default function ChatBotView() {
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([
+    { role: "bot", content: "Hello! How can I assist you?" },
+  ]);
+  const [input, setInput] = useState("");
+  const [error, setError] = useState("");
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    setMessages((prev) => [...prev, { role: 'user', content: input }]);
-    setInput('');
-    setLoading(true);
+    const userMessage = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch('/api/chatbot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      console.log("Sending message:", input);
+      const response = await fetch("/api/chatBot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
       });
 
-      const data = await response.json();
+      console.log("Response status:", response.status);
 
-      if (response.ok) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.reply }]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: 'assistant', content: 'Sorry, something went wrong. Try again later.' },
-        ]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Frontend Error:", errorData);
+        setError(errorData.error || "Failed to fetch response");
+        return;
       }
+
+      const data = await response.json();
+      console.log("Received data:", data);
+
+      // Extract the reply from the API response
+      const reply = Array.isArray(data) && data[0]?.generated_text
+        ? data[0].generated_text
+        : "No response generated";
+
+      setMessages((prev) => [...prev, { role: "bot", content: reply }]);
     } catch (error) {
-      console.error('Chatbot error:', error);
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'An error occurred. Please try again later.' },
-      ]);
-    } finally {
-      setLoading(false);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred.";
+      console.error("Chatbot API error:", errorMessage);
+      setError(errorMessage);
     }
+
+    setInput("");
   };
 
   return (
-    <div className="flex flex-col items-center p-6">
-      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-4">
-        <h1 className="text-xl font-bold text-center mb-4">ChatBot</h1>
-        <div className="h-80 overflow-y-auto border rounded-lg p-3 bg-gray-100">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`mb-2 p-2 rounded-lg ${
-                msg.role === 'user' ? 'bg-blue-200 text-blue-900' : 'bg-gray-200 text-gray-800'
-              }`}
-            >
-              <strong>{msg.role === 'user' ? 'You' : 'Bot'}:</strong> {msg.content}
-            </div>
-          ))}
-        </div>
-        <div className="flex mt-4">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 border rounded-l-md px-4 py-2 text-sm"
-            placeholder="Type your message..."
-            disabled={loading}
-          />
-          <button
-            onClick={sendMessage}
-            className="bg-blue-600 text-white px-4 py-2 rounded-r-md"
-            disabled={loading}
+    <div className="chatbot-container">
+      <div className="chat-messages">
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`message ${msg.role === "bot" ? "bot" : "user"}`}
           >
-            {loading ? 'Sending...' : 'Send'}
-          </button>
-        </div>
+            {msg.content}
+          </div>
+        ))}
+        {error && <div className="error">{error}</div>}
+      </div>
+      <div className="chat-input">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+          className="input-box"
+        />
+        <button onClick={sendMessage} className="send-button">
+          Send
+        </button>
       </div>
     </div>
   );
