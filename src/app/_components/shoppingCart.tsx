@@ -7,9 +7,13 @@ export default function ShoppingCart() {
         // console.log(currentItems);
     };
 
-    function removeAllItems() {
+    function removeAllItems(): void {
         setCurrentItems([]);
-        localStorage.setItem("cartItems", currentItems.join(","));
+        console.log("clicked!");
+        // console.log(currentItems);
+        // localStorage.setItem("cartItems", "");
+
+        // localStorage.setItem("cartItems", currentItems.join(","));
         // console.log(currentItems);
     }
 
@@ -24,6 +28,7 @@ export default function ShoppingCart() {
             ...currentItems.slice(index + 1)
         ]);
         localStorage.setItem("cartItems", currentItems.join(","));
+        // console.log('clikced!')
         // console.log(currentItems);
     };
 
@@ -54,9 +59,9 @@ export default function ShoppingCart() {
         }
         
         localStorage.setItem("cartItems",currentItems.toString());
-        console.log("1st useEff");
-        console.log(currentItems);
-        console.log(localStorage.getItem("cartItems"));
+        // console.log("1st useEff");
+        // console.log(currentItems);
+        // console.log(localStorage.getItem("cartItems"));
 
     });
 
@@ -79,6 +84,7 @@ export default function ShoppingCart() {
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                 </div>
+                <button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button>
             </div>
             {/* <div className="absolute px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                 <button>Add To Cart</button>
