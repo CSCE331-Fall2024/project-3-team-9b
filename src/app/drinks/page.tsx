@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
+import ShoppingCart from '@components/shoppingCart';
 
 type Drink = {
   food_id: number; // Unique identifier
@@ -25,6 +26,10 @@ export default function Drinks() {
   const [error, setError] = useState<string | null>(null);
   const [selectedDrink, setSelectedDrink] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
+
+  function removeSpace(str: string): string {
+    return str.replace(/\s/g, '');
+  }
 
   useEffect(() => {
     const fetchDrinks = async () => {
@@ -66,129 +71,102 @@ export default function Drinks() {
   };
 
   const handleAddToCart = () => {
-    if (selectedDrink !== null) {
-      console.log(`Added drink with ID ${selectedDrink} to cart`);
-      setDebug(`Added drink with ID ${selectedDrink} to cart`);
+    if (typeof window !== 'undefined' && selectedDrink) {
+      const selectedDrinkItem = drinks.find(drink => drink.food_id === selectedDrink);
+      if (selectedDrinkItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name));
+      }
       setSelectedDrink(null);
     }
   };
-
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="fixed top-0 left-0 right-0 flex justify-center py-4 bg-gray-100 z-10">
+    <>
+    <ShoppingCart/>
+    <div className="flex flex-col min-h-screen h-fit items-center rounded-full bg-red-800">
+    {/* Static Navigation Section */}
         <Link href="/menuBoardView" 
-              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="px-6 py-3 mt-4 w-fit bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               aria-label="View Menu">
           View Menu
         </Link>
-      </div>
-
-      <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Drinks</h1>
-        
-          <div className="mb-4 p-2 bg-gray-200 text-sm">
-            Debug: {debug}
-          </div>
-
-          {loading && (
-            <div className="text-center py-8" role="status" aria-label="Loading">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-              <span className="sr-only">Loading...</span>
-            </div>
-          )}
-
-          {error && (
-            <div className="text-center py-8" role="alert">
-              <div className="text-red-600 mb-4">Error loading drinks: {error}</div>
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                aria-label="Retry loading drinks"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-
-          {!loading && !error && drinks.length === 0 && (
-            <div className="text-center py-8 text-gray-600">
-              No drinks available at the moment.
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div>
+      <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
+          <h1 className="text-3xl font-bold text-gray-800 mt-10">Entrees</h1>
+          <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
             {drinks.map((item) => (
-              <div key={item.food_id} className="h-64">
+              <div key={item.food_id} className="">
                 <div 
-                    className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-full
-                                ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
-                                ${selectedDrink === item.food_id ? 'ring-4 ring-red-600' : ''}
-                                transition-all duration-200 ease-in-out`}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => item.available && handleDrinkSelect(item.food_id)}
-                    onKeyPress={(e) => e.key === 'Enter' && item.available && handleDrinkSelect(item.food_id)}
-                    aria-pressed={selectedDrink === item.food_id}
-                    aria-disabled={!item.available}
-                    aria-labelledby={`drink-${item.food_id}`}
-                  >
-                  <img 
-                    src={item.image_url} 
-                    alt={item.drink_name} 
-                    className="w-full h-32 object-cover mb-4 rounded-lg"
-                  />
+                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[400px] w-[400px]
+                              ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
+                              ${selectedDrink === item.food_id ? 'ring-8 ring-green-600' : ''}
+                              transition-all duration-200 ease-in-out`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => item.available && handleDrinkSelect(item.food_id)}
+                  onKeyPress={(e) => e.key === 'Enter' && item.available && handleDrinkSelect(item.food_id)}
+                  aria-pressed={selectedDrink === item.food_id}
+                  aria-disabled={!item.available}
+                  aria-labelledby={`entree-${item.food_id}`}
+                >
+                  <img src={"/" + removeSpace(item.drink_name) + ".png"} alt={item.food_name} className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
-                    <h3 id={`drink-${item.food_id}`} className="text-2xl font-bold text-gray-800">
-                      {item.drink_name || 'Unnamed Drink'}
+                    <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
+                      {item.food_name}
                     </h3>
                     {item.premium && (
-                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full" role="badge">
+                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
+                            role="badge">
                         Premium
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-gray-600">
+
+                  <div className="text-sm text-gray-600 text-center">
                     <p className="mb-1">Calories: {item.calories}</p>
-                    <p className={item.available ? 'text-green-600' : 'text-red-600'} role="status">
+                    <p className={`${item.available ? 'text-green-600' : 'text-red-600'} font-semibold`}
+                       role="status">
                       {item.available ? 'In Stock' : 'Out of Stock'}
                     </p>
                   </div>
                 </div>
               </div>
             ))}
+      
           </div>
-
-          {selectedDrink !== null && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleAddToCart}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                aria-label="Add selected drink to cart"
-              >
-                Add to Cart
-              </button>
-            </div>
-          )}
+          <div>
+              {selectedDrink !== null && (
+                <div className="text-center absolute -translate-x-1/2">
+                  <button
+                    onClick={handleAddToCart}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    aria-label="Add selected entree to cart"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              )}
+              </div>
         </div>
       </div>
 
-      <div className="fixed bottom-6 left-6 right-6 flex justify-between">
+      {/* Navigation Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
         <Link
           href="/sides"
           className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label="Back to drinks"
+          aria-label="Back to sides"
         >
           Back
         </Link>
-        <Link
-          href="/drinks"
+        {/* <Link
+          href="/appetizers"
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          aria-label="Go to checkout"
+          aria-label="Go to appetizers"
         >
           Next
-        </Link>
+        </Link> */}
       </div>
     </div>
+    </>
   );
 }

@@ -93,38 +93,6 @@ export default function Entrees() {
               aria-label="View Menu">
           View Menu
         </Link>
-      {/* Scrollable Content Section */}
-      {/* <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Entrees</h1> */}
-        
-        
-
-          {/* {loading && (
-            <div className="text-center py-8" role="status" aria-label="Loading">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-              <span className="sr-only">Loading...</span>
-            </div>
-          )} */}
-
-          {/* {error && (
-            <div className="text-center py-8" role="alert">
-              <div className="text-red-600 mb-4">Error loading entrees: {error}</div>
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                aria-label="Retry loading entrees"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-
-          {!loading && !error && entrees.length === 0 && (
-            <div className="text-center py-8 text-gray-600">
-              No entrees available at the moment.
-            </div>
-          )} */}
       <div>
       <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
           <h1 className="text-3xl font-bold text-gray-800 mt-10">Entrees</h1>
