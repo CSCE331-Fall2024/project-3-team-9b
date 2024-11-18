@@ -4,17 +4,11 @@ export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
     const addItems = (item: string) => {
         setCurrentItems([...currentItems, item]);
-        // console.log(currentItems);
     };
 
     function removeAllItems(): void {
         setCurrentItems([]);
         console.log("clicked!");
-        // console.log(currentItems);
-        // localStorage.setItem("cartItems", "");
-
-        // localStorage.setItem("cartItems", currentItems.join(","));
-        // console.log(currentItems);
     }
 
     const [cart, showCart] = useState(false);
@@ -28,8 +22,6 @@ export default function ShoppingCart() {
             ...currentItems.slice(index + 1)
         ]);
         localStorage.setItem("cartItems", currentItems.join(","));
-        // console.log('clikced!')
-        // console.log(currentItems);
     };
 
     useEffect(
@@ -38,20 +30,12 @@ export default function ShoppingCart() {
             if (currCart) {
                 setCurrentItems(currCart.split(","));
                 localStorage.removeItem("cartItems");
-            }
-            // console.log("2nd use Effect");
-            
+            }            
         },[]
     )
 
     // useEffect
     useEffect(() => {
-        // localStorage.clear();
-        // const currCart = localStorage.getItem("cartItems");
-        // if (currCart) {
-        //     setCurrentItems(currCart.split(","));
-        //     localStorage.removeItem("cartItems");
-        // }
         const newItem = localStorage.getItem("newItem");
         if (newItem !== null) {
             addItems(newItem);
@@ -59,10 +43,6 @@ export default function ShoppingCart() {
         }
         
         localStorage.setItem("cartItems",currentItems.toString());
-        // console.log("1st useEff");
-        // console.log(currentItems);
-        // console.log(localStorage.getItem("cartItems"));
-
     });
 
     
@@ -86,9 +66,6 @@ export default function ShoppingCart() {
                 </div>
                 <button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button>
             </div>
-            {/* <div className="absolute px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                <button>Add To Cart</button>
-            </div> */}
         </>
     );
 }
