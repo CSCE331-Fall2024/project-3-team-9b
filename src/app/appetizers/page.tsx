@@ -128,7 +128,7 @@ export default function Appetizers() {
         {appetizers.map((item) => (
             <div key={item.food_id} className="">
               <div 
-                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[600px] w-[600px]
+                  className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[400px] w-[400px]
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
                               ${selectedAppetizer === item.food_id ? 'ring-8 ring-green-600' : ''}
                               transition-all duration-200 ease-in-out`}

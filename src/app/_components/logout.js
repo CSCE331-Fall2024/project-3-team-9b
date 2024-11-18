@@ -1,14 +1,13 @@
-// _components/logout.js
 import { googleLogout } from '@react-oauth/google';
 
 function Logout({ onLogoutSuccess }) {
   const handleLogout = () => {
     try {
       googleLogout();
-      // Clear all stored credentials
-      localStorage.removeItem('token');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('accessToken');
+      // Clear all stored credentials from sessionStorage
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('userEmail');
+      sessionStorage.removeItem('accessToken');
       
       console.log('Logged out successfully');
       alert('Successfully logged out');
@@ -32,8 +31,6 @@ function Logout({ onLogoutSuccess }) {
       </button>
     </div>
   );
-
 }
-
 
 export default Logout;

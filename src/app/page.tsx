@@ -5,6 +5,7 @@ import LoginButton from "./_components/login";
 import LogOutButton from "./_components/logout";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
+import WeatherWidget from "./weather/WeatherWidget"; 
 
 const clientId = "32164770538-vg436on3johb97cfdlcpm35nm083s85r.apps.googleusercontent.com"
 
@@ -13,13 +14,31 @@ export default function Home() {
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedEmail = localStorage.getItem('userEmail');
+    // Check sessionStorage instead of localStorage
+    const token = sessionStorage.getItem('token');
+    const storedEmail = sessionStorage.getItem('userEmail');
     if (token) {
       setIsLoggedIn(true);
       setUserEmail(storedEmail || '');
     }
-  }, []);
+
+    // Add event listener for beforeunload
+    const handleBeforeUnload = () => {
+      // Clear session data
+      sessionStorage.clear();
+      // Perform logout
+      if (isLoggedIn) {
+        (window as any).googleLogout();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isLoggedIn]);
 
   const handleLoginSuccess = (email: string, token: string) => {
     setIsLoggedIn(true);
@@ -68,6 +87,7 @@ export default function Home() {
           {isLoggedIn && <LogOutButton onLogoutSuccess={handleLogout} />}
         </div>
       </div>
+      <WeatherWidget/>
     </GoogleOAuthProvider>
   );
 }

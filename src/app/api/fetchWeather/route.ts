@@ -8,7 +8,6 @@ type WeatherData = {
     icon: string; // Placeholder or dynamic URL
 };
 
-// Map weather conditions to icons
 const conditionToIcon: Record<string, string> = {
     Sunny: '/sunny.png',
     Cloudy: '/cloudy.png',
@@ -16,7 +15,6 @@ const conditionToIcon: Record<string, string> = {
     Default: '/default-weather.png',
 };
 
-// Fetch latitude and longitude for a given city using Open-Meteo Geocoding API
 async function fetchCoordinates(city: string) {
     const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}`;
     const response = await fetch(geoUrl);
@@ -38,10 +36,8 @@ export async function GET(request: Request) {
     }
 
     try {
-        // Get latitude and longitude dynamically
         const { latitude, longitude, name } = await fetchCoordinates(city);
 
-        // Fetch weather data using latitude and longitude
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph`;
         const response = await fetch(weatherUrl);
         const data = await response.json();
