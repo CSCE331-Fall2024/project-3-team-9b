@@ -58,13 +58,15 @@ export default function ShoppingCart() {
 
     return (
         <>
-            <button className="absolute right-2 top-2 z-10" onClick={toggleCart}><img src="/ShoppingCart.png" alt="Shopping Cart" /></button>
+            <button className="absolute right-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><img src="/ShoppingCart.png" alt="Shopping Cart" /></button>
             <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 right-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
-                <div className="bg-red-400 rounded-lg h-4/5 w-3/4 flex flex-col items-center justify-start">
+                <div className="bg-red-400 rounded-lg h-[75%] w-3/4 flex flex-col items-center justify-start">
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                 </div>
                 <button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button>
+                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg">Checkout</button>
+
             </div>
         </>
     );
