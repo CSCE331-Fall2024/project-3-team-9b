@@ -13,6 +13,9 @@ export default function ShoppingCart() {
     }
 
     const [cart, showCart] = useState(false);
+    const [conformation, showConformation] = useState(false);
+
+
     const toggleCart = () => {
         showCart(!cart);
     };
@@ -85,8 +88,15 @@ export default function ShoppingCart() {
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                 </div>
                 <button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button>
-                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => checkout()}>Checkout</button>
+                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => showConformation(true)}>Checkout</button>
 
+            </div>
+            <div className= {`${conformation ? "" : "hidden"} absolute left-1/2 top-1/2 -translate-y-2/4 -translate-x-1/2 h-1/5 w-1/2 rounded-lg bg-gray-200 flex flex-col items-center gap-y-10 `}>
+                <div className="text-gray-800 text-3xl mt-10">Do you wish to checkout?</div>
+                <div className="flex justify-around w-full text-gray-800">
+                    <button className="bg-red-700 p-10 rounded-xl" onClick={() => showConformation(false)}>No</button>
+                    <button className="bg-green-500 p-10 rounded-xl" onClick={() => {checkout(); showConformation(false)}}>Yes</button>
+                </div>
             </div>
         </>
     );
