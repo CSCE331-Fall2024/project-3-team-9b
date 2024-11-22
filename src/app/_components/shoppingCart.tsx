@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
+
 export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
     const addItems = (item: string) => {
@@ -24,6 +25,25 @@ export default function ShoppingCart() {
         localStorage.setItem("cartItems", currentItems.join(","));
     };
 
+    const checkout = async () => {
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(currentItems)
+            });
+            console.log(response);
+        } catch (error) {
+            console.error('Error fetching entrees:', error);
+        }
+        setCurrentItems([]);
+        localStorage.removeItem("cartItems");
+        console.log("Checkout successful!");
+    }
+
+
     useEffect(
         () => {
             const currCart = localStorage.getItem("cartItems");
@@ -38,7 +58,7 @@ export default function ShoppingCart() {
     useEffect(() => {
         const newItem = localStorage.getItem("newItem");
         if (newItem !== null) {
-            addItems(newItem);
+            addItems(newItem.replaceAll("\"", ""));
             localStorage.removeItem("newItem");
         }
         
@@ -65,7 +85,7 @@ export default function ShoppingCart() {
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                 </div>
                 <button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button>
-                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg">Checkout</button>
+                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => checkout()}>Checkout</button>
 
             </div>
         </>

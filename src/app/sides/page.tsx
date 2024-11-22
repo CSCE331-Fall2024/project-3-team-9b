@@ -169,7 +169,6 @@ export default function Sides() {
                         </span>
                       )}
                     </div>
-
                     {/* Bottom section with details */}
                     <div className="text-sm text-gray-600 text-center">
                       <p className="mb-1">Calories: {item.calories}</p>
