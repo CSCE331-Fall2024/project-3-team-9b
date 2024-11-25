@@ -1,81 +1,142 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from 'react';
 
-export default function ChatBotView() {
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([
-    { role: "bot", content: "Hello! How can I assist you?" },
-  ]);
-  const [input, setInput] = useState("");
-  const [error, setError] = useState("");
+const Chatbot = () => {
+  const [input, setInput] = useState('');
+  const [responses, setResponses] = useState<string[]>([]);
 
-  const sendMessage = async () => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
-
     try {
-      console.log("Sending message:", input);
-      const response = await fetch("/api/chatBot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/chatBot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ message: input }),
       });
 
-      console.log("Response status:", response.status);
+      const data = await response.json();
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Frontend Error:", errorData);
-        setError(errorData.error || "Failed to fetch response");
-        return;
+      if (data.reply) {
+        setResponses((prev) => [...prev, `You: ${input}`, `Bot: ${data.reply}`]);
+      } else {
+        setResponses((prev) => [...prev, `You: ${input}`, 'Bot: No response received']);
       }
 
-      const data = await response.json();
-      console.log("Received data:", data);
-
-      // Extract the reply from the API response
-      const reply = Array.isArray(data) && data[0]?.generated_text
-        ? data[0].generated_text
-        : "No response generated";
-
-      setMessages((prev) => [...prev, { role: "bot", content: reply }]);
+      setInput('');
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An unexpected error occurred.";
-      console.error("Chatbot API error:", errorMessage);
-      setError(errorMessage);
+      console.error('Error:', error);
+      setResponses((prev) => [...prev, 'Bot: Failed to get a response']);
     }
-
-    setInput("");
   };
 
   return (
-    <div className="chatbot-container">
-      <div className="chat-messages">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`message ${msg.role === "bot" ? "bot" : "user"}`}
-          >
-            {msg.content}
-          </div>
-        ))}
-        {error && <div className="error">{error}</div>}
+    <div style={styles.container as React.CSSProperties}>
+      <div style={styles.chatWindow as React.CSSProperties}>
+        <div style={styles.messages as React.CSSProperties}>
+          {responses.map((resp, index) => (
+            <div
+              key={index}
+              style={
+                resp.startsWith('You:')
+                  ? (styles.userMessage as React.CSSProperties)
+                  : (styles.botMessage as React.CSSProperties)
+              }
+            >
+              {resp}
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="chat-input">
+      <div style={styles.inputContainer as React.CSSProperties}>
         <input
-          type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Type your message..."
-          className="input-box"
+          style={styles.input as React.CSSProperties}
         />
-        <button onClick={sendMessage} className="send-button">
+        <button onClick={handleSubmit} style={styles.button as React.CSSProperties}>
           Send
         </button>
       </div>
     </div>
   );
-}
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#f4f4f9',
+    fontFamily: 'Arial, sans-serif',
+  },
+  chatWindow: {
+    width: '80%',
+    maxHeight: '70vh',
+    overflowY: 'auto',
+    backgroundColor: '#ffffff',
+    borderRadius: '10px',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+    padding: '15px',
+    marginTop: '20px',
+  },
+  messages: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  userMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#007BFF',
+    color: 'white',
+    padding: '10px',
+    borderRadius: '10px',
+    maxWidth: '60%',
+    wordWrap: 'break-word',
+  },
+  botMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#f0f0f0',
+    color: '#333',
+    padding: '10px',
+    borderRadius: '10px',
+    maxWidth: '60%',
+    wordWrap: 'break-word',
+  },
+  inputContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '80%',
+    marginBottom: '20px',
+  },
+  input: {
+    flex: 1,
+    padding: '10px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    marginRight: '10px',
+    fontSize: '16px',
+    color: '#333',
+  },
+  button: {
+    padding: '10px 20px',
+    backgroundColor: '#007BFF',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  },
+};
+
+export default Chatbot;
