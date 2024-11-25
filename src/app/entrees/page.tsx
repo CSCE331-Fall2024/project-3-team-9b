@@ -24,6 +24,23 @@ export default function Entrees() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
+  const [currPrice, setCurrPrice] = useState<number>(0);
+
+  useEffect(() => {
+    const cPrice = Number(localStorage.getItem("currentPrice"));
+    if (cPrice) {
+      setCurrPrice(Number(cPrice));
+    }
+},[]);
+
+// useEffect(() => {
+//   const cPrice = Number(localStorage.getItem("currentPrice"));
+//   if (cPrice) {
+//     setCurrPrice(Number(cPrice));
+//   }
+// },[currPrice]);
+  
+
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -76,12 +93,19 @@ export default function Entrees() {
   const handleAddToCart = () => {
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
+      if (selectedEntreeItem?.premium){
+        localStorage.setItem('currentPrice', String(currPrice + 2))
+        setCurrPrice(Number(localStorage.getItem("currentPrice")));
+      }
       if (selectedEntreeItem) {
         localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
       }
       setSelectedEntree(null);
     }
   };
+
+
+
 
   return (
     <>
@@ -118,11 +142,14 @@ export default function Entrees() {
                       {item.food_name}
                     </h3>
                     {item.premium && (
-                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
+                      <span className= "mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
                             role="badge">
                         Premium
                       </span>
-                    )}
+                      
+                    )
+                  }
+
                   </div>
 
                   <div className="text-sm text-gray-600 text-center">
@@ -154,22 +181,22 @@ export default function Entrees() {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
+      {/* <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4"> */}
         <Link
           href="/sides"
-          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/appetizers"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="fixed bottom-10 right-0 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           aria-label="Go to appetizers"
         >
           Next
         </Link>
-      </div>
+      {/* </div> */}
     </div>
     </>
   );

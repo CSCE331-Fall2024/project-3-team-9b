@@ -185,22 +185,20 @@ export default function Appetizers() {
 
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
-        <Link
+      <Link
           href="/entrees"
-          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label="Back to customer view"
+          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/drinks"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          aria-label="Go to entrees"
+          className="fixed bottom-10 right-10 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          aria-label="Go to appetizers"
         >
           Next
         </Link>
-      </div>
     </div>
     </>
   );
