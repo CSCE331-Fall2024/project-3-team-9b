@@ -87,6 +87,8 @@ export default function Entrees() {
 
   const handleEntreeSelect = (foodId: number) => {
     setSelectedEntree((prevSelected) => (prevSelected === foodId ? null : foodId));
+    console.log(selectedEntree);
+
     setDebug(`Selected entree with ID: ${foodId}`);
   };
 

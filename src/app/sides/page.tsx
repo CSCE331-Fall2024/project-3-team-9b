@@ -44,6 +44,7 @@ export default function Sides() {
         }
         
         const sortedSides = (data.sides || []).sort((a, b) => a.food_id - b.food_id);
+        console.log(sortedSides);
         setSides(sortedSides);
         setDebug(`Fetched ${sortedSides.length} sides, sorted by food_id`);
       } catch (err) {
@@ -65,12 +66,13 @@ export default function Sides() {
   };
 
   const handleSideSelect = (foodId: number) => {
-    setSelectedSide(prevSelected => prevSelected === foodId ? null : foodId);
+    setSelectedSide((prevSelected) => (prevSelected === foodId ? null : foodId));
     setDebug(`Selected side with ID: ${foodId}`);
+
   };
 
   const handleAddToCart = () => {
-    if (typeof window !== 'undefined' && selectedSide) {
+    if (typeof window !== 'undefined' && selectedSide >= 0) {
       const selectedSideItem = sides.find(side => side.food_id === selectedSide);
       if (selectedSideItem) {
         localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));

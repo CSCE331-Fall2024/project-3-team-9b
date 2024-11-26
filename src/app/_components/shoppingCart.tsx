@@ -5,6 +5,8 @@ import { useEffect } from "react";
 export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
     const [currPrice, setCurrentPrice] = useState<String>("");
+    const [numSides, setNumSides] = useState<number>(0);
+    const [numEntrees, setNumEntrees] = useState<number>(0);
     const addItems = (item: string) => {
         setCurrentItems([...currentItems, item]);
     };
@@ -22,7 +24,6 @@ export default function ShoppingCart() {
     };
 
     const removeItem = (index: number) => {
-        // if(currentItems[index] === "BlackPepperSirloinSteak")
         setCurrentItems([
             ...currentItems.slice(0, index),
             ...currentItems.slice(index + 1)

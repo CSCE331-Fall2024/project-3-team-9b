@@ -36,8 +36,7 @@ export default function Appetizers() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data: ApiResponse = await response.json();
-        
+        const data: ApiResponse = await response.json();        
         if (data.error) {
           throw new Error(data.error);
         }
