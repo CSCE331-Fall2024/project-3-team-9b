@@ -70,14 +70,27 @@ export default function Sides() {
   };
 
   const handleAddToCart = () => {
-    if (selectedSide) {
-      console.log(`Added side with ID ${selectedSide} to cart`);
-      setDebug(`Added side with ID ${selectedSide} to cart`);
-      // ShoppingCart.add
+    if (typeof window !== 'undefined' && selectedSide) {
+      const selectedSideItem = sides.find(side => side.food_id === selectedSide);
+      if (selectedSideItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+      }
       setSelectedSide(null);
-    
     }
   };
+  // const handleAddToCart = (addItem: (item: string) => void) => {
+  //   if (selectedSide) {
+  //     const selectedFood = sides.find(side => side.food_id === selectedSide);
+  //     if (selectedFood) {
+  //       addItem(selectedFood.food_name);
+  //       console.log(`Added side with ID ${selectedSide} to cart`);
+  //       setDebug(`Added side with ID ${selectedSide} to cart`);
+  //       setSelectedSide(null);
+  //     }
+  //   }
+  // };
+
+
 
   return (
     <>
@@ -132,7 +145,7 @@ export default function Sides() {
                   <div 
                     className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[400px] w-[400px]
                                 ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
-                                ${selectedSide === item.food_id ? 'ring-4 ring-red-600' : ''}
+                                ${selectedSide === item.food_id ? 'ring-8 ring-green-600' : ''}
                                 transition-all duration-200 ease-in-out`}
                     role="button"
                     tabIndex={0}
@@ -156,7 +169,6 @@ export default function Sides() {
                         </span>
                       )}
                     </div>
-
                     {/* Bottom section with details */}
                     <div className="text-sm text-gray-600 text-center">
                       <p className="mb-1">Calories: {item.calories}</p>
@@ -187,22 +199,20 @@ export default function Sides() {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
-          <Link
-            href="/customerView"
-            className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            aria-label="Back to customer view"
-          >
-            Back
-          </Link>
-          <Link
-            href="/entrees"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            aria-label="Go to entrees"
-          >
-            Next
-          </Link>
-        </div>
+        <Link
+          href="/customerView"
+          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          aria-label="Back to sides"
+        >
+          Back
+        </Link>
+        <Link
+          href="/entrees"
+          className="fixed bottom-10 right-10 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          aria-label="Go to appetizers"
+        >
+          Next
+        </Link>
       </div>
     </>
   );

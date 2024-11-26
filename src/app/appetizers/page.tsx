@@ -70,11 +70,12 @@ export default function Appetizers() {
   };
 
   const handleAddToCart = () => {
-    if (selectedAppetizer) {
-      console.log(`Added appetizer with ID ${selectedAppetizer} to cart`);
-      setDebug(`Added appetizer with ID ${selectedAppetizer} to cart`);
+    if (typeof window !== 'undefined' && selectedAppetizer) {
+      const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
+      if (selectedAppItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name));
+      }
       setSelectedAppetizer(null);
-      // Here you would typically add the logic to actually add the item to the cart
     }
   };
 
@@ -129,7 +130,7 @@ export default function Appetizers() {
               <div 
                   className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[400px] w-[400px]
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
-                              ${selectedAppetizer === item.food_id ? 'ring-4 ring-red-600' : ''}
+                              ${selectedAppetizer === item.food_id ? 'ring-8 ring-green-600' : ''}
                               transition-all duration-200 ease-in-out`}
                   role="button"
                   tabIndex={0}
@@ -184,22 +185,20 @@ export default function Appetizers() {
 
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
-        <Link
+      <Link
           href="/entrees"
-          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label="Back to customer view"
+          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/drinks"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          aria-label="Go to entrees"
+          className="fixed bottom-10 right-10 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          aria-label="Go to appetizers"
         >
           Next
         </Link>
-      </div>
     </div>
     </>
   );

@@ -24,6 +24,23 @@ export default function Entrees() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
+  const [currPrice, setCurrPrice] = useState<number>(0);
+
+  useEffect(() => {
+    const cPrice = Number(localStorage.getItem("currentPrice"));
+    if (cPrice) {
+      setCurrPrice(Number(cPrice));
+    }
+},[]);
+
+// useEffect(() => {
+//   const cPrice = Number(localStorage.getItem("currentPrice"));
+//   if (cPrice) {
+//     setCurrPrice(Number(cPrice));
+//   }
+// },[currPrice]);
+  
+
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -74,12 +91,21 @@ export default function Entrees() {
   };
 
   const handleAddToCart = () => {
-    if (selectedEntree) {
-      console.log(`Added entree with ID ${selectedEntree} to cart`);
-      setDebug(`Added entree with ID ${selectedEntree} to cart`);
+    if (typeof window !== 'undefined' && selectedEntree) {
+      const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
+      if (selectedEntreeItem?.premium){
+        localStorage.setItem('currentPrice', String(currPrice + 2))
+        setCurrPrice(Number(localStorage.getItem("currentPrice")));
+      }
+      if (selectedEntreeItem) {
+        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
+      }
       setSelectedEntree(null);
     }
   };
+
+
+
 
   return (
     <>
@@ -91,38 +117,6 @@ export default function Entrees() {
               aria-label="View Menu">
           View Menu
         </Link>
-      {/* Scrollable Content Section */}
-      {/* <div className="flex-grow overflow-auto pt-20 px-6 pb-24">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Entrees</h1> */}
-        
-        
-
-          {/* {loading && (
-            <div className="text-center py-8" role="status" aria-label="Loading">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-              <span className="sr-only">Loading...</span>
-            </div>
-          )} */}
-
-          {/* {error && (
-            <div className="text-center py-8" role="alert">
-              <div className="text-red-600 mb-4">Error loading entrees: {error}</div>
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                aria-label="Retry loading entrees"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-
-          {!loading && !error && entrees.length === 0 && (
-            <div className="text-center py-8 text-gray-600">
-              No entrees available at the moment.
-            </div>
-          )} */}
       <div>
       <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
           <h1 className="text-3xl font-bold text-gray-800 mt-10">Entrees</h1>
@@ -132,7 +126,7 @@ export default function Entrees() {
                 <div 
                   className={`bg-white rounded-lg shadow-lg p-6 flex flex-col h-[400px] w-[400px]
                               ${!item.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'} 
-                              ${selectedEntree === item.food_id ? 'ring-4 ring-red-600' : ''}
+                              ${selectedEntree === item.food_id ? 'ring-8 ring-green-600' : ''}
                               transition-all duration-200 ease-in-out`}
                   role="button"
                   tabIndex={0}
@@ -148,11 +142,14 @@ export default function Entrees() {
                       {item.food_name}
                     </h3>
                     {item.premium && (
-                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
+                      <span className= "mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
                             role="badge">
                         Premium
                       </span>
-                    )}
+                      
+                    )
+                  }
+
                   </div>
 
                   <div className="text-sm text-gray-600 text-center">
@@ -184,22 +181,22 @@ export default function Entrees() {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
+      {/* <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4"> */}
         <Link
           href="/sides"
-          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/appetizers"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="fixed bottom-10 right-0 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           aria-label="Go to appetizers"
         >
           Next
         </Link>
-      </div>
+      {/* </div> */}
     </div>
     </>
   );
