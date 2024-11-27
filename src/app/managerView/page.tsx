@@ -17,17 +17,18 @@ interface ZReportEntry {
 }
 
 interface InventoryItem {
-  name: string;
+  ingredient_name: string;
   quantity: number;
 }
 
 interface Employee {
   name: string;
   position: string;
+  salary: number;
 }
 
 interface IngredientUsage {
-  Food_Name: string;
+  food_name: string;
   total_ingredients_used: number;
 }
 
@@ -227,7 +228,7 @@ export default function ManagerView() {
             <ul>
               {inventory.map((item, index) => (
                 <li key={index}>
-                  {item.name}: {item.quantity} units
+                  {item.ingredient_name}: {item.quantity} units
                 </li>
               ))}
             </ul>
@@ -239,7 +240,7 @@ export default function ManagerView() {
             <ul>
               {employees.map((employee, index) => (
                 <li key={index}>
-                  {employee.name} - {employee.position}
+                  {employee.name} - {employee.position}: ${employee.salary}
                 </li>
               ))}
             </ul>
@@ -251,7 +252,7 @@ export default function ManagerView() {
             <ul>
               {ingredientCount.map((item, index) => (
                 <li key={index}>
-                  {item.Food_Name}: {item.total_ingredients_used} ingredients used
+                  {item.food_name}: {item.total_ingredients_used} ingredients used
                 </li>
               ))}
             </ul>

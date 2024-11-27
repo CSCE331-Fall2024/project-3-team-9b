@@ -45,7 +45,13 @@ export async function GET() {
       [transactionDate] // Pass the parameter here
     );
 
-    return NextResponse.json({ sides: result.rows });
+    // Format total_sales_for_hour as a dollar amount with two decimal places
+    const formattedResult = result.rows.map(row => ({
+      ...row,
+      total_sales_for_hour: `${parseFloat(row.total_sales_for_hour).toFixed(2)}`, // Format as a string
+    }));
+
+    return NextResponse.json({ sides: formattedResult });
   } catch (error) {
     console.error('Error fetching X-Report:', error);
     return NextResponse.json({ error: 'Error fetching X-Report data' }, { status: 500 });
