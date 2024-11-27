@@ -44,7 +44,6 @@ export default function Sides() {
         }
         
         const sortedSides = (data.sides || []).sort((a, b) => a.food_id - b.food_id);
-        console.log(sortedSides);
         setSides(sortedSides);
         setDebug(`Fetched ${sortedSides.length} sides, sorted by food_id`);
       } catch (err) {
@@ -187,13 +186,14 @@ export default function Sides() {
             <div>
               {selectedSide !== null && (
                 <div className="text-center absolute -translate-x-1/2">
-                  <button
+                  <Link href = "/entrees"><button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                     aria-label="Add selected entree to cart"
                   >
                     Add to Cart
                   </button>
+                  </Link>
                 </div>
               )}
               </div>
@@ -201,13 +201,13 @@ export default function Sides() {
         </div>
 
         {/* Navigation Buttons */}
-        <Link
+        {/* <Link
           href="/customerView"
           className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
-        </Link>
+        </Link> */}
         <Link
           href="/entrees"
           className="fixed bottom-10 right-10 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

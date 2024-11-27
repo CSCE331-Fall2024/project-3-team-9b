@@ -25,6 +25,7 @@ export default function Entrees() {
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
   const [currPrice, setCurrPrice] = useState<number>(0);
+  const [numEntrees, setNumEntrees] = useState(0);
 
   useEffect(() => {
     const cPrice = Number(localStorage.getItem("currentPrice"));
@@ -48,6 +49,7 @@ export default function Entrees() {
 
   useEffect(() => {
     const fetchEntrees = async () => {
+      
       try {
         const response = await fetch('/api/fetchEntrees');
         if (!response.ok) {
@@ -76,6 +78,8 @@ export default function Entrees() {
     };
 
     fetchEntrees();
+    setNumEntrees(localStorage.getItem('numEntrees'));
+    
   }, []);
 
   const handleRetry = () => {
@@ -87,7 +91,6 @@ export default function Entrees() {
 
   const handleEntreeSelect = (foodId: number) => {
     setSelectedEntree((prevSelected) => (prevSelected === foodId ? null : foodId));
-    console.log(selectedEntree);
 
     setDebug(`Selected entree with ID: ${foodId}`);
   };
@@ -96,15 +99,22 @@ export default function Entrees() {
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
       if (selectedEntreeItem?.premium){
-        localStorage.setItem('currentPrice', String(currPrice + 2))
+        localStorage.setItem('currentPrice', String(currPrice + 1.5))
         setCurrPrice(Number(localStorage.getItem("currentPrice")));
+        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
       }
-      if (selectedEntreeItem) {
+      else{
         localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
       }
       setSelectedEntree(null);
+      // setNumEntrees(numEntrees - 1);
+      localStorage.setItem('numEntrees', String(Number(localStorage.getItem('numEntrees')) - 1));
     }
   };
+
+  useEffect(() => {
+    setNumEntrees(Number(localStorage.getItem("numEntrees")));
+  },[localStorage.getItem("numEntrees")]);
 
 
 
@@ -169,6 +179,8 @@ export default function Entrees() {
           <div>
               {selectedEntree !== null && (
                 <div className="text-center absolute -translate-x-1/2">
+                  
+                <Link href= {numEntrees === 1 ? "/appetizers" : ""}>
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -176,6 +188,7 @@ export default function Entrees() {
                   >
                     Add to Cart
                   </button>
+                  </Link>
                 </div>
               )}
               </div>

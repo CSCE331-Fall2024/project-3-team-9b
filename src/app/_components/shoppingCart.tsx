@@ -28,9 +28,21 @@ export default function ShoppingCart() {
             ...currentItems.slice(0, index),
             ...currentItems.slice(index + 1)
         ]);
+        if (currentItems[index].includes("/p")){
+            localStorage.setItem("currentPrice", String(currPrice - 1.5));
+        }
         localStorage.setItem("cartItems", currentItems.join(","));
+        localStorage.setItem("numEntrees", String(Number(numEntrees) + 1));
     };
 
+    useEffect(() => {
+        setNumEntrees(localStorage.getItem("numEntrees"));
+    },[]);
+    
+    useEffect(() => {
+        setNumEntrees(localStorage.getItem("numEntrees"));
+    },[localStorage.getItem("numEntrees")]);
+    console.log(numEntrees)
     const checkout = async () => {
         try {
             const response = await fetch('/api/checkout', {
@@ -90,7 +102,7 @@ export default function ShoppingCart() {
         return currentItems.map((item, index) => (
             <div key={index} className="flex justify-center items-center gap-x-4">
                 <button className="bg-red-500 rounded-lg w-11 h-10 text-white font-bold text-lg shadow-lg" onClick={() => removeItem(index)}>x</button>
-                <div className="bg-white shadow-lg hover:bg-gray-100 rounded-lg w-28 text-lg text-center text-gray-800 font-bold">{item}</div>
+                <div className="bg-white shadow-lg p-5 hover:bg-gray-100 rounded-lg w-28 text-lg text-center text-gray-800 font-bold">{item.replace("/p", "")}</div>
             </div>
         ));
 
@@ -109,14 +121,21 @@ export default function ShoppingCart() {
                     </div>
                 </div>
                 <Link href="/customerView"><button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button></Link>
-                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => showConformation(true)}>Checkout</button>
+                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => {showConformation(true); toggleCart()}}>Checkout</button>
 
             </div>
-            <div className= {`${conformation ? "" : "hidden"} absolute left-1/2 top-1/2 -translate-y-2/4 -translate-x-1/2 h-1/5 w-1/2 rounded-lg bg-gray-200 flex flex-col items-center gap-y-10 `}>
+            <div className= {`${conformation ? "" : "hidden"} absolute left-1/2 top-1/4 -translate-y-2/4 -translate-x-1/2 h-fit w-1/2 rounded-lg bg-gray-200 flex flex-col items-center gap-y-10 py-10`}>
                 <div className="text-gray-800 text-3xl mt-10">Do you wish to checkout?</div>
+                <div className="w-1/2 h-fit bg-white justify-center items-center rounded-xl flex flex-col gap-y-5">
+                    <div className="text-gray-800 text-3xl">Current Order:</div>
+                    {currentItems.map(item => {
+                        return <div key={item} className="text-gray-800">{item}</div>
+                    })}
+                    <div className="text-gray-800 text-2xl">Total: ${currPrice}</div>
+                </div>
                 <div className="flex justify-around w-full text-gray-800">
-                    <button className="bg-red-700 p-10 rounded-xl" onClick={() => showConformation(false)}>No</button>
-                    <Link href={"/"} className="bg-green-500 p-10 rounded-xl" onClick={() => {checkout(); showConformation(false); }}>Yes</Link>
+                    <button className="bg-red-700 p-10 rounded-xl text-white" onClick={() => showConformation(false)}>No</button>
+                    <Link href={"/"} className="bg-green-500 p-10 rounded-xl text-white" onClick={() => {checkout(); showConformation(false); }}>Yes</Link>
                 </div>
             </div>
         </>

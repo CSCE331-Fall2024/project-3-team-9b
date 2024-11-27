@@ -51,7 +51,7 @@ export default function CustomerView() {
       </div> */}
 
       {/* Additional options for entrees/sides/appetizers */}
-      <div className="flex flex-row space-x-4 mt-4 w-full justify-center">
+      <div className="flex flex-row mx-10 gap-4 flex-wrap mt-4 w-full justify-center">
         
         {sizes.map((size)=> (
           <div key={size.size_id} className="h-[400px] w-[400px] py-10 bg-white rounded-lg shadow-lg text-gray-800 hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
