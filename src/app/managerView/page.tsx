@@ -312,6 +312,15 @@ export default function ManagerView() {
           </div>
         )}
       </div>
+      <div className="flex mt-6">
+      <Link 
+        href="/" 
+        className="px-6 py-3 rounded-lg font-semibold bg-gray-700 hover:bg-gray-800 text-white"
+      >
+        Back
+      </Link>
     </div>
+    </div>
+
   );
 }
