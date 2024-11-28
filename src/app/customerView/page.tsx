@@ -15,7 +15,7 @@ export default function CustomerView() {
 
   const fetchSizes = async () => {
     try {
-      const response = await fetch('/_api/fetchSizes');
+      const response = await fetch('/api/fetchSizes');
       const data = await response.json();
       setSizes(data.sizes);
       // console.log(sizes);

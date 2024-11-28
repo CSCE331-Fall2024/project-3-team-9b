@@ -29,7 +29,7 @@ export default function Appetizers() {
   useEffect(() => {
     const fetchAppetizers = async () => {
       try {
-        const response = await fetch('/___api/fetchAppetizers');
+        const response = await fetch('/api/fetchAppetizers');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
