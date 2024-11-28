@@ -11,7 +11,7 @@ export default function WeeklySalesHistoryPage() {
   const [weeks, setWeeks] = useState<Week[]>([]);
 
   useEffect(() => {
-    fetch("/api/fetchWeeklySalesHistory")
+    fetch("/_api/fetchWeeklySalesHistory")
       .then((response) => response.json())
       .then((data) => setWeeks(data.weeks))
       .catch((error) => console.error("Error fetching weekly sales history:", error));

@@ -13,7 +13,7 @@ export default function XReportPage() {
   const [xReport, setXReport] = useState<XReport[]>([]);
 
   useEffect(() => {
-    fetch("/api/fetchXReport")
+    fetch("/_api/fetchXReport")
       .then((response) => response.json())
       .then((data) => setXReport(data.sides))
       .catch((error) => console.error("Error fetching X report:", error));

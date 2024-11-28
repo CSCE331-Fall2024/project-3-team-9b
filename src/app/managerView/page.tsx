@@ -66,7 +66,7 @@ export default function ManagerView() {
       try {
         switch (activeTab) {
           case "X-Report":
-            const xReportResponse = await fetch("/api/fetchXReport");
+            const xReportResponse = await fetch("/_api/fetchXReport");
             if (!xReportResponse.ok) {
               throw new Error(`X-Report API Error: ${xReportResponse.status}`);
             }
@@ -75,7 +75,7 @@ export default function ManagerView() {
             break;
 
           case "Z-Report":
-            const zReportResponse = await fetch("/api/fetchZReport");
+            const zReportResponse = await fetch("/_api/fetchZReport");
             if (!zReportResponse.ok) {
               throw new Error(`Z-Report API Error: ${zReportResponse.status}`);
             }
@@ -84,7 +84,7 @@ export default function ManagerView() {
             break;
 
           case "Manage Inventory":
-            const inventoryResponse = await fetch("/api/fetchInventory");
+            const inventoryResponse = await fetch("/_api/fetchInventory");
             if (!inventoryResponse.ok) {
               throw new Error(`Inventory API Error: ${inventoryResponse.status}`);
             }
@@ -93,7 +93,7 @@ export default function ManagerView() {
             break;
 
           case "Manage Employees":
-            const employeesResponse = await fetch("/api/fetchEmployees");
+            const employeesResponse = await fetch("/_api/fetchEmployees");
             if (!employeesResponse.ok) {
               throw new Error(`Employees API Error: ${employeesResponse.status}`);
             }
@@ -102,7 +102,7 @@ export default function ManagerView() {
             break;
 
           case "Inventory Usage":
-            const ingredientUsageResponse = await fetch("/api/fetchItemIngredientCount");
+            const ingredientUsageResponse = await fetch("/_api/fetchItemIngredientCount");
             if (!ingredientUsageResponse.ok) {
               throw new Error(`Ingredient Usage API Error: ${ingredientUsageResponse.status}`);
             }
@@ -111,7 +111,7 @@ export default function ManagerView() {
             break;
 
           case "Peak Sales Day":
-            const peakSalesResponse = await fetch("/api/fetchPeakSalesDay");
+            const peakSalesResponse = await fetch("/_api/fetchPeakSalesDay");
             if (!peakSalesResponse.ok) {
               throw new Error(`Peak Sales API Error: ${peakSalesResponse.status}`);
             }
@@ -120,7 +120,7 @@ export default function ManagerView() {
             break;
 
           case "Realistic Sales History":
-            const salesHistoryResponse = await fetch("/api/fetchRealisticSalesHistory");
+            const salesHistoryResponse = await fetch("/_api/fetchRealisticSalesHistory");
             if (!salesHistoryResponse.ok) {
               throw new Error(`Sales History API Error: ${salesHistoryResponse.status}`);
             }
@@ -129,7 +129,7 @@ export default function ManagerView() {
             break;
 
           case "Weekly Sales History":
-            const weeklySalesResponse = await fetch("/api/fetchWeeklySalesHistory");
+            const weeklySalesResponse = await fetch("/_api/fetchWeeklySalesHistory");
             if (!weeklySalesResponse.ok) {
               throw new Error(`Weekly Sales API Error: ${weeklySalesResponse.status}`);
             }
