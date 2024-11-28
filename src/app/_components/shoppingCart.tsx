@@ -44,7 +44,7 @@ export default function ShoppingCart() {
     
     const checkout = async () => {
         try {
-            const response = await fetch('/___api/checkout', {
+            const response = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

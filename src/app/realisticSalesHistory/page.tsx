@@ -12,7 +12,7 @@ export default function RealisticSalesHistoryPage() {
   const [hours, setHours] = useState<Hour[]>([]);
 
   useEffect(() => {
-    fetch("/_api/fetchRealisticSalesHistory")
+    fetch("/api/fetchRealisticSalesHistory")
       .then((response) => response.json())
       .then((data) => setHours(data.hours))
       .catch((error) => console.error("Error fetching realistic sales history:", error));

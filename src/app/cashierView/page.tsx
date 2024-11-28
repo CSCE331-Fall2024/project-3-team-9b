@@ -69,13 +69,13 @@ export default function CashierView() {
       try {
         let endpoint = '';
         if (activeTab === 'sides') {
-          endpoint = '/_api/fetchSides';
+          endpoint = '/api/fetchSides';
         } else if (activeTab === 'entrees') {
-          endpoint = '/_api/fetchEntrees';
+          endpoint = '/api/fetchEntrees';
         } else if (activeTab === 'appetizers') {
-          endpoint = '/_api/fetchAppetizers';
+          endpoint = '/api/fetchAppetizers';
         } else if (activeTab === 'drinks') {
-          endpoint = '/_api/fetchDrinks';
+          endpoint = '/api/fetchDrinks';
         }
         const response = await fetch(endpoint);
         if (!response.ok) {
@@ -189,7 +189,7 @@ export default function CashierView() {
     }
 
     try {
-      const response = await fetch('/_api/finishCashierTransaction', {
+      const response = await fetch('/api/finishCashierTransaction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ export default function CashierView() {
       alert(`Transaction finished! Transaction ID: ${result.transactionId}`);
 
       // update inventory ingredients quantity
-      const inventoryResponse = await fetch('/_api/decrementIngredients', {
+      const inventoryResponse = await fetch('/api/decrementIngredients', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

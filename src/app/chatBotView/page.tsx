@@ -15,7 +15,7 @@ const Chatbot = () => {
     if (!input.trim()) return;
 
     try {
-      const response = await fetch("/_api/chatBot", {
+      const response = await fetch("/api/chatBot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
