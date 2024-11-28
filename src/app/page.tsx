@@ -21,7 +21,7 @@ const employees = [
   { email: 'employee7@gmail.com', position: 'Employee' },
   { email: 'employee8@gmail.com', position: 'Employee' },
   { email: 'employee9@gmail.com', position: 'Employee' },
-  { email: 'carsoncoen@tamu.edu', position: 'Employee' },
+  { email: 'carsoncoen@tamu.edu', position: 'Manager' },
   { email: 'keepswimming123@tamu.edu', position: 'Employee' },
   { email: 'nicktnc24@tamu.edu', position: 'Employee' },
   { email: 'nmcorn21@tamu.edu', position: 'Employee' },

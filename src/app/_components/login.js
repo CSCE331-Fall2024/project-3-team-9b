@@ -11,11 +11,32 @@ function Login({ onLoginSuccess }) {
       sessionStorage.setItem('token', credentialResponse.credential);
       sessionStorage.setItem('userEmail', decodedToken.email);
       
-      // Show success message
-      alert(`Successfully logged in as ${decodedToken.email}`);
+      // Make API call to your backend to get employee information
+      const response = await fetch('/api/employeeLookup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: decodedToken.email }),
+      });
       
-      // Call the parent component's success handler
-      onLoginSuccess(decodedToken.email, credentialResponse.credential);
+      if (response.ok) {
+        const employeeData = await response.json();
+        
+        // Store employee data in sessionStorage matching the backend response
+        sessionStorage.setItem('employeeId', employeeData.employeeId);
+        sessionStorage.setItem('employeeName', employeeData.name);
+        sessionStorage.setItem('employeePosition', employeeData.position);
+        
+        // Show success message
+        alert(`Successfully logged in as ${employeeData.name}`);
+        
+        // Call the parent component's success handler
+        onLoginSuccess(decodedToken.email, credentialResponse.credential, employeeData);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Employee not found');
+      }
       
     } catch (error) {
       console.error('Error processing login:', error);
