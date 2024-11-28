@@ -15,7 +15,7 @@ export default function WeatherWidget() {
     // Fetch weather for College Station
     const fetchWeather = async () => {
         try {
-            const response = await fetch(`/api/fetchWeather?city=College Station`);
+            const response = await fetch(`/_api/fetchWeather?city=College Station`);
             const data = await response.json();
 
             if (response.ok) {

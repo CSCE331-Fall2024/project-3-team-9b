@@ -48,7 +48,7 @@ export default function Entrees() {
     const fetchEntrees = async () => {
       
       try {
-        const response = await fetch('/api/fetchEntrees');
+        const response = await fetch('/_api/fetchEntrees');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

@@ -11,7 +11,7 @@ export default function PeakSalesDayPage() {
   const [days, setDays] = useState<Day[]>([]);
 
   useEffect(() => {
-    fetch("/api/fetchPeakSalesDay")
+    fetch("/_api/fetchPeakSalesDay")
       .then((response) => response.json())
       .then((data) => setDays(data.days))
       .catch((error) => console.error("Error fetching peak sales day history:", error));

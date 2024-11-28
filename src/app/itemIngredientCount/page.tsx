@@ -11,7 +11,7 @@ export default function ItemIngredientCountPage() {
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
-    fetch("/api/fetchItemIngredientCount")
+    fetch("/_api/fetchItemIngredientCount")
       .then((response) => response.json())
       .then((data) => setItems(data.items))
       .catch((error) => console.error("Error fetching item ingredient count:", error));

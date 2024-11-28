@@ -31,7 +31,7 @@ export default function Drinks() {
   useEffect(() => {
     const fetchDrinks = async () => {
       try {
-        const response = await fetch('/api/fetchDrinks');
+        const response = await fetch('/_api/fetchDrinks');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
