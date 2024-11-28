@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
 
 type Food = {
   food_id: number;
@@ -31,12 +32,6 @@ export default function Entrees() {
     }
 },[]);
 
-// useEffect(() => {
-//   const cPrice = Number(localStorage.getItem("currentPrice"));
-//   if (cPrice) {
-//     setCurrPrice(Number(cPrice));
-//   }
-// },[currPrice]);
   
 
 
@@ -133,7 +128,7 @@ export default function Entrees() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                  <img src={"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} className="w-full h-full object-cover" />
+                  <Image src={"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} width = {200} height = {200} className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.food_name}

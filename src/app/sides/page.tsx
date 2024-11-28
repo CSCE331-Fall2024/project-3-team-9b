@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
 
 type Food = {
   food_id: number;
@@ -146,7 +147,7 @@ export default function Sides() {
                     aria-labelledby={`side-${item.food_id}`}
                   >
                     {/* Top section with image */}  
-                    <img className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} />
+                    <Image className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} width = {200} height = {200} alt={item.food_name} />
                     {/* Center section with name */}
                     <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                       <h3 id={`side-${item.food_id}`} className="text-2xl font-bold text-gray-800">

@@ -2,6 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
+import Image from 'next/image';
 
 
 interface Size {
@@ -63,7 +64,7 @@ export default function CustomerView() {
                 localStorage.setItem("numEntrees", "3");
               }
             }} href = "/sides">
-            <img src ={"/" +size.size_name + ".png"} ></img>
+            <Image src ={"/" +size.size_name + ".png"} width = {200} height = {200} alt = "sizes" className='w-full'/>
             <div className='text-2xl font-bold'>{size.size_name[0].toUpperCase() + size.size_name.substring(1).replaceAll("_", " ")}</div>
             <div className='mt-4'>{size.size_id === 0 ? `1 Side & 1 Entree`: size.size_id == 1 ? "1 Side & 2 Entrees" : size.size_id === 2 ? "1 Side & 3 Entrees" : ""}</div>
             <div>${String(size.price)}+</div>

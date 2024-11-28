@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
 
 type Drink = {
   food_id: number; // Unique identifier
@@ -23,10 +24,19 @@ type ApiResponse = {
 export default function Drinks() {
   const [drinks, setDrinks] = useState<Drink[]>([]);
   const [selectedDrink, setSelectedDrink] = useState<number | null>(null);
+  const [currPrice, setCurrPrice] = useState<number>(0);
+
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
+
+  useEffect(() => {
+    const cPrice = Number(localStorage.getItem("currentPrice"));
+    if (cPrice) {
+      setCurrPrice(Number(cPrice));
+    }
+},[]);
 
   useEffect(() => {
     const fetchDrinks = async () => {
@@ -59,7 +69,10 @@ export default function Drinks() {
     if (typeof window !== 'undefined' && selectedDrink) {
       const selectedDrinkItem = drinks.find(drink => drink.food_id === selectedDrink);
       if (selectedDrinkItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name));
+        localStorage.setItem('currentPrice', String(currPrice + 2))
+        setCurrPrice(Number(localStorage.getItem("currentPrice")));
+        localStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name) + '/p');
+
       }
       setSelectedDrink(null);
     }
@@ -93,7 +106,7 @@ export default function Drinks() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                  <img src={"/" + removeSpace(item.drink_name) + ".png"} alt={item.food_name} className="w-full h-full object-cover" />
+                  <Image src={"/" + removeSpace(item.drink_name) + ".png"} width = {200} height = {200} alt="food" className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.food_name}

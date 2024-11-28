@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
@@ -109,7 +110,7 @@ export default function ShoppingCart() {
 
     return (
         <>
-            <button className="absolute right-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><img src="/ShoppingCart.png" alt="Shopping Cart" /></button>
+            <button className="absolute right-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><Image src="/ShoppingCart.png" alt="Shopping Cart" width={200} height={200} /></button>
             <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 right-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
                 <div className="relative bg-red-400 rounded-lg h-[75%] w-3/4 flex flex-col items-center justify-start">
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>

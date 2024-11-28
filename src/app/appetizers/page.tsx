@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
 
 type Food = {
   food_id: number;
@@ -21,10 +22,18 @@ type ApiResponse = {
 export default function Appetizers() {
   const [appetizers, setAppetizers] = useState<Food[]>([]);
   const [selectedAppetizer, setSelectedAppetizer] = useState<number | null>(null);
+  const [currPrice, setCurrPrice] = useState<number>(0);
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
+
+  useEffect(() => {
+    const cPrice = Number(localStorage.getItem("currentPrice"));
+    if (cPrice) {
+      setCurrPrice(Number(cPrice));
+    }
+},[]);
 
   useEffect(() => {
     const fetchAppetizers = async () => {
@@ -59,7 +68,9 @@ export default function Appetizers() {
     if (typeof window !== 'undefined' && selectedAppetizer) {
       const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
       if (selectedAppItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name));
+        localStorage.setItem('currentPrice', String(currPrice + 2))
+        setCurrPrice(Number(localStorage.getItem("currentPrice")));
+        localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name) + '/p');
       }
       setSelectedAppetizer(null);
     }
@@ -126,10 +137,12 @@ export default function Appetizers() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                <img 
+                <Image 
                   className="w-full h-full object-cover max-h-[200px]"
                   src={"/" + removeSpace(item.food_name) + ".png"}
                   alt={item.food_name}
+                  width = {200} 
+                  height = {200}
                 />
                 <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                   <h3 id={`appetizer-${item.food_id}`} className="text-2xl font-bold text-gray-800">
