@@ -4,8 +4,8 @@ import { useEffect } from "react";
 
 export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
-    const [currPrice, setCurrentPrice] = useState<string>("");
-    const [numEntrees, setNumEntrees] = useState<number>(0);
+    const [currPrice, setCurrentPrice] = useState<string | null>("");
+    const [numEntrees, setNumEntrees] = useState<string | null>("0");
     const addItems = (item: string) => {
         setCurrentItems([...currentItems, item]);
     };

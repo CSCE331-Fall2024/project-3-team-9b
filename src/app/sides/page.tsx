@@ -20,10 +20,7 @@ type ApiResponse = {
 
 export default function Sides() {
   const [sides, setSides] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedSide, setSelectedSide] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -45,34 +42,26 @@ export default function Sides() {
         
         const sortedSides = (data.sides || []).sort((a, b) => a.food_id - b.food_id);
         setSides(sortedSides);
-        setDebug(`Fetched ${sortedSides.length} sides, sorted by food_id`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching sides');
         console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchSides();
   }, []);
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setSides([]);
-    setSelectedSide(null);
-  };
 
   const handleSideSelect = (foodId: number) => {
     setSelectedSide((prevSelected) => (prevSelected === foodId ? null : foodId));
-    setDebug(`Selected side with ID: ${foodId}`);
 
   };
 
   const handleAddToCart = () => {
-    if (typeof window !== 'undefined' && selectedSide >= 0) {
-      const selectedSideItem = sides.find(side => side.food_id === selectedSide);
+    if (typeof window !== 'undefined') {
+      let selectedSideItem = sides.find(side => side.food_id === selectedSide);
+      if (selectedSide === 101){
+        selectedSideItem = sides.find(side => side.food_id === 0);
+      }
       if (selectedSideItem) {
         localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
       }

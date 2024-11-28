@@ -12,7 +12,6 @@ interface Size {
 
 export default function CustomerView() {
   const [sizes, setSizes] = useState<Size[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchSizes = async () => {
     try {
@@ -23,7 +22,7 @@ export default function CustomerView() {
     }
     
     catch (error) {
-      setError('Failed to fetch sizes');
+      console.log(error);
     }
   }
   useEffect(() => {
