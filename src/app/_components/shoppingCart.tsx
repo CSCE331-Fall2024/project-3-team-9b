@@ -41,7 +41,7 @@ export default function ShoppingCart() {
     useEffect(() => {
         setNumEntrees(localStorage.getItem("numEntrees"));
     },[localStorage.getItem("numEntrees")]);
-    console.log(numEntrees)
+    
     const checkout = async () => {
         try {
             const response = await fetch('/api/checkout', {

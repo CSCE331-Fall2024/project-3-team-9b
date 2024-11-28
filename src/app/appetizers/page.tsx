@@ -127,7 +127,7 @@ export default function Appetizers() {
                   aria-labelledby={`entree-${item.food_id}`}
                 >
                 <img 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover max-h-[200px]"
                   src={"/" + removeSpace(item.food_name) + ".png"}
                   alt={item.food_name}
                 />
