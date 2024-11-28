@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 // Define interfaces for the data structures
 interface XReportEntry {
@@ -163,28 +164,31 @@ export default function ManagerView() {
 
       {/* Tab Navigation */}
       <div className="flex space-x-4 border-b-2 border-rose-500 pb-2 mb-6">
-        {[
-          "X-Report",
-          "Z-Report",
-          "Manage Inventory",
-          "Manage Employees",
-          "Inventory Usage",
-          "Peak Sales Day",
-          "Realistic Sales History",
-          "Weekly Sales History",
-        ].map((tab) => (
-          <button
-            key={tab}
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              activeTab === tab
-                ? "bg-white text-rose-400"
-                : "bg-rose-500 hover:bg-rose-600"
-            }`}
-            onClick={() => handleTabChange(tab)}
-          >
-            {tab}
-          </button>
-        ))}
+      {[ 
+        "X-Report", 
+        "Z-Report", 
+        "Manage Inventory", 
+        "Manage Employees", 
+        "Inventory Usage", 
+        "Peak Sales Day", 
+        "Realistic Sales History", 
+        "Weekly Sales History"
+      ].map((tab) => (
+        <button
+          key={tab}
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            activeTab === tab ? "bg-white text-rose-400" : "bg-rose-500 hover:bg-rose-600"
+          }`}
+          onClick={() => handleTabChange(tab)}
+        >
+          {tab}
+        </button>
+      ))}
+      <Link 
+        href="/cashierView" 
+        className="px-4 py-2 rounded-lg font-semibold bg-blue-500 hover:bg-blue-600 text-white">
+        Switch to Cashier
+      </Link>
       </div>
 
       {/* Content Panel */}
@@ -284,6 +288,18 @@ export default function ManagerView() {
           </div>
         )}
         {activeTab === "Weekly Sales History" && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Weekly Sales History</h3>
+            <ul>
+              {weeklySalesHistory.map((week, index) => (
+                <li key={index}>
+                  Week {week.week_number}: {week.total_orders} orders
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {activeTab === "Switch to Cashier" && (
           <div>
             <h3 className="text-xl font-semibold mb-4">Weekly Sales History</h3>
             <ul>
