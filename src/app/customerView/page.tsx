@@ -14,21 +14,15 @@ interface Size {
 export default function CustomerView() {
   const [sizes, setSizes] = useState<Size[]>([]);
 
-  const fetchSizes = async () => {
-    try {
-      const response = await fetch('/api/fetchSizes');
-      const data = await response.json();
-      setSizes(data.sizes);
-      // console.log(sizes);
-    }
-    
-    catch (error) {
-      console.log(error);
-    }
-  }
   useEffect(() => {
-    fetchSizes();
-  },[]);
+    fetch('/api/fetchSizes')
+    .then((res) => res.json())
+    .then((data) => {setSizes(data.sizes)})
+    
+}, []);
+
+
+
   // console.log(sizes);
   return (
     <div className="flex flex-col items-center h-screen rounded-full bg-red-800 mb-40">

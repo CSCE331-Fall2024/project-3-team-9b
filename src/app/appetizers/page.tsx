@@ -14,11 +14,6 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  appetizers: Food[];
-  error?: string;
-};
-
 export default function Appetizers() {
   const [appetizers, setAppetizers] = useState<Food[]>([]);
   const [selectedAppetizer, setSelectedAppetizer] = useState<number | null>(null);
@@ -35,28 +30,14 @@ export default function Appetizers() {
     }
 },[]);
 
+
+
   useEffect(() => {
-    const fetchAppetizers = async () => {
-      try {
-        const response = await fetch('/api/fetchAppetizers');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        // Sort appetizers by food_id in ascending order
-        const sortedAppetizers = (data.appetizers || []).sort((a, b) => a.food_id - b.food_id);
-        setAppetizers(sortedAppetizers);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      }
-    };
-
-    fetchAppetizers();
-  }, []);
+    fetch('/api/fetchAppetizers')
+    .then((res) => res.json())
+    .then((data) => {setAppetizers(data.appetizers)})
+    
+}, []);
 
 
 

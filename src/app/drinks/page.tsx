@@ -9,16 +9,11 @@ type Drink = {
   drink_name: string;
   quantity: number;
   type: string;
-  food_name?: string;
+  food_name: string;
   calories: number;
   available: boolean;
   premium: boolean;
   image_url: string;
-};
-
-type ApiResponse = {
-  drinks: Drink[];
-  error?: string;
 };
 
 export default function Drinks() {
@@ -39,27 +34,12 @@ export default function Drinks() {
 },[]);
 
   useEffect(() => {
-    const fetchDrinks = async () => {
-      try {
-        const response = await fetch('/api/fetchDrinks');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-
-        const sortedDrinks = (data.drinks || []).map((drink) => ({
-          ...drink,
-          drink_name: drink.drink_name || drink.food_name || "Unnamed Drink",
-        })).sort((a, b) => a.food_id - b.food_id);
-
-        setDrinks(sortedDrinks);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      } 
-    };
-
-    fetchDrinks();
-  }, []);
+    fetch('/api/fetchDrinks')
+    .then((res) => res.json())
+    .then((data) => {console.log(data.drinks);setDrinks(data.drinks)})
+    
+}, []);
+  
 
   const handleDrinkSelect = (foodId: number) => {
     setSelectedDrink(prevSelected => prevSelected === foodId ? null : foodId);
@@ -106,7 +86,7 @@ export default function Drinks() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                  <Image src={"/" + removeSpace(item.drink_name) + ".png"} width = {200} height = {200} alt="food" className="w-full h-full object-cover" />
+                  <Image src={"/" + removeSpace(item.food_name) + ".png"} width = {200} height = {200} alt="food" className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.food_name}

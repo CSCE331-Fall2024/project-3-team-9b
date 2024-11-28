@@ -14,10 +14,6 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  entrees: Food[];
-  error?: string;
-};
 
 export default function Entrees() {
   const [entrees, setEntrees] = useState<Food[]>([]);
@@ -39,36 +35,13 @@ export default function Entrees() {
     return str.replace(/\s/g, '');
   }
 
+
   useEffect(() => {
-    const fetchEntrees = async () => {
-      
-      try {
-        const response = await fetch('/api/fetchEntrees');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        const processedEntrees = (data.entrees || []).map(entree => ({
-          ...entree,
-          available: entree.quantity > 0
-        }));
-
-        const sortedEntrees = processedEntrees.sort((a, b) => a.food_id - b.food_id);
-        setEntrees(sortedEntrees);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      } 
-    };
-
-    fetchEntrees();
-    setNumEntrees(localStorage.getItem('numEntrees'));
-    
-  }, []);
+    fetch('/api/fetchEntrees')
+    .then((res) => res.json())
+    .then((data) => {setEntrees(data.entrees)})
+      setNumEntrees(localStorage.getItem('numEntrees'));
+}, []);
 
 
   const handleEntreeSelect = (foodId: number) => {

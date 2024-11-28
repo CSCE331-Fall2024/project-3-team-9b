@@ -14,10 +14,6 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  sides: Food[];
-  error?: string;
-};
 
 export default function Sides() {
   const [sides, setSides] = useState<Food[]>([]);
@@ -27,28 +23,11 @@ export default function Sides() {
     return str.replace(/\s/g, '');
   }
 
-
-  useEffect(() => {
-    const fetchSides = async () => {
-      try {
-        const response = await fetch('/api/fetchSides');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        
-        const sortedSides = (data.sides || []).sort((a, b) => a.food_id - b.food_id);
-        setSides(sortedSides);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      } 
-    };
-
-    fetchSides();
+    useEffect(() => {
+      fetch('/api/fetchSides')
+      .then((res) => res.json())
+      .then((data) => {console.log(data.sides);setSides(data.sides)})
+      
   }, []);
 
 
