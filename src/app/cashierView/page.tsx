@@ -182,7 +182,7 @@ export default function CashierView() {
       return;
     }
 
-    const employeeId = prompt('Please enter your employee ID:');
+    const employeeId = sessionStorage.getItem('employeeId')
     if (!employeeId) {
       alert('Employee ID is required to finish the transaction.');
       return;
