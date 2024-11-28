@@ -245,7 +245,7 @@ export default function CashierView() {
   return (
     <div className="flex h-screen">
       <div className="w-1/4 p-4 bg-gray-100 border-r flex flex-col">
-        <h2 className="text-xl text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
+        <h2 className="text-xl p-10 text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
         {previousOrders.map((order, index) => (
           <div key={index} className="mb-4">
             <h3 className="font-semibold text-gray-700">Order {index + 1} - {order.size}</h3>
