@@ -19,12 +19,15 @@ export default function Entrees() {
   const [entrees, setEntrees] = useState<Food[]>([]);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
   const [currPrice, setCurrPrice] = useState<number>(0);
-  const [numEntrees, setNumEntrees] = useState<string | null>("");
+  const [numEntrees, setNumEntrees] = useState<number>(0);
 
   useEffect(() => {
-    const cPrice = Number(localStorage.getItem("currentPrice"));
+    const cPrice = typeof window !== 'undefined' ?  Number(localStorage.getItem("currentPrice")) : 0;
     if (cPrice) {
       setCurrPrice(Number(cPrice));
+    }
+    if (typeof window !== 'undefined'){
+      setNumEntrees(Number(localStorage.getItem('numEntrees')));
     }
 },[]);
 
@@ -40,7 +43,6 @@ export default function Entrees() {
     fetch('/api/fetchEntrees')
     .then((res) => res.json())
     .then((data) => {setEntrees(data.entrees)})
-      setNumEntrees(localStorage.getItem('numEntrees'));
 }, []);
 
 
@@ -60,14 +62,17 @@ export default function Entrees() {
         localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
       }
       setSelectedEntree(null);
-      // setNumEntrees(numEntrees - 1);
-      localStorage.setItem('numEntrees', String(Number(localStorage.getItem('numEntrees')) - 1));
+      // setNumEntrees(Number(numEntrees) - 1);
+      localStorage.setItem("numEntrees", (numEntrees - 1).toString());
     }
   };
 
+
   useEffect(() => {
-    setNumEntrees(localStorage.getItem("numEntrees"));
-  },[localStorage.getItem("numEntrees")]);
+    if (typeof window !== 'undefined'){
+      setNumEntrees(Number(localStorage.getItem("numEntrees")));
+    }
+  });
 
 
 
@@ -133,7 +138,7 @@ export default function Entrees() {
               {selectedEntree !== null && (
                 <div className="text-center absolute -translate-x-1/2">
                   
-                <Link href= {numEntrees === "1" ? "/appetizers" : ""}>
+                <Link href= {numEntrees === 1 ? "/appetizers" : ""}>
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"

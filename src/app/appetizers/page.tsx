@@ -24,7 +24,7 @@ export default function Appetizers() {
   }
 
   useEffect(() => {
-    const cPrice = Number(localStorage.getItem("currentPrice"));
+    const cPrice = typeof window !== 'undefined' ? Number(localStorage.getItem("currentPrice")) : 0;
     if (cPrice) {
       setCurrPrice(Number(cPrice));
     }
@@ -45,8 +45,20 @@ export default function Appetizers() {
     setSelectedAppetizer(prevSelected => prevSelected === foodId ? null : foodId);
   };
 
-  const handleAddToCart = () => {
-    if (typeof window !== 'undefined' && selectedAppetizer) {
+  // const handleAddToCart = () => {
+  //   if (typeof window !== 'undefined') {
+  //     const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
+  //     if (selectedAppItem) {
+  //       localStorage.setItem('currentPrice', String(currPrice + 2))
+  //       setCurrPrice(Number(localStorage.getItem("currentPrice")));
+  //       localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name) + '/p');
+  //     }
+  //     setSelectedAppetizer(null);
+  //   }
+  // };
+
+    const handleAddToCart = () => {
+    if (typeof window !== 'undefined') {
       const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
       if (selectedAppItem) {
         localStorage.setItem('currentPrice', String(currPrice + 2))
@@ -158,7 +170,7 @@ export default function Appetizers() {
               Add to Cart
             </button>
           </div>
-        )}
+        )}s
         </div>
         </div>
       </div>

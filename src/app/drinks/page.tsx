@@ -27,7 +27,7 @@ export default function Drinks() {
   }
 
   useEffect(() => {
-    const cPrice = Number(localStorage.getItem("currentPrice"));
+    const cPrice = typeof window !== 'undefined' ? Number(localStorage.getItem("currentPrice")) : 0;
     if (cPrice) {
       setCurrPrice(Number(cPrice));
     }

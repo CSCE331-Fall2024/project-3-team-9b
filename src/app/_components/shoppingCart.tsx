@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
     const [currPrice, setCurrentPrice] = useState<string | null>("");
-    const [numEntrees, setNumEntrees] = useState<string | null>("0");
+    const [numEntrees, setNumEntrees] = useState<number | null>(0);
     const addItems = (item: string) => {
         setCurrentItems([...currentItems, item]);
     };
@@ -35,13 +35,13 @@ export default function ShoppingCart() {
         localStorage.setItem("numEntrees", (Number(numEntrees) + 1).toString());
     };
 
-    useEffect(() => {
-        setNumEntrees(localStorage.getItem("numEntrees"));
-    },[]);
+    // useEffect(() => {
+    //     setNumEntrees(Number(localStorage.getItem("numEntrees")));
+    // },[]);
     
     useEffect(() => {
-        setNumEntrees(localStorage.getItem("numEntrees"));
-    },[localStorage.getItem("numEntrees")]);
+        if (typeof window !== 'undefined') setNumEntrees(Number(localStorage.getItem("numEntrees")));
+    });
     
     const checkout = async () => {
         try {
