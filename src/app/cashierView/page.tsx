@@ -26,10 +26,10 @@ type ApiResponse = {
   error?: string;
 };
 
-type Ingredient = {
-  ingredient_id: number;
-  amount_used: number;
-};
+// type Ingredient = {
+//   ingredient_id: number;
+//   amount_used: number;
+// };
 
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
@@ -69,13 +69,13 @@ export default function CashierView() {
       try {
         let endpoint = '';
         if (activeTab === 'sides') {
-          endpoint = '/api/fetchSides';
+          endpoint = '/_api/fetchSides';
         } else if (activeTab === 'entrees') {
-          endpoint = '/api/fetchEntrees';
+          endpoint = '/_api/fetchEntrees';
         } else if (activeTab === 'appetizers') {
-          endpoint = '/api/fetchAppetizers';
+          endpoint = '/_api/fetchAppetizers';
         } else if (activeTab === 'drinks') {
-          endpoint = '/api/fetchDrinks';
+          endpoint = '/_api/fetchDrinks';
         }
         const response = await fetch(endpoint);
         if (!response.ok) {
@@ -189,7 +189,7 @@ export default function CashierView() {
     }
 
     try {
-      const response = await fetch('/api/finishCashierTransaction', {
+      const response = await fetch('/_api/finishCashierTransaction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ export default function CashierView() {
       alert(`Transaction finished! Transaction ID: ${result.transactionId}`);
 
       // update inventory ingredients quantity
-      const inventoryResponse = await fetch('/api/decrementIngredients', {
+      const inventoryResponse = await fetch('/_api/decrementIngredients', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -20,10 +20,7 @@ type ApiResponse = {
 
 export default function Appetizers() {
   const [appetizers, setAppetizers] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedAppetizer, setSelectedAppetizer] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -32,7 +29,7 @@ export default function Appetizers() {
   useEffect(() => {
     const fetchAppetizers = async () => {
       try {
-        const response = await fetch('/api/fetchAppetizers');
+        const response = await fetch('/___api/fetchAppetizers');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -44,28 +41,18 @@ export default function Appetizers() {
         // Sort appetizers by food_id in ascending order
         const sortedAppetizers = (data.appetizers || []).sort((a, b) => a.food_id - b.food_id);
         setAppetizers(sortedAppetizers);
-        setDebug(`Fetched ${sortedAppetizers.length} appetizers, sorted by food_id`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching appetizers');
         console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchAppetizers();
   }, []);
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setAppetizers([]);
-    setSelectedAppetizer(null);
-  };
+
 
   const handleAppetizerSelect = (foodId: number) => {
     setSelectedAppetizer(prevSelected => prevSelected === foodId ? null : foodId);
-    setDebug(`Selected appetizer with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
@@ -140,7 +127,7 @@ export default function Appetizers() {
                   aria-labelledby={`entree-${item.food_id}`}
                 >
                 <img 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover max-h-[200px]"
                   src={"/" + removeSpace(item.food_name) + ".png"}
                   alt={item.food_name}
                 />

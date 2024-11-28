@@ -12,7 +12,7 @@ export default function InventoryPage() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
   useEffect(() => {
-    fetch("/api/fetchInventory")
+    fetch("/_api/fetchInventory")
       .then((response) => response.json())
       .then((data) => setIngredients(data.ingredients))
       .catch((error) => console.error("Error fetching inventory:", error));
