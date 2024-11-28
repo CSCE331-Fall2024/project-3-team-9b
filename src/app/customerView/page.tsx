@@ -12,26 +12,20 @@ interface Size {
 
 export default function CustomerView() {
   const [sizes, setSizes] = useState<Size[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  useEffect(() => {
-    const fetchSizes = async () => {
-      try {
-        const response = await fetch('/api/fetchSizes');
-        const data = await response.json();
-        setSizes(data.sizes);
-        // console.log(sizes);
-      }
-      
-      catch (error) {
-        setError('Failed to fetch sizes');
-      }
+  const fetchSizes = async () => {
+    try {
+      const response = await fetch('/api/fetchSizes');
+      const data = await response.json();
+      setSizes(data.sizes);
+      // console.log(sizes);
     }
+    
+    catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
     fetchSizes();
   },[]);
   // console.log(sizes);

@@ -20,12 +20,9 @@ type ApiResponse = {
 
 export default function Entrees() {
   const [entrees, setEntrees] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
   const [currPrice, setCurrPrice] = useState<number>(0);
-  const [numEntrees, setNumEntrees] = useState(0);
+  const [numEntrees, setNumEntrees] = useState<string | null>("");
 
   useEffect(() => {
     const cPrice = Number(localStorage.getItem("currentPrice"));
@@ -68,13 +65,9 @@ export default function Entrees() {
 
         const sortedEntrees = processedEntrees.sort((a, b) => a.food_id - b.food_id);
         setEntrees(sortedEntrees);
-        setDebug(`Fetched ${sortedEntrees.length} entrees, sorted by food_id`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching entrees');
         console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchEntrees();
@@ -82,17 +75,9 @@ export default function Entrees() {
     
   }, []);
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setEntrees([]);
-    setSelectedEntree(null);
-  };
 
   const handleEntreeSelect = (foodId: number) => {
     setSelectedEntree((prevSelected) => (prevSelected === foodId ? null : foodId));
-
-    setDebug(`Selected entree with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
@@ -103,7 +88,7 @@ export default function Entrees() {
         setCurrPrice(Number(localStorage.getItem("currentPrice")));
         localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
       }
-      else{
+      else if (selectedEntreeItem){
         localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
       }
       setSelectedEntree(null);
@@ -113,7 +98,7 @@ export default function Entrees() {
   };
 
   useEffect(() => {
-    setNumEntrees(Number(localStorage.getItem("numEntrees")));
+    setNumEntrees(localStorage.getItem("numEntrees"));
   },[localStorage.getItem("numEntrees")]);
 
 
@@ -180,7 +165,7 @@ export default function Entrees() {
               {selectedEntree !== null && (
                 <div className="text-center absolute -translate-x-1/2">
                   
-                <Link href= {numEntrees === 1 ? "/appetizers" : ""}>
+                <Link href= {numEntrees === "1" ? "/appetizers" : ""}>
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"

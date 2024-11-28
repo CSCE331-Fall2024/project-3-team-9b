@@ -26,10 +26,10 @@ type ApiResponse = {
   error?: string;
 };
 
-type Ingredient = {
-  ingredient_id: number;
-  amount_used: number;
-};
+// type Ingredient = {
+//   ingredient_id: number;
+//   amount_used: number;
+// };
 
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');

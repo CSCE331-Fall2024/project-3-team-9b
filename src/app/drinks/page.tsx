@@ -22,10 +22,7 @@ type ApiResponse = {
 
 export default function Drinks() {
   const [drinks, setDrinks] = useState<Drink[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedDrink, setSelectedDrink] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -46,28 +43,16 @@ export default function Drinks() {
         })).sort((a, b) => a.food_id - b.food_id);
 
         setDrinks(sortedDrinks);
-        setDebug(`Fetched ${sortedDrinks.length} drinks, sorted by food_id`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching drinks');
         console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchDrinks();
   }, []);
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setDrinks([]);
-    setSelectedDrink(null);
-  };
-
   const handleDrinkSelect = (foodId: number) => {
     setSelectedDrink(prevSelected => prevSelected === foodId ? null : foodId);
-    setDebug(`Selected drink with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
