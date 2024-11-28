@@ -4,8 +4,7 @@ import { useEffect } from "react";
 
 export default function ShoppingCart() {
     const [currentItems, setCurrentItems] = useState<string[]>([]);
-    const [currPrice, setCurrentPrice] = useState<String>("");
-    const [numSides, setNumSides] = useState<number>(0);
+    const [currPrice, setCurrentPrice] = useState<string>("");
     const [numEntrees, setNumEntrees] = useState<number>(0);
     const addItems = (item: string) => {
         setCurrentItems([...currentItems, item]);
@@ -29,10 +28,10 @@ export default function ShoppingCart() {
             ...currentItems.slice(index + 1)
         ]);
         if (currentItems[index].includes("/p")){
-            localStorage.setItem("currentPrice", String(currPrice - 1.5));
+            localStorage.setItem("currentPrice", (Number(currPrice) - 1.5).toString());
         }
         localStorage.setItem("cartItems", currentItems.join(","));
-        localStorage.setItem("numEntrees", String(Number(numEntrees) + 1));
+        localStorage.setItem("numEntrees", (Number(numEntrees) + 1).toString());
     };
 
     useEffect(() => {
@@ -117,7 +116,7 @@ export default function ShoppingCart() {
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                     <div className="absolute w-full h-10 bottom-0 rounded-lg bg-white flex flex-row justify-around items-center">
                         <div className="text-gray-800">Price:</div>
-                        <div className="text-gray-800">${String(currPrice)}</div>
+                        <div className="text-gray-800">${currPrice}</div>
                     </div>
                 </div>
                 <Link href="/customerView"><button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button></Link>

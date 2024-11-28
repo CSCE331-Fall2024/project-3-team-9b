@@ -20,10 +20,7 @@ type ApiResponse = {
 
 export default function Entrees() {
   const [entrees, setEntrees] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
   const [currPrice, setCurrPrice] = useState<number>(0);
   const [numEntrees, setNumEntrees] = useState(0);
 
@@ -68,13 +65,9 @@ export default function Entrees() {
 
         const sortedEntrees = processedEntrees.sort((a, b) => a.food_id - b.food_id);
         setEntrees(sortedEntrees);
-        setDebug(`Fetched ${sortedEntrees.length} entrees, sorted by food_id`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching entrees');
         console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchEntrees();
@@ -82,17 +75,9 @@ export default function Entrees() {
     
   }, []);
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setEntrees([]);
-    setSelectedEntree(null);
-  };
 
   const handleEntreeSelect = (foodId: number) => {
     setSelectedEntree((prevSelected) => (prevSelected === foodId ? null : foodId));
-
-    setDebug(`Selected entree with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
