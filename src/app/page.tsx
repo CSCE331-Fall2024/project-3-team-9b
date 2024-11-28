@@ -5,7 +5,7 @@ import LoginButton from "./_components/login";
 import LogOutButton from "./_components/logout";
 import { googleLogout, GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
-import WeatherWidget from "./weather/WeatherWidget"; 
+import WeatherWidget from "./weather/page"; 
 
 const clientId = "32164770538-122jpqmmlep5hfeuhv2cu2l9n29k92gp.apps.googleusercontent.com"
 
