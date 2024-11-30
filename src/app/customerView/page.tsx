@@ -21,12 +21,12 @@ export default function CustomerView() {
   useEffect(() => {
     fetch('/api/fetchSizes')
     .then((res) => res.json())
-    .then((data) => {setSizes(data.sizes)})
+    .then((data) => {setSizes(data.sizes); console.log(data.sizes)})
     
 }, []);
 // changeShoppingData({shoppingData, currentPrice: 1000});
 
-console.log(shoppingData);
+// console.log(shoppingData);
   return (
     <div className="flex flex-col items-center h-screen rounded-full bg-red-800 mb-40">
       {/* View Menu link at the top */}
