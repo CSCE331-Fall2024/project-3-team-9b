@@ -1,18 +1,28 @@
 import Link from "next/link";
-import { useState } from "react";
-import { useEffect } from "react";
+import {useState } from "react";
+import Image from "next/image";
+import { useShoppingDataContext } from "./shoppingData";
 
 export default function ShoppingCart() {
-    const [currentItems, setCurrentItems] = useState<string[]>([]);
-    const [currPrice, setCurrentPrice] = useState<string | null>("");
-    const [numEntrees, setNumEntrees] = useState<string | null>("0");
-    const addItems = (item: string) => {
-        setCurrentItems([...currentItems, item]);
-    };
+    // const [currentItems, setCurrentItems] = useState<string[]>([]);
+    
+
+
+    // const [currPrice, setCurrentPrice] = useState<string | null>("");
+    // const [numEntrees, setNumEntrees] = useState<number | null>(0);
+    // const [currentItems, setCurrentItems] = useContext(shoppingDataContext);
+    // const [currPrice, setCurrentPrice] = useContext(shoppingDataContext);
+    // const [numEntrees, setNumEntrees] = useContext(shoppingDataContext);
+    // const shoppingData = useShoppingDataContext();
+    // const [shoppingData, changeShoppingData] = useContext(shoppingDataContext);
+    const [shoppingData, setShoppingData] = useShoppingDataContext();
+
+
+    console.log(shoppingData);
 
     function removeAllItems(): void {
-        setCurrentItems([]);
-        console.log("clicked!");
+        // setCurrentItems([]);
+        setShoppingData({currentPrice: 0, numEntrees: 0, cartItems: []});
     }
 
     const [cart, showCart] = useState(false);
@@ -23,24 +33,48 @@ export default function ShoppingCart() {
     };
 
     const removeItem = (index: number) => {
-        setCurrentItems([
-            ...currentItems.slice(0, index),
-            ...currentItems.slice(index + 1)
-        ]);
-        if (currentItems[index].includes("/p")){
-            localStorage.setItem("currentPrice", (Number(currPrice) - 1.5).toString());
+        // setCurrentItems([
+        //     ...currentItems.slice(0, index),
+        //     ...currentItems.slice(index + 1)
+        // ]);
+        // if (currentItems[index].includes("/p")){
+        //     sessionStorage.setItem("currentPrice", (Number(currPrice) - 1.5).toString());
+        // }
+        if (shoppingData.cartItems[index].includes("/p") && shoppingData.cartItems[index].includes("/e")){
+            setShoppingData({numEntrees: shoppingData.numEntrees + 1, currentPrice: shoppingData.currentPrice - 1.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+
+            // shoppingData.currentPrice = (Number(shoppingData.currentPrice) - 1.5).toString();
         }
-        localStorage.setItem("cartItems", currentItems.join(","));
-        localStorage.setItem("numEntrees", (Number(numEntrees) + 1).toString());
+        else if(shoppingData.cartItems[index].includes("/p")){
+            setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice - 1.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+
+        }
+        else if(shoppingData.cartItems[index].includes("/e")){
+            setShoppingData({...shoppingData,cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)], numEntrees: shoppingData.numEntrees + 1});
+
+        }
+        else if(shoppingData.cartItems[index].includes("/a")){
+            setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice - 2, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+        }
+        else if(shoppingData.cartItems[index].includes("/d")){
+            setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice - 2, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+        }
+        else{
+            setShoppingData({...shoppingData, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+
+        }
+
+        // sessionStorage.setItem("cartItems", currentItems.join(","));
+        // sessionStorage.setItem("numEntrees", (Number(numEntrees) + 1).toString());
     };
 
-    useEffect(() => {
-        setNumEntrees(localStorage.getItem("numEntrees"));
-    },[]);
+    // useEffect(() => {
+    //     setNumEntrees(Number(localStorage.getItem("numEntrees")));
+    // },[]);
     
-    useEffect(() => {
-        setNumEntrees(localStorage.getItem("numEntrees"));
-    },[localStorage.getItem("numEntrees")]);
+    // useEffect(() => {
+    //     if (typeof window !== 'undefined') setNumEntrees(Number(sessionStorage.getItem("numEntrees")));
+    // });
     
     const checkout = async () => {
         try {
@@ -49,59 +83,62 @@ export default function ShoppingCart() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(currentItems)
+                // body: JSON.stringify(currentItems)
             });
             console.log(response);
         } catch (error) {
             console.error('Error fetching entrees:', error);
         }
-        setCurrentItems([]);
-        localStorage.removeItem("cartItems");
+        // setCurrentItems([]);
+        setShoppingData({currentPrice: 0, numEntrees: 0, cartItems: []});
+        // sessionStorage.removeItem("cartItems");
         console.log("Checkout successful!");
     }
 
 
-    useEffect(
-        () => {
-            const currCart = localStorage.getItem("cartItems");
-            if (currCart) {
-                setCurrentItems(currCart.split(","));
-                localStorage.removeItem("cartItems");
-            }            
-        },[]
-    )
+    // useEffect(
+    //     () => {
+    //         const currCart = sessionStorage.getItem("cartItems");
+    //         if (currCart) {
+    //             setCurrentItems(currCart.split(","));
+    //             sessionStorage.removeItem("cartItems");
+    //         }            
+    //     },[]
+    // )
 
     // useEffect
     // ...
-    useEffect(() => {
-        const newItem = localStorage.getItem("newItem");
-        if (newItem !== null) {
-            addItems(newItem.replaceAll("\"", ""));
-            localStorage.removeItem("newItem");
-        }
-        localStorage.setItem("cartItems",currentItems.toString());
-    });
+    // useEffect(() => {
+    //     const newItem = sessionStorage.getItem("newItem");
+    //     if (newItem !== null) {
+    //         addItems(newItem.replaceAll("\"", ""));
+    //         sessionStorage.removeItem("newItem");
+    //     }
+    //     sessionStorage.setItem("cartItems",currentItems.toString());
+    // });
 
-    useEffect(() => {
-        const cPrice = localStorage.getItem("currentPrice");
-        if (cPrice) {
-            setCurrentPrice(cPrice);
-            // localStorage.removeItem("currentPrice");
-        }
-    },[]);
+    // useEffect(() => {
+    //     const cPrice = sessionStorage.getItem("currentPrice");
+    //     if (cPrice) {
+    //         setCurrentPrice(cPrice);
+    //         // localStorage.removeItem("currentPrice");
+    //     }
+    // },[]);
 
-    useEffect(() => {
-        setCurrentPrice(localStorage.getItem("currentPrice"));
-    },[localStorage.getItem("currentPrice")]);
+    // useEffect(() => {
+    //     setCurrentPrice(sessionStorage.getItem("currentPrice"));
+    // },[sessionStorage.getItem("currentPrice")]);
 
 
 
     
     function listCartItems() {
-        return currentItems.map((item, index) => (
+        // return currentItems.map((item: string, index: number) => (
+            return (shoppingData.cartItems).map((item: string, index: number) => (
+
             <div key={index} className="flex justify-center items-center gap-x-4">
                 <button className="bg-red-500 rounded-lg w-11 h-10 text-white font-bold text-lg shadow-lg" onClick={() => removeItem(index)}>x</button>
-                <div className="bg-white shadow-lg p-5 hover:bg-gray-100 rounded-lg w-28 text-lg text-center text-gray-800 font-bold">{item.replace("/p", "")}</div>
+                <div className="bg-white shadow-lg p-5 hover:bg-gray-100 rounded-lg w-28 text-lg text-center text-gray-800 font-bold">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "")}</div>
             </div>
         ));
 
@@ -109,14 +146,14 @@ export default function ShoppingCart() {
 
     return (
         <>
-            <button className="absolute right-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><img src="/ShoppingCart.png" alt="Shopping Cart" /></button>
+            <button className="absolute right-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><Image src="/ShoppingCart.png" alt="Shopping Cart" width={200} height={200} /></button>
             <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 right-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
                 <div className="relative bg-red-400 rounded-lg h-[75%] w-3/4 flex flex-col items-center justify-start">
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                     <div className="absolute w-full h-10 bottom-0 rounded-lg bg-white flex flex-row justify-around items-center">
                         <div className="text-gray-800">Price:</div>
-                        <div className="text-gray-800">${currPrice}</div>
+                        <div className="text-gray-800">${shoppingData.currentPrice}</div>
                     </div>
                 </div>
                 <Link href="/customerView"><button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button></Link>
@@ -127,10 +164,10 @@ export default function ShoppingCart() {
                 <div className="text-gray-800 text-3xl mt-10">Do you wish to checkout?</div>
                 <div className="w-1/2 h-fit bg-white justify-center items-center rounded-xl flex flex-col gap-y-5">
                     <div className="text-gray-800 text-3xl">Current Order:</div>
-                    {currentItems.map(item => {
-                        return <div key={item} className="text-gray-800">{item}</div>
+                    {shoppingData.cartItems.map((item: string, index: number) => {
+                        return <div key={index} className="text-gray-800">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "")}</div>
                     })}
-                    <div className="text-gray-800 text-2xl">Total: ${currPrice}</div>
+                    <div className="text-gray-800 text-2xl">Total: ${shoppingData.currentPrice}</div>
                 </div>
                 <div className="flex justify-around w-full text-gray-800">
                     <button className="bg-red-700 p-10 rounded-xl text-white" onClick={() => showConformation(false)}>No</button>

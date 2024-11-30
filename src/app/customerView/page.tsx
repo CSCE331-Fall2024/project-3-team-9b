@@ -1,7 +1,9 @@
 // app/customerView/page.tsx
 'use client';
-import { useEffect, useState } from 'react';
+import {useEffect, useState } from 'react';
 import Link from "next/link";
+import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 
 interface Size {
@@ -13,22 +15,18 @@ interface Size {
 export default function CustomerView() {
   const [sizes, setSizes] = useState<Size[]>([]);
 
-  const fetchSizes = async () => {
-    try {
-      const response = await fetch('/api/fetchSizes');
-      const data = await response.json();
-      setSizes(data.sizes);
-      // console.log(sizes);
-    }
-    
-    catch (error) {
-      console.log(error);
-    }
-  }
+
+  const [shoppingData, changeShoppingData] = useShoppingDataContext();
+
   useEffect(() => {
-    fetchSizes();
-  },[]);
-  // console.log(sizes);
+    fetch('/api/fetchSizes')
+    .then((res) => res.json())
+    .then((data) => {setSizes(data.sizes)})
+    
+}, []);
+// changeShoppingData({shoppingData, currentPrice: 1000});
+
+console.log(shoppingData);
   return (
     <div className="flex flex-col items-center h-screen rounded-full bg-red-800 mb-40">
       {/* View Menu link at the top */}
@@ -49,25 +47,26 @@ export default function CustomerView() {
         
         {sizes.map((size)=> (
           <div key={size.size_id} className="h-[400px] w-[400px] py-10 bg-white rounded-lg shadow-lg text-gray-800 hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
-            <Link onClick={() => {localStorage.setItem("currentPrice", String(size.price));
+            {/* <Link onClick={() => {sessionStorage.setItem("currentPrice", String(size.price)); */}
+            <Link onClick={() => {
+              // changeShoppingData({...shoppingData, currentPrice: 100});
+              // console.log(size.price);
               if (size.size_id === 0){
-                localStorage.setItem("numSides", "1");
-                localStorage.setItem("numEntrees", "1");
+                changeShoppingData({...shoppingData, numEntrees: 1, currentPrice: size.price});
               }
               else if (size.size_id === 1){
-                localStorage.setItem("numSides", "1");
-                localStorage.setItem("numEntrees", "2");
-              }
+                changeShoppingData({...shoppingData, numEntrees: 2, currentPrice: size.price});
+              }   
               else if (size.size_id === 2){
-                localStorage.setItem("numSides", "1");
-                localStorage.setItem("numEntrees", "3");
+                changeShoppingData({...shoppingData, numEntrees: 3, currentPrice: size.price});
               }
             }} href = "/sides">
-            <img src ={"/" +size.size_name + ".png"} ></img>
+            <Image src ={"/" +size.size_name + ".png"} width = {200} height = {200} alt = "sizes" className='w-full'/>
             <div className='text-2xl font-bold'>{size.size_name[0].toUpperCase() + size.size_name.substring(1).replaceAll("_", " ")}</div>
             <div className='mt-4'>{size.size_id === 0 ? `1 Side & 1 Entree`: size.size_id == 1 ? "1 Side & 2 Entrees" : size.size_id === 2 ? "1 Side & 3 Entrees" : ""}</div>
             <div>${String(size.price)}+</div>
             </Link>
+            
             </div>
         ))}
         {/* <Link onClick={() => localStorage.setItem("currentPrice", "9.8")} href = "/sides" className="w-1/4 py-10 bg-white text-gray-800 rounded-lg shadow-lg hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">

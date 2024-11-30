@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -13,41 +15,21 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  sides: Food[];
-  error?: string;
-};
 
 export default function Sides() {
   const [sides, setSides] = useState<Food[]>([]);
   const [selectedSide, setSelectedSide] = useState<number | null>(null);
+  const [shoppingCart, setShoppingCart] = useShoppingDataContext();
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
 
-
-  useEffect(() => {
-    const fetchSides = async () => {
-      try {
-        const response = await fetch('/api/fetchSides');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        
-        const sortedSides = (data.sides || []).sort((a, b) => a.food_id - b.food_id);
-        setSides(sortedSides);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      } 
-    };
-
-    fetchSides();
+    useEffect(() => {
+      fetch('/api/fetchSides')
+      .then((res) => res.json())
+      .then((data) => {console.log(data.sides);setSides(data.sides)})
+      
   }, []);
 
 
@@ -63,24 +45,12 @@ export default function Sides() {
         selectedSideItem = sides.find(side => side.food_id === 0);
       }
       if (selectedSideItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name]});
       }
       setSelectedSide(null);
     }
   };
-  // const handleAddToCart = (addItem: (item: string) => void) => {
-  //   if (selectedSide) {
-  //     const selectedFood = sides.find(side => side.food_id === selectedSide);
-  //     if (selectedFood) {
-  //       addItem(selectedFood.food_name);
-  //       console.log(`Added side with ID ${selectedSide} to cart`);
-  //       setDebug(`Added side with ID ${selectedSide} to cart`);
-  //       setSelectedSide(null);
-  //     }
-  //   }
-  // };
-
-
 
   return (
     <>
@@ -146,7 +116,7 @@ export default function Sides() {
                     aria-labelledby={`side-${item.food_id}`}
                   >
                     {/* Top section with image */}  
-                    <img className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} />
+                    <Image className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} width = {200} height = {200} alt={item.food_name} />
                     {/* Center section with name */}
                     <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                       <h3 id={`side-${item.food_id}`} className="text-2xl font-bold text-gray-800">

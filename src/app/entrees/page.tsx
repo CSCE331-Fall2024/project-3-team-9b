@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -13,30 +15,24 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  entrees: Food[];
-  error?: string;
-};
 
 export default function Entrees() {
   const [entrees, setEntrees] = useState<Food[]>([]);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
-  const [currPrice, setCurrPrice] = useState<number>(0);
-  const [numEntrees, setNumEntrees] = useState<string | null>("");
+  // const [currPrice, setCurrPrice] = useState<number>(0);
+  // const [numEntrees, setNumEntrees] = useState<number>(0);
+  const [shoppingData, setShoppingData] = useShoppingDataContext();
 
-  useEffect(() => {
-    const cPrice = Number(localStorage.getItem("currentPrice"));
-    if (cPrice) {
-      setCurrPrice(Number(cPrice));
-    }
-},[]);
+//   useEffect(() => {
+//     const cPrice = typeof window !== 'undefined' ?  Number(sessionStorage.getItem("currentPrice")) : 0;
+//     if (cPrice) {
+//       setCurrPrice(Number(cPrice));
+//     }
+//     if (typeof window !== 'undefined'){
+//       setNumEntrees(Number(sessionStorage.getItem('numEntrees')));
+//     }
+// },[]);
 
-// useEffect(() => {
-//   const cPrice = Number(localStorage.getItem("currentPrice"));
-//   if (cPrice) {
-//     setCurrPrice(Number(cPrice));
-//   }
-// },[currPrice]);
   
 
 
@@ -44,36 +40,12 @@ export default function Entrees() {
     return str.replace(/\s/g, '');
   }
 
+
   useEffect(() => {
-    const fetchEntrees = async () => {
-      
-      try {
-        const response = await fetch('/api/fetchEntrees');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        const processedEntrees = (data.entrees || []).map(entree => ({
-          ...entree,
-          available: entree.quantity > 0
-        }));
-
-        const sortedEntrees = processedEntrees.sort((a, b) => a.food_id - b.food_id);
-        setEntrees(sortedEntrees);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      } 
-    };
-
-    fetchEntrees();
-    setNumEntrees(localStorage.getItem('numEntrees'));
-    
-  }, []);
+    fetch('/api/fetchEntrees')
+    .then((res) => res.json())
+    .then((data) => {setEntrees(data.entrees)})
+}, []);
 
 
   const handleEntreeSelect = (foodId: number) => {
@@ -84,22 +56,26 @@ export default function Entrees() {
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
       if (selectedEntreeItem?.premium){
-        localStorage.setItem('currentPrice', String(currPrice + 1.5))
-        setCurrPrice(Number(localStorage.getItem("currentPrice")));
-        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
+        // sessionStorage.setItem('currentPrice', String(currPrice + 1.5))
+        // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
+        setShoppingData({numEntrees: shoppingData.numEntrees -1,currentPrice: shoppingData.currentPrice + 1.5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/p" + "/e"]});
       }
       else if (selectedEntreeItem){
-        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
+        setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees -1, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/e"]});
       }
       setSelectedEntree(null);
-      // setNumEntrees(numEntrees - 1);
-      localStorage.setItem('numEntrees', String(Number(localStorage.getItem('numEntrees')) - 1));
+      // setNumEntrees(Number(numEntrees) - 1);
+      // sessionStorage.setItem("numEntrees", (numEntrees - 1).toString());
     }
   };
 
-  useEffect(() => {
-    setNumEntrees(localStorage.getItem("numEntrees"));
-  },[localStorage.getItem("numEntrees")]);
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined'){
+  //     setNumEntrees(Number(sessionStorage.getItem("numEntrees")));
+  //   }
+  // });
 
 
 
@@ -133,7 +109,7 @@ export default function Entrees() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                  <img src={"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} className="w-full h-full object-cover" />
+                  <Image src={"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} width = {200} height = {200} className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.food_name}
@@ -165,7 +141,7 @@ export default function Entrees() {
               {selectedEntree !== null && (
                 <div className="text-center absolute -translate-x-1/2">
                   
-                <Link href= {numEntrees === "1" ? "/appetizers" : ""}>
+                <Link href= {shoppingData.numEntrees === 1 ? "/appetizers" : ""}>
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"

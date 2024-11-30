@@ -17,7 +17,7 @@ export async function GET() {
   try {
     // Query to fetch only items from the food table where type is 'drink'
     const result = await pool.query('SELECT * FROM food WHERE type = $1;', ['drink']);
-    return NextResponse.json({ drinks: result.rows });
+    return NextResponse.json({ drinks: result.rows});
   } catch (error) {
     console.error('Error fetching drinks:', error); // This will give us more details about the error
     return NextResponse.json({ error: 'Error fetching drinks data' }, { status: 500 });
