@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Drink = {
   food_id: number; // Unique identifier
@@ -19,19 +20,20 @@ type Drink = {
 export default function Drinks() {
   const [drinks, setDrinks] = useState<Drink[]>([]);
   const [selectedDrink, setSelectedDrink] = useState<number | null>(null);
-  const [currPrice, setCurrPrice] = useState<number>(0);
+  // const [currPrice, setCurrPrice] = useState<number>(0);
+  const [shoppingData, setShoppingData] = useShoppingDataContext();
 
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
 
-  useEffect(() => {
-    const cPrice = typeof window !== 'undefined' ? Number(localStorage.getItem("currentPrice")) : 0;
-    if (cPrice) {
-      setCurrPrice(Number(cPrice));
-    }
-},[]);
+//   useEffect(() => {
+//     const cPrice = typeof window !== 'undefined' ? Number(sessionStorage.getItem("currentPrice")) : 0;
+//     if (cPrice) {
+//       setCurrPrice(Number(cPrice));
+//     }
+// },[]);
 
   useEffect(() => {
     fetch('/api/fetchDrinks')
@@ -49,9 +51,10 @@ export default function Drinks() {
     if (typeof window !== 'undefined' && selectedDrink) {
       const selectedDrinkItem = drinks.find(drink => drink.food_id === selectedDrink);
       if (selectedDrinkItem) {
-        localStorage.setItem('currentPrice', String(currPrice + 2))
-        setCurrPrice(Number(localStorage.getItem("currentPrice")));
-        localStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name) + '/p');
+        // sessionStorage.setItem('currentPrice', String(currPrice + 2))
+        // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name) + '/p');
+        setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice + 2, cartItems: [...shoppingData.cartItems, selectedDrinkItem.food_name + "/d"]})
 
       }
       setSelectedDrink(null);

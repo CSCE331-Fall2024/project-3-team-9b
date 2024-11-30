@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -17,18 +18,19 @@ type Food = {
 export default function Appetizers() {
   const [appetizers, setAppetizers] = useState<Food[]>([]);
   const [selectedAppetizer, setSelectedAppetizer] = useState<number | null>(null);
-  const [currPrice, setCurrPrice] = useState<number>(0);
+  // const [currPrice, setCurrPrice] = useState<number>(0);
+  const [shoppingData, setShoppingData] = useShoppingDataContext();
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
 
-  useEffect(() => {
-    const cPrice = typeof window !== 'undefined' ? Number(localStorage.getItem("currentPrice")) : 0;
-    if (cPrice) {
-      setCurrPrice(Number(cPrice));
-    }
-},[]);
+//   useEffect(() => {
+//     const cPrice = typeof window !== 'undefined' ? Number(sessionStorage.getItem("currentPrice")) : 0;
+//     if (cPrice) {
+//       setCurrPrice(Number(cPrice));
+//     }
+// },[]);
 
 
 
@@ -61,9 +63,10 @@ export default function Appetizers() {
     if (typeof window !== 'undefined') {
       const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
       if (selectedAppItem) {
-        localStorage.setItem('currentPrice', String(currPrice + 2))
-        setCurrPrice(Number(localStorage.getItem("currentPrice")));
-        localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name) + '/p');
+        // sessionStorage.setItem('currentPrice', String(currPrice + 2))
+        // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name) + '/p');
+        setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice + 2, cartItems: [...shoppingData.cartItems, selectedAppItem.food_name + "/a"]})
       }
       setSelectedAppetizer(null);
     }
@@ -170,7 +173,7 @@ export default function Appetizers() {
               Add to Cart
             </button>
           </div>
-        )}s
+        )}
         </div>
         </div>
       </div>

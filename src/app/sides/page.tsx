@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -18,6 +19,7 @@ type Food = {
 export default function Sides() {
   const [sides, setSides] = useState<Food[]>([]);
   const [selectedSide, setSelectedSide] = useState<number | null>(null);
+  const [shoppingCart, setShoppingCart] = useShoppingDataContext();
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -43,24 +45,12 @@ export default function Sides() {
         selectedSideItem = sides.find(side => side.food_id === 0);
       }
       if (selectedSideItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name]});
       }
       setSelectedSide(null);
     }
   };
-  // const handleAddToCart = (addItem: (item: string) => void) => {
-  //   if (selectedSide) {
-  //     const selectedFood = sides.find(side => side.food_id === selectedSide);
-  //     if (selectedFood) {
-  //       addItem(selectedFood.food_name);
-  //       console.log(`Added side with ID ${selectedSide} to cart`);
-  //       setDebug(`Added side with ID ${selectedSide} to cart`);
-  //       setSelectedSide(null);
-  //     }
-  //   }
-  // };
-
-
 
   return (
     <>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -18,18 +19,19 @@ type Food = {
 export default function Entrees() {
   const [entrees, setEntrees] = useState<Food[]>([]);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
-  const [currPrice, setCurrPrice] = useState<number>(0);
-  const [numEntrees, setNumEntrees] = useState<number>(0);
+  // const [currPrice, setCurrPrice] = useState<number>(0);
+  // const [numEntrees, setNumEntrees] = useState<number>(0);
+  const [shoppingData, setShoppingData] = useShoppingDataContext();
 
-  useEffect(() => {
-    const cPrice = typeof window !== 'undefined' ?  Number(localStorage.getItem("currentPrice")) : 0;
-    if (cPrice) {
-      setCurrPrice(Number(cPrice));
-    }
-    if (typeof window !== 'undefined'){
-      setNumEntrees(Number(localStorage.getItem('numEntrees')));
-    }
-},[]);
+//   useEffect(() => {
+//     const cPrice = typeof window !== 'undefined' ?  Number(sessionStorage.getItem("currentPrice")) : 0;
+//     if (cPrice) {
+//       setCurrPrice(Number(cPrice));
+//     }
+//     if (typeof window !== 'undefined'){
+//       setNumEntrees(Number(sessionStorage.getItem('numEntrees')));
+//     }
+// },[]);
 
   
 
@@ -54,25 +56,26 @@ export default function Entrees() {
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
       if (selectedEntreeItem?.premium){
-        localStorage.setItem('currentPrice', String(currPrice + 1.5))
-        setCurrPrice(Number(localStorage.getItem("currentPrice")));
-        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
+        // sessionStorage.setItem('currentPrice', String(currPrice + 1.5))
+        // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
+        setShoppingData({numEntrees: shoppingData.numEntrees -1,currentPrice: shoppingData.currentPrice + 1.5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/p" + "/e"]});
       }
       else if (selectedEntreeItem){
-        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
+        setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees -1, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/e"]});
       }
       setSelectedEntree(null);
       // setNumEntrees(Number(numEntrees) - 1);
-      localStorage.setItem("numEntrees", (numEntrees - 1).toString());
+      // sessionStorage.setItem("numEntrees", (numEntrees - 1).toString());
     }
   };
 
 
-  useEffect(() => {
-    if (typeof window !== 'undefined'){
-      setNumEntrees(Number(localStorage.getItem("numEntrees")));
-    }
-  });
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined'){
+  //     setNumEntrees(Number(sessionStorage.getItem("numEntrees")));
+  //   }
+  // });
 
 
 
@@ -138,7 +141,7 @@ export default function Entrees() {
               {selectedEntree !== null && (
                 <div className="text-center absolute -translate-x-1/2">
                   
-                <Link href= {numEntrees === 1 ? "/appetizers" : ""}>
+                <Link href= {shoppingData.numEntrees === 1 ? "/appetizers" : ""}>
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
