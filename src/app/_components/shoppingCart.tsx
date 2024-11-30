@@ -85,7 +85,7 @@ export default function ShoppingCart() {
                 },
                 // body: JSON.stringify(currentItems)
             });
-            // console.log(response);
+            console.log(response);
         } catch (error) {
             console.error('Error fetching entrees:', error);
         }
