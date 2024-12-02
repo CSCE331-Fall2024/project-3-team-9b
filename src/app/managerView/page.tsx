@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 // Define interfaces for the data structures
 interface XReportEntry {
@@ -17,17 +18,18 @@ interface ZReportEntry {
 }
 
 interface InventoryItem {
-  name: string;
+  ingredient_name: string;
   quantity: number;
 }
 
 interface Employee {
   name: string;
   position: string;
+  salary: number;
 }
 
 interface IngredientUsage {
-  Food_Name: string;
+  food_name: string;
   total_ingredients_used: number;
 }
 
@@ -162,28 +164,31 @@ export default function ManagerView() {
 
       {/* Tab Navigation */}
       <div className="flex space-x-4 border-b-2 border-rose-500 pb-2 mb-6">
-        {[
-          "X-Report",
-          "Z-Report",
-          "Manage Inventory",
-          "Manage Employees",
-          "Inventory Usage",
-          "Peak Sales Day",
-          "Realistic Sales History",
-          "Weekly Sales History",
-        ].map((tab) => (
-          <button
-            key={tab}
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              activeTab === tab
-                ? "bg-white text-rose-400"
-                : "bg-rose-500 hover:bg-rose-600"
-            }`}
-            onClick={() => handleTabChange(tab)}
-          >
-            {tab}
-          </button>
-        ))}
+      {[ 
+        "X-Report", 
+        "Z-Report", 
+        "Manage Inventory", 
+        "Manage Employees", 
+        "Inventory Usage", 
+        "Peak Sales Day", 
+        "Realistic Sales History", 
+        "Weekly Sales History"
+      ].map((tab) => (
+        <button
+          key={tab}
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            activeTab === tab ? "bg-white text-rose-400" : "bg-rose-500 hover:bg-rose-600"
+          }`}
+          onClick={() => handleTabChange(tab)}
+        >
+          {tab}
+        </button>
+      ))}
+      <Link 
+        href="/cashierView" 
+        className="px-4 py-2 rounded-lg font-semibold bg-blue-500 hover:bg-blue-600 text-white">
+        Switch to Cashier
+      </Link>
       </div>
 
       {/* Content Panel */}
@@ -227,7 +232,7 @@ export default function ManagerView() {
             <ul>
               {inventory.map((item, index) => (
                 <li key={index}>
-                  {item.name}: {item.quantity} units
+                  {item.ingredient_name}: {item.quantity} units
                 </li>
               ))}
             </ul>
@@ -239,7 +244,7 @@ export default function ManagerView() {
             <ul>
               {employees.map((employee, index) => (
                 <li key={index}>
-                  {employee.name} - {employee.position}
+                  {employee.name} - {employee.position}: ${employee.salary}
                 </li>
               ))}
             </ul>
@@ -251,7 +256,7 @@ export default function ManagerView() {
             <ul>
               {ingredientCount.map((item, index) => (
                 <li key={index}>
-                  {item.Food_Name}: {item.total_ingredients_used} ingredients used
+                  {item.food_name}: {item.total_ingredients_used} ingredients used
                 </li>
               ))}
             </ul>
@@ -294,7 +299,28 @@ export default function ManagerView() {
             </ul>
           </div>
         )}
+        {activeTab === "Switch to Cashier" && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Weekly Sales History</h3>
+            <ul>
+              {weeklySalesHistory.map((week, index) => (
+                <li key={index}>
+                  Week {week.week_number}: {week.total_orders} orders
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
+      <div className="flex mt-6">
+      <Link 
+        href="/" 
+        className="px-6 py-3 rounded-lg font-semibold bg-gray-700 hover:bg-gray-800 text-white"
+      >
+        Back
+      </Link>
     </div>
+    </div>
+
   );
 }

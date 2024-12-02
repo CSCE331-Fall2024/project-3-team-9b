@@ -2,79 +2,60 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Drink = {
   food_id: number; // Unique identifier
   drink_name: string;
   quantity: number;
   type: string;
-  food_name?: string;
+  food_name: string;
   calories: number;
   available: boolean;
   premium: boolean;
   image_url: string;
 };
 
-type ApiResponse = {
-  drinks: Drink[];
-  error?: string;
-};
-
 export default function Drinks() {
   const [drinks, setDrinks] = useState<Drink[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedDrink, setSelectedDrink] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
+  // const [currPrice, setCurrPrice] = useState<number>(0);
+  const [shoppingData, setShoppingData] = useShoppingDataContext();
+
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
 
+//   useEffect(() => {
+//     const cPrice = typeof window !== 'undefined' ? Number(sessionStorage.getItem("currentPrice")) : 0;
+//     if (cPrice) {
+//       setCurrPrice(Number(cPrice));
+//     }
+// },[]);
+
   useEffect(() => {
-    const fetchDrinks = async () => {
-      try {
-        const response = await fetch('/api/fetchDrinks');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-
-        const sortedDrinks = (data.drinks || []).map((drink) => ({
-          ...drink,
-          drink_name: drink.drink_name || drink.food_name || "Unnamed Drink",
-        })).sort((a, b) => a.food_id - b.food_id);
-
-        setDrinks(sortedDrinks);
-        setDebug(`Fetched ${sortedDrinks.length} drinks, sorted by food_id`);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching drinks');
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDrinks();
-  }, []);
-
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setDrinks([]);
-    setSelectedDrink(null);
-  };
+    fetch('/api/fetchDrinks')
+    .then((res) => res.json())
+    .then((data) => {console.log(data.drinks);setDrinks(data.drinks)})
+    
+}, []);
+  
 
   const handleDrinkSelect = (foodId: number) => {
     setSelectedDrink(prevSelected => prevSelected === foodId ? null : foodId);
-    setDebug(`Selected drink with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
     if (typeof window !== 'undefined' && selectedDrink) {
       const selectedDrinkItem = drinks.find(drink => drink.food_id === selectedDrink);
       if (selectedDrinkItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name));
+        // sessionStorage.setItem('currentPrice', String(currPrice + 2))
+        // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedDrinkItem.food_name) + '/p');
+        setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice + 2, cartItems: [...shoppingData.cartItems, selectedDrinkItem.food_name + "/d"]})
+
       }
       setSelectedDrink(null);
     }
@@ -108,7 +89,7 @@ export default function Drinks() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                  <img src={"/" + removeSpace(item.drink_name) + ".png"} alt={item.food_name} className="w-full h-full object-cover" />
+                  <Image src={"/" + removeSpace(item.food_name) + ".png"} width = {200} height = {200} alt="food" className="w-full h-full object-cover" />
                   <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                     <h3 id={`entree-${item.food_id}`} className="text-2xl font-bold text-gray-800">
                       {item.food_name}

@@ -29,6 +29,7 @@ export default function WeatherWidget() {
                 setError(data.error);
             }
         } catch (err) {
+            console.log(err);
             setError('Failed to fetch weather data.');
         }
     };

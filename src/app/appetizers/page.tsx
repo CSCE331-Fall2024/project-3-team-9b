@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -13,66 +15,58 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  appetizers: Food[];
-  error?: string;
-};
-
 export default function Appetizers() {
   const [appetizers, setAppetizers] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedAppetizer, setSelectedAppetizer] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
+  // const [currPrice, setCurrPrice] = useState<number>(0);
+  const [shoppingData, setShoppingData] = useShoppingDataContext();
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
 
+//   useEffect(() => {
+//     const cPrice = typeof window !== 'undefined' ? Number(sessionStorage.getItem("currentPrice")) : 0;
+//     if (cPrice) {
+//       setCurrPrice(Number(cPrice));
+//     }
+// },[]);
+
+
+
   useEffect(() => {
-    const fetchAppetizers = async () => {
-      try {
-        const response = await fetch('/api/fetchAppetizers');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();        
-        if (data.error) {
-          throw new Error(data.error);
-        }
+    fetch('/api/fetchAppetizers')
+    .then((res) => res.json())
+    .then((data) => {setAppetizers(data.appetizers)})
+    
+}, []);
 
-        // Sort appetizers by food_id in ascending order
-        const sortedAppetizers = (data.appetizers || []).sort((a, b) => a.food_id - b.food_id);
-        setAppetizers(sortedAppetizers);
-        setDebug(`Fetched ${sortedAppetizers.length} appetizers, sorted by food_id`);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching appetizers');
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchAppetizers();
-  }, []);
-
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setAppetizers([]);
-    setSelectedAppetizer(null);
-  };
 
   const handleAppetizerSelect = (foodId: number) => {
     setSelectedAppetizer(prevSelected => prevSelected === foodId ? null : foodId);
-    setDebug(`Selected appetizer with ID: ${foodId}`);
   };
 
-  const handleAddToCart = () => {
-    if (typeof window !== 'undefined' && selectedAppetizer) {
+  // const handleAddToCart = () => {
+  //   if (typeof window !== 'undefined') {
+  //     const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
+  //     if (selectedAppItem) {
+  //       localStorage.setItem('currentPrice', String(currPrice + 2))
+  //       setCurrPrice(Number(localStorage.getItem("currentPrice")));
+  //       localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name) + '/p');
+  //     }
+  //     setSelectedAppetizer(null);
+  //   }
+  // };
+
+    const handleAddToCart = () => {
+    if (typeof window !== 'undefined') {
       const selectedAppItem = appetizers.find(app => app.food_id === selectedAppetizer);
       if (selectedAppItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name));
+        // sessionStorage.setItem('currentPrice', String(currPrice + 2))
+        // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedAppItem.food_name) + '/p');
+        setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice + 2, cartItems: [...shoppingData.cartItems, selectedAppItem.food_name + "/a"]})
       }
       setSelectedAppetizer(null);
     }
@@ -139,10 +133,12 @@ export default function Appetizers() {
                   aria-disabled={!item.available}
                   aria-labelledby={`entree-${item.food_id}`}
                 >
-                <img 
-                  className="w-full h-full object-cover"
+                <Image 
+                  className="w-full h-full object-cover max-h-[200px]"
                   src={"/" + removeSpace(item.food_name) + ".png"}
                   alt={item.food_name}
+                  width = {200} 
+                  height = {200}
                 />
                 <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                   <h3 id={`appetizer-${item.food_id}`} className="text-2xl font-bold text-gray-800">

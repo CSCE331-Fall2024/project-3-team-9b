@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
+import Image from 'next/image';
+import { useShoppingDataContext } from '@components/shoppingData';
 
 type Food = {
   food_id: number;
@@ -13,85 +15,45 @@ type Food = {
   premium: boolean;
 };
 
-type ApiResponse = {
-  sides: Food[];
-  error?: string;
-};
 
 export default function Sides() {
   const [sides, setSides] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedSide, setSelectedSide] = useState<number | null>(null);
-  const [debug, setDebug] = useState<string>('');
+  const [shoppingCart, setShoppingCart] = useShoppingDataContext();
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
   }
 
-
-  useEffect(() => {
-    const fetchSides = async () => {
-      try {
-        const response = await fetch('/api/fetchSides');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: ApiResponse = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        
-        const sortedSides = (data.sides || []).sort((a, b) => a.food_id - b.food_id);
-        setSides(sortedSides);
-        setDebug(`Fetched ${sortedSides.length} sides, sorted by food_id`);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while fetching sides');
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSides();
+    useEffect(() => {
+      fetch('/api/fetchSides')
+      .then((res) => res.json())
+      .then((data) => {console.log(data.sides);setSides(data.sides)})
+      
   }, []);
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    setSides([]);
-    setSelectedSide(null);
-  };
 
   const handleSideSelect = (foodId: number) => {
     setSelectedSide((prevSelected) => (prevSelected === foodId ? null : foodId));
-    setDebug(`Selected side with ID: ${foodId}`);
 
   };
 
   const handleAddToCart = () => {
-    if (typeof window !== 'undefined' && selectedSide >= 0) {
-      const selectedSideItem = sides.find(side => side.food_id === selectedSide);
-      if (selectedSideItem) {
-        localStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+    if (typeof window !== 'undefined') {
+      let selectedSideItem = sides.find(side => side.food_id === selectedSide);
+      if (selectedSide === 101){
+        selectedSideItem = sides.find(side => side.food_id === 0);
+      }
+      if (selectedSideItem && shoppingCart.size === 3){
+        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name + "/l/s"], currentPrice: shoppingCart.currentPrice + 4});
+      }
+      else if (selectedSideItem) {
+        // sessionStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
+        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name]});
       }
       setSelectedSide(null);
     }
   };
-  // const handleAddToCart = (addItem: (item: string) => void) => {
-  //   if (selectedSide) {
-  //     const selectedFood = sides.find(side => side.food_id === selectedSide);
-  //     if (selectedFood) {
-  //       addItem(selectedFood.food_name);
-  //       console.log(`Added side with ID ${selectedSide} to cart`);
-  //       setDebug(`Added side with ID ${selectedSide} to cart`);
-  //       setSelectedSide(null);
-  //     }
-  //   }
-  // };
-
-
 
   return (
     <>
@@ -157,7 +119,7 @@ export default function Sides() {
                     aria-labelledby={`side-${item.food_id}`}
                   >
                     {/* Top section with image */}  
-                    <img className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} alt={item.food_name} />
+                    <Image className="object-cover w-full h-full" src= {"/" + removeSpace(item.food_name) + ".png"} width = {200} height = {200} alt={item.food_name} />
                     {/* Center section with name */}
                     <div className="flex-grow flex flex-col items-center justify-center text-center mb-4">
                       <h3 id={`side-${item.food_id}`} className="text-2xl font-bold text-gray-800">

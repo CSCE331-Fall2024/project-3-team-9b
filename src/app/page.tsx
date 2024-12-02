@@ -3,9 +3,9 @@
 import Link from "next/link";
 import LoginButton from "./_components/login";
 import LogOutButton from "./_components/logout";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { googleLogout, GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
-import WeatherWidget from "./weather/WeatherWidget"; 
+import WeatherWidget from "./weather/page"; 
 
 //const clientId = "32164770538-122jpqmmlep5hfeuhv2cu2l9n29k92gp.apps.googleusercontent.com"
 const clientId = "49243162226-hsvtotstbj808vdmp0k2jvhf0asfre40.apps.googleusercontent.com"
@@ -22,7 +22,7 @@ const employees = [
   { email: 'employee7@gmail.com', position: 'Employee' },
   { email: 'employee8@gmail.com', position: 'Employee' },
   { email: 'employee9@gmail.com', position: 'Employee' },
-  { email: 'carsoncoen@tamu.edu', position: 'Employee' },
+  { email: 'carsoncoen@tamu.edu', position: 'Manager' },
   { email: 'keepswimming123@tamu.edu', position: 'Employee' },
   { email: 'nicktnc24@tamu.edu', position: 'Employee' },
   { email: 'nmcorn21@tamu.edu', position: 'Employee' },
@@ -59,7 +59,7 @@ export default function Home() {
       sessionStorage.clear();
       // Perform logout
       if (isLoggedIn) {
-        (window as any).googleLogout();
+        googleLogout();
       }
     };
 
@@ -71,7 +71,7 @@ export default function Home() {
     };
   }, [isLoggedIn]);
 
-  const handleLoginSuccess = (email: string, token: string) => {
+  const handleLoginSuccess = (email: string) => {
     setIsLoggedIn(true);
     setUserEmail(email);
     setUserRole(checkEmployeeRole(email));

@@ -26,10 +26,10 @@ type ApiResponse = {
   error?: string;
 };
 
-type Ingredient = {
-  ingredient_id: number;
-  amount_used: number;
-};
+// type Ingredient = {
+//   ingredient_id: number;
+//   amount_used: number;
+// };
 
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState('sides');
@@ -182,7 +182,7 @@ export default function CashierView() {
       return;
     }
 
-    const employeeId = prompt('Please enter your employee ID:');
+    const employeeId = sessionStorage.getItem('employeeId')
     if (!employeeId) {
       alert('Employee ID is required to finish the transaction.');
       return;
@@ -245,7 +245,7 @@ export default function CashierView() {
   return (
     <div className="flex h-screen">
       <div className="w-1/4 p-4 bg-gray-100 border-r flex flex-col">
-        <h2 className="text-xl text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
+        <h2 className="text-xl p-10 text-blue-500 text-center font-bold mb-4">Current Transaction</h2>
         {previousOrders.map((order, index) => (
           <div key={index} className="mb-4">
             <h3 className="font-semibold text-gray-700">Order {index + 1} - {order.size}</h3>
