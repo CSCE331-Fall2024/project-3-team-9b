@@ -14,8 +14,8 @@ const pool = new Pool({
 });
 
 export async function GET() {
-  // Get the current date in 'YYYY-MM-DD' format
-  const transactionDate = new Date().toISOString().split('T')[0];
+  // Ensure the current date is formatted correctly
+  const transactionDate = '2024-08-10'; // Hardcode or dynamically determine the date for testing
 
   try {
     const result = await pool.query(
@@ -42,15 +42,16 @@ export async function GET() {
        JOIN HourlyTotals h ON r.hour_of_day = h.hour_of_day
        WHERE r.rank = 1
        ORDER BY r.hour_of_day;`,
-      [transactionDate]
+      [transactionDate] // Pass the parameter here
     );
 
     return NextResponse.json({ sides: result.rows });
   } catch (error) {
-    console.error('Error fetching x report:', error);
-    return NextResponse.json({ error: 'Error fetching x report data' }, { status: 500 });
+    console.error('Error fetching X-Report:', error);
+    return NextResponse.json({ error: 'Error fetching X-Report data' }, { status: 500 });
   }
 }
+
 
 console.log("Database Configuration:", {
   user: process.env.DB_USER,

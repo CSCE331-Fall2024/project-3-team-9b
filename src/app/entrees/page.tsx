@@ -24,6 +24,24 @@ export default function Entrees() {
   const [error, setError] = useState<string | null>(null);
   const [selectedEntree, setSelectedEntree] = useState<number | null>(null);
   const [debug, setDebug] = useState<string>('');
+  const [currPrice, setCurrPrice] = useState<number>(0);
+  const [numEntrees, setNumEntrees] = useState(0);
+
+  useEffect(() => {
+    const cPrice = Number(localStorage.getItem("currentPrice"));
+    if (cPrice) {
+      setCurrPrice(Number(cPrice));
+    }
+},[]);
+
+// useEffect(() => {
+//   const cPrice = Number(localStorage.getItem("currentPrice"));
+//   if (cPrice) {
+//     setCurrPrice(Number(cPrice));
+//   }
+// },[currPrice]);
+  
+
 
   function removeSpace(str: string): string {
     return str.replace(/\s/g, '');
@@ -31,6 +49,7 @@ export default function Entrees() {
 
   useEffect(() => {
     const fetchEntrees = async () => {
+      
       try {
         const response = await fetch('/api/fetchEntrees');
         if (!response.ok) {
@@ -59,6 +78,8 @@ export default function Entrees() {
     };
 
     fetchEntrees();
+    setNumEntrees(localStorage.getItem('numEntrees'));
+    
   }, []);
 
   const handleRetry = () => {
@@ -70,18 +91,33 @@ export default function Entrees() {
 
   const handleEntreeSelect = (foodId: number) => {
     setSelectedEntree((prevSelected) => (prevSelected === foodId ? null : foodId));
+
     setDebug(`Selected entree with ID: ${foodId}`);
   };
 
   const handleAddToCart = () => {
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
-      if (selectedEntreeItem) {
+      if (selectedEntreeItem?.premium){
+        localStorage.setItem('currentPrice', String(currPrice + 1.5))
+        setCurrPrice(Number(localStorage.getItem("currentPrice")));
+        localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
+      }
+      else{
         localStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name));
       }
       setSelectedEntree(null);
+      // setNumEntrees(numEntrees - 1);
+      localStorage.setItem('numEntrees', String(Number(localStorage.getItem('numEntrees')) - 1));
     }
   };
+
+  useEffect(() => {
+    setNumEntrees(Number(localStorage.getItem("numEntrees")));
+  },[localStorage.getItem("numEntrees")]);
+
+
+
 
   return (
     <>
@@ -118,11 +154,14 @@ export default function Entrees() {
                       {item.food_name}
                     </h3>
                     {item.premium && (
-                      <span className="mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
+                      <span className= "mt-2 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full"
                             role="badge">
                         Premium
                       </span>
-                    )}
+                      
+                    )
+                  }
+
                   </div>
 
                   <div className="text-sm text-gray-600 text-center">
@@ -140,6 +179,8 @@ export default function Entrees() {
           <div>
               {selectedEntree !== null && (
                 <div className="text-center absolute -translate-x-1/2">
+                  
+                <Link href= {numEntrees === 1 ? "/appetizers" : ""}>
                   <button
                     onClick={handleAddToCart}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -147,6 +188,7 @@ export default function Entrees() {
                   >
                     Add to Cart
                   </button>
+                  </Link>
                 </div>
               )}
               </div>
@@ -154,22 +196,22 @@ export default function Entrees() {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4">
+      {/* <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4"> */}
         <Link
           href="/sides"
-          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/appetizers"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="fixed bottom-10 right-0 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           aria-label="Go to appetizers"
         >
           Next
         </Link>
-      </div>
+      {/* </div> */}
     </div>
     </>
   );

@@ -40,15 +40,16 @@ export default function WeatherWidget() {
 
     return (
         <div
-            className={`fixed bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 w-64 transition-transform ${
-                isVisible ? 'translate-y-0' : 'translate-y-full'
+            className={`fixed bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 w-64 transition-transform duration-300 ${
+                isVisible ? 'translate-y-0' : 'translate-y-[110%]'
             }`}
             style={{ zIndex: 1000 }}
         >
             {/* Toggle Button */}
             <button
                 onClick={toggleVisibility}
-                className="absolute top-0 left-0 -translate-x-10 bg-blue-600 text-white px-3 py-2 rounded-r-lg shadow-md"
+                className="absolute top-1/2 left-[-3rem] -translate-y-1/2 bg-blue-600 text-white px-3 py-2 rounded-r-lg shadow-md"
+                style={{ zIndex: 1001 }}
             >
                 {isVisible ? '▼' : '▲'}
             </button>
