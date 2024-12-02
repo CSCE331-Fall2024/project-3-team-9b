@@ -18,11 +18,11 @@ export default function ShoppingCart() {
     const [shoppingData, setShoppingData] = useShoppingDataContext();
 
 
-    // console.log(shoppingData);
+    console.log(shoppingData);
 
     function removeAllItems(): void {
         // setCurrentItems([]);
-        setShoppingData({currentPrice: 0, numEntrees: 0, cartItems: []});
+        setShoppingData({size: -1, currentPrice: 0, numEntrees: 0, cartItems: []});
     }
 
     const [cart, showCart] = useState(false);
@@ -40,11 +40,20 @@ export default function ShoppingCart() {
         // if (currentItems[index].includes("/p")){
         //     sessionStorage.setItem("currentPrice", (Number(currPrice) - 1.5).toString());
         // }
-        if (shoppingData.cartItems[index].includes("/p") && shoppingData.cartItems[index].includes("/e")){
-            setShoppingData({numEntrees: shoppingData.numEntrees + 1, currentPrice: shoppingData.currentPrice - 1.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+        if (shoppingData.cartItems[index].includes("/p") && shoppingData.cartItems[index].includes("/l") && shoppingData.cartItems[index].includes("/e")){
+            setShoppingData({...shoppingData,  currentPrice: shoppingData.currentPrice - 6.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
 
             // shoppingData.currentPrice = (Number(shoppingData.currentPrice) - 1.5).toString();
         }
+        else if (shoppingData.cartItems[index].includes("/p") && shoppingData.cartItems[index].includes("/e")){
+            setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees + 1, currentPrice: shoppingData.currentPrice - 1.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+
+            // shoppingData.currentPrice = (Number(shoppingData.currentPrice) - 1.5).toString();
+        }
+        else if(shoppingData.cartItems[index].includes("/l") && shoppingData.cartItems[index].includes("/s")){
+            setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice - 4, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+        }
+
         else if(shoppingData.cartItems[index].includes("/p")){
             setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice - 1.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
 
@@ -68,6 +77,7 @@ export default function ShoppingCart() {
         // sessionStorage.setItem("numEntrees", (Number(numEntrees) + 1).toString());
     };
 
+
     // useEffect(() => {
     //     setNumEntrees(Number(localStorage.getItem("numEntrees")));
     // },[]);
@@ -75,6 +85,8 @@ export default function ShoppingCart() {
     // useEffect(() => {
     //     if (typeof window !== 'undefined') setNumEntrees(Number(sessionStorage.getItem("numEntrees")));
     // });
+
+
     
     const checkout = async () => {
         try {
@@ -83,18 +95,24 @@ export default function ShoppingCart() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                // body: JSON.stringify(currentItems)
+                body: JSON.stringify({
+                    employee: 15,
+                    cart: shoppingData.cartItems,
+                    totalPrice: shoppingData.currentPrice,
+                    size: shoppingData.size
+                })
             });
+            // if (response.ok) {
+            //     const data = await response.json();
+            //     console.log(data.message); // 'Checkout successful'
+            // }
             console.log(response);
         } catch (error) {
-            console.error('Error fetching entrees:', error);
+            console.error('Error during checkout:', error);
         }
-        // setCurrentItems([]);
-        setShoppingData({currentPrice: 0, numEntrees: 0, cartItems: []});
-        // sessionStorage.removeItem("cartItems");
+        setShoppingData({size: -1, currentPrice: 0, numEntrees: 0, cartItems: []});
         console.log("Checkout successful!");
     }
-
 
     // useEffect(
     //     () => {
@@ -138,7 +156,7 @@ export default function ShoppingCart() {
 
             <div key={index} className="flex justify-center items-center gap-x-4">
                 <button className="bg-red-500 rounded-lg w-11 h-10 text-white font-bold text-lg shadow-lg" onClick={() => removeItem(index)}>x</button>
-                <div className="bg-white shadow-lg p-5 hover:bg-gray-100 rounded-lg w-28 text-lg text-center text-gray-800 font-bold">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "")}</div>
+                <div className="bg-white shadow-lg p-5 hover:bg-gray-100 rounded-lg w-28 text-lg text-center text-gray-800 font-bold">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "").replace("/s", "").replace("/l", "")}</div>
             </div>
         ));
 
@@ -165,7 +183,7 @@ export default function ShoppingCart() {
                 <div className="w-1/2 h-fit bg-white justify-center items-center rounded-xl flex flex-col gap-y-5">
                     <div className="text-gray-800 text-3xl">Current Order:</div>
                     {shoppingData.cartItems.map((item: string, index: number) => {
-                        return <div key={index} className="text-gray-800">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "")}</div>
+                        return <div key={index} className="text-gray-800">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "").replace("/s", "").replace("/l", "")}</div>
                     })}
                     <div className="text-gray-800 text-2xl">Total: ${shoppingData.currentPrice}</div>
                 </div>

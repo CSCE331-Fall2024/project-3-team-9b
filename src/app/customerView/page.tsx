@@ -27,6 +27,7 @@ export default function CustomerView() {
     .then((data) => {setSizes(data.sizes); console.log(data.sizes)})
     
 }, []);
+  console.log(sizes);
 
 return (
     <div className="flex flex-col items-center h-screen rounded-full bg-red-800 mb-40">
@@ -50,13 +51,16 @@ return (
           <div key={size.size_id} className="h-[400px] w-[400px] py-10 bg-white rounded-lg shadow-lg text-gray-800 hover:scale-105 hover:duration-300 hover:bg-gray-100 text-center">
             <Link onClick={() => {
               if (size.size_id === 0){
-                changeShoppingData({...shoppingData, numEntrees: 1, currentPrice: size.price});
+                changeShoppingData({...shoppingData, numEntrees: 1, currentPrice: size.price, size: size.size_id});
               }
               else if (size.size_id === 1){
-                changeShoppingData({...shoppingData, numEntrees: 2, currentPrice: size.price});
+                changeShoppingData({...shoppingData, numEntrees: 2, currentPrice: size.price, size: size.size_id});
               }   
               else if (size.size_id === 2){
-                changeShoppingData({...shoppingData, numEntrees: 3, currentPrice: size.price});
+                changeShoppingData({...shoppingData, numEntrees: 3, currentPrice: size.price, size: size.size_id});
+              }
+              else if (size.size_id === 3){
+                changeShoppingData({...shoppingData, numEntrees: 0, currentPrice: 0, size: size.size_id});
               }
             }} href = "/sides">
             <Image src ={"/" + size.size_name + ".png"} width = {500} height = {500} alt = "sizes" className='w-full'/>
