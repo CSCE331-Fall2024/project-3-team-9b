@@ -44,7 +44,10 @@ export default function Sides() {
       if (selectedSide === 101){
         selectedSideItem = sides.find(side => side.food_id === 0);
       }
-      if (selectedSideItem) {
+      if (selectedSideItem && shoppingCart.size === 3){
+        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name + "/l/s"], currentPrice: shoppingCart.currentPrice + 4});
+      }
+      else if (selectedSideItem) {
         // sessionStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
         setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name]});
       }

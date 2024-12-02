@@ -19,6 +19,8 @@ export default function RootLayout({
     numEntrees: 0,
     currentPrice: 0.0,
     cartItems: [],
+    size: -1,
+  
 });
   return (
     <html lang="en">

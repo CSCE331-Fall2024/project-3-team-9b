@@ -32,8 +32,8 @@ export default function MenuBoardView() {
       <div className="text-2xl my-10 underline">Entrees</div>
       <div className="flex flex-row justify-center items-center flex-wrap gap-5">
         <div>{foodDisplaySquare("/BeijingBeef.png", "Beijing Beef")}</div>
-        <div>{foodDisplaySquare("/BeyondTheOriginalOrangeChicken.png", "Beyond The Original Orange Chicken")}</div>
-        <div>{foodDisplaySquare("/OrangeChicken.png", "The Original Orange Chicken")}</div>
+        <div>{foodDisplaySquare("/VeggieOrangeChicken.png", "Beyond The Original Orange Chicken")}</div>
+        <div>{foodDisplaySquare("/TheOriginalOrangeChicken.png", "The Original Orange Chicken")}</div>
         <div>{foodDisplaySquare("/BlackPepperSirloinSteak.png", "Black Pepper Sirloin Steak")}</div>
         <div>{foodDisplaySquare("/HoneyWalnutShrimp.png", "Honey Walnut Shrimp")}</div>
         <div>{foodDisplaySquare("/GrilledTeriyakiChicken.png", "Grilled Teriyaki Chicken")}</div>

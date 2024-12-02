@@ -55,11 +55,16 @@ export default function Entrees() {
   const handleAddToCart = () => {
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
-      if (selectedEntreeItem?.premium){
+      if (selectedEntreeItem?.premium && shoppingData.size === 3){
+        setShoppingData({...shoppingData,currentPrice: shoppingData.currentPrice + 6.5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/p" + "/l"+ "/e"]});
+
         // sessionStorage.setItem('currentPrice', String(currPrice + 1.5))
         // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
         // sessionStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
-        setShoppingData({numEntrees: shoppingData.numEntrees -1,currentPrice: shoppingData.currentPrice + 1.5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/p" + "/e"]});
+      }
+      else if (selectedEntreeItem?.premium){
+        setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees -1,currentPrice: shoppingData.currentPrice + 1.5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/p" + "/e"]});
+
       }
       else if (selectedEntreeItem){
         setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees -1, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/e"]});
