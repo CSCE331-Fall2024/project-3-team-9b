@@ -2,6 +2,9 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
 function Login({ onLoginSuccess }) {
+  // Get the current domain for redirect URI
+  const domain = typeof window !== 'undefined' ? window.location.origin : '';
+  
   const onSuccess = async (credentialResponse) => {
     try {
       const decodedToken = jwtDecode(credentialResponse.credential);
@@ -10,9 +13,6 @@ function Login({ onLoginSuccess }) {
       // Store credentials in sessionStorage
       sessionStorage.setItem('token', credentialResponse.credential);
       sessionStorage.setItem('userEmail', decodedToken.email);
-      
-      // Show success message
-      alert(`Successfully logged in as ${decodedToken.email}`);
       
       // Call the parent component's success handler
       onLoginSuccess(decodedToken.email, credentialResponse.credential);
@@ -41,6 +41,7 @@ function Login({ onLoginSuccess }) {
         auto_select={false}
         ux_mode="popup"
         context="signin"
+        redirect_uri={domain}
       />
     </div>
   );

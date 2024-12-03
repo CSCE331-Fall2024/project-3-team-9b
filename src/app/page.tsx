@@ -76,16 +76,6 @@ export default function Home() {
     };
   }, [isLoggedIn]);
 
-/*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Handles the login success event by setting the isLoggedIn state to true, 
-   * the userEmail state to the given email, and the userRole state to the 
-   * role corresponding to the given email. Also stores the token and email
-   * in sessionStorage.
-   * @param {string} email The email of the logged in user
-   * @param {string} token The authentication token
-   */
-/******  f7d51337-64e6-4ff9-8a96-e05bc8b8fce8  *******/
   const handleLoginSuccess = (email: string, token: string) => {
     setIsLoggedIn(true);
     setUserEmail(email);
