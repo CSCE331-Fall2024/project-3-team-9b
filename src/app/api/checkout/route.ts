@@ -21,16 +21,16 @@ export async function POST(request: Request) {
     //   console.log(employee);
     //   console.log(totalPrice);
 
-    // for (const food of cart) {
-    //   const foodname = food.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "");
-    //   const result = await client.query(
-    //     'UPDATE food SET quantity = quantity - 1 WHERE food_name = $1 AND quantity > 0',
-    //     [foodname]
-    //   );
-    // }
+    for (const food of cart) {
+      const foodname = food.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "");
+      await client.query(
+        'UPDATE food SET quantity = quantity - 1 WHERE food_name = $1 AND quantity > 0',
+        [foodname]
+      );
+    }
     const query = await client.query('SELECT MAX(transaction_id) FROM transactions');
     const transactionId = query.rows[0].max + 1;
-    const transactionquery = await client.query(
+    await client.query(
       'INSERT INTO transactions (transaction_id, employee_id, typesales, transaction_date, time, total_price, size_id) VALUES ($1, $2, $3, $4, $5, $6, $7)',
       [transactionId, employee, 'Order Transaction', new Date(), new Date(), totalPrice, size]
     );
