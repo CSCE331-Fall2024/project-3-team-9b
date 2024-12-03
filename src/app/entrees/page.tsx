@@ -62,6 +62,9 @@ export default function Entrees() {
         // setCurrPrice(Number(sessionStorage.getItem("currentPrice")));
         // sessionStorage.setItem('newItem', JSON.stringify(selectedEntreeItem.food_name) + '/p');
       }
+      else if (selectedEntreeItem && shoppingData.size === 3){
+        setShoppingData({...shoppingData,currentPrice: shoppingData.currentPrice + 5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/l"+ "/e"]});
+      }
       else if (selectedEntreeItem?.premium){
         setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees -1,currentPrice: shoppingData.currentPrice + 1.5, cartItems: [...shoppingData.cartItems, selectedEntreeItem.food_name + "/p" + "/e"]});
 
