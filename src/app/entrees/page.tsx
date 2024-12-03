@@ -5,6 +5,7 @@ import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
 import WeatherWidget from '@components/WeatherWidget'; 
+import ChatBot from '@components/ChatBot'; 
 
 type Food = {
   food_id: number;
@@ -184,6 +185,7 @@ export default function Entrees() {
       {/* </div> */}
     </div>
     <WeatherWidget/>
+    <ChatBot/>
     </>
   );
 }

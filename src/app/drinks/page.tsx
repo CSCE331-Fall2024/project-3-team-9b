@@ -5,6 +5,7 @@ import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
 import WeatherWidget from '@components/WeatherWidget'; 
+import ChatBot from '@components/ChatBot'; 
 
 type Drink = {
   food_id: number; // Unique identifier
@@ -141,6 +142,7 @@ export default function Drinks() {
         </Link>
     </div>
     <WeatherWidget/>
+    <ChatBot/>
     </>
   );
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image  from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
 import WeatherWidget from '@components/WeatherWidget'; 
+import ChatBot from '@components/ChatBot'; 
 
 
 interface Size {
@@ -87,6 +88,7 @@ return (
         </Link> */}
       </div>
       <WeatherWidget/>
+      <ChatBot/>
     </div>
   );
 }
