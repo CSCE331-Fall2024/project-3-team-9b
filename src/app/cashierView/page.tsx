@@ -58,12 +58,12 @@ export default function CashierView() {
   //   'A La Carte' : 0.0,
   // };
 
-  const aLaCartPrices: { [key: string]: number } = {
-    'side' : 4.40,
-    'entree' : 5.20,
-    'drink' : 0.0,
-    'appetizer' : 0.0,
-  };
+  // const aLaCartPrices: { [key: string]: number } = {
+  //   'side' : 4.40,
+  //   'entree' : 5.20,
+  //   'drink' : 0.0,
+  //   'appetizer' : 0.0,
+  // };
 
   useEffect(() => {
     const fetchBasePrices = async () => {
@@ -163,7 +163,7 @@ export default function CashierView() {
     let aLaCartePrice = 0;
     // add a la cart pricing
     if (isALaCarte) {
-      aLaCartePrice = aLaCartPrices[item.type];
+      aLaCartePrice = basePrices[item.type.charAt(0).toUpperCase() + item.type.slice(1)];
     }
 
     // set other additional costs
