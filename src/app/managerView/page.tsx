@@ -51,7 +51,8 @@ interface WeeklySalesHistoryEntry {
 
 interface ChangeItemPricesEntry {
   price: number;
-  size: string;
+  size_name: string;
+  size_id: number;
 }
 
 export default function ManagerView() {
@@ -314,11 +315,11 @@ export default function ManagerView() {
         )}
         {activeTab === "Change Item Prices" && (
           <div>
-          <h3 className="text-xl font-semibold mb-4">Item Prices</h3>
+          <h3 className="text-xl font-semibold mb-4">Size Prices</h3>
           <ul>
             {changeItemPrices.map((sizes, index) => (
               <li key={index}>
-                Size {sizes.size}: ${sizes.price}
+                ID: {sizes.size_id} | {sizes.size_name}: ${sizes.price}
               </li>
             ))}
           </ul>
