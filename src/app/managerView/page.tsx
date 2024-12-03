@@ -49,6 +49,11 @@ interface WeeklySalesHistoryEntry {
   total_orders: number;
 }
 
+interface ChangeItemPricesEntry {
+  price: number;
+  size: string;
+}
+
 export default function ManagerView() {
   const [activeTab, setActiveTab] = useState("X-Report");
 
@@ -61,6 +66,7 @@ export default function ManagerView() {
   const [peakSalesDays, setPeakSalesDays] = useState<PeakSalesDay[]>([]);
   const [salesHistory, setSalesHistory] = useState<SalesHistoryEntry[]>([]);
   const [weeklySalesHistory, setWeeklySalesHistory] = useState<WeeklySalesHistoryEntry[]>([]);
+  const [changeItemPrices, setChangeItemPrices] = useState<ChangeItemPricesEntry[]>([]);
 
   // Fetch data based on the active tab
   useEffect(() => {
@@ -138,7 +144,13 @@ export default function ManagerView() {
             const weeklySalesData = await weeklySalesResponse.json();
             setWeeklySalesHistory(weeklySalesData.weeks || []);
             break;
-
+          case "Change Item Prices":
+            const changeItemPricesResponse = await fetch("/api/fetchItemPrices");
+            if (!changeItemPricesResponse.ok) {
+              throw new Error(`Weekly Sales API Error: ${changeItemPricesResponse.status}`);
+            }
+            const changeItemsData = await changeItemPricesResponse.json();
+            setChangeItemPrices(changeItemsData.sizes || []);
           default:
             break;
         }
@@ -172,7 +184,8 @@ export default function ManagerView() {
         "Inventory Usage", 
         "Peak Sales Day", 
         "Realistic Sales History", 
-        "Weekly Sales History"
+        "Weekly Sales History",
+        "Change Item Prices"
       ].map((tab) => (
         <button
           key={tab}
@@ -298,6 +311,18 @@ export default function ManagerView() {
               ))}
             </ul>
           </div>
+        )}
+        {activeTab === "Change Item Prices" && (
+          <div>
+          <h3 className="text-xl font-semibold mb-4">Item Prices</h3>
+          <ul>
+            {changeItemPrices.map((sizes, index) => (
+              <li key={index}>
+                Size {sizes.size}: ${sizes.price}
+              </li>
+            ))}
+          </ul>
+        </div>
         )}
         {activeTab === "Switch to Cashier" && (
           <div>
