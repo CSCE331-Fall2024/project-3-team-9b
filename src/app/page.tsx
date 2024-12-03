@@ -6,6 +6,9 @@ import LogOutButton from "./_components/logout";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
 import WeatherWidget from "./weather/WeatherWidget"; 
+interface WindowWithGoogleLogout extends Window {
+  googleLogout?: () => void;
+}
 
 // Ensure this matches the Google Cloud Console configuration
 const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 
@@ -52,6 +55,7 @@ export default function Home() {
       setIsLoggedIn(true);
       setUserEmail(storedEmail);
       setUserRole(checkEmployeeRole(storedEmail));
+      console.log(token);
     }
 
     // Add event listener for beforeunload
@@ -60,7 +64,8 @@ export default function Home() {
       sessionStorage.clear();
       // Perform logout
       if (isLoggedIn) {
-        (window as any).googleLogout?.();
+        const windowWithGoogleLogout = window as WindowWithGoogleLogout;
+        windowWithGoogleLogout.googleLogout?.();
       }
     };
 
