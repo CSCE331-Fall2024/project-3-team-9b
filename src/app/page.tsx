@@ -12,8 +12,9 @@ interface WindowWithGoogleLogout extends Window {
 }
 
 // Ensure this matches the Google Cloud Console configuration
-const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 
-  "49243162226-hsvtotstbj808vdmp0k2jvhf0asfre40.apps.googleusercontent.com";
+// const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 
+//   "49243162226-hsvtotstbj808vdmp0k2jvhf0asfre40.apps.googleusercontent.com";
+const clientId ="32164770538-122jpqmmlep5hfeuhv2cu2l9n29k92gp.apps.googleusercontent.com";
 
 // Mock employee database (in a real app, this would be a database query)
 const employees = [
@@ -27,10 +28,10 @@ const employees = [
   { email: 'employee7@gmail.com', position: 'Employee' },
   { email: 'employee8@gmail.com', position: 'Employee' },
   { email: 'employee9@gmail.com', position: 'Employee' },
-  { email: 'carsoncoen@tamu.edu', position: 'Employee' },
-  { email: 'keepswimming123@tamu.edu', position: 'Employee' },
-  { email: 'nicktnc24@tamu.edu', position: 'Employee' },
-  { email: 'nmcorn21@tamu.edu', position: 'Employee' },
+  { email: 'carsoncoen@tamu.edu', position: 'Manager' },
+  { email: 'keepswimming123@tamu.edu', position: 'Manager' },
+  { email: 'nicktnc24@tamu.edu', position: 'Manager' },
+  { email: 'nmcorn21@tamu.edu', position: 'Manager' },
   { email: 'ethan2004g@tamu.edu', position: 'Manager' }
 ];
 
