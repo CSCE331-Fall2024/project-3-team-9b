@@ -66,31 +66,35 @@ export default function CashierView() {
   // };
 
   useEffect(() => {
-    const fetchBasePrices = async () => {
-      try {
-        const response = await fetch('/api/fetchItemPrices');
-        if (!response.ok) {
-          throw new Error('Failed to fetch base prices');
-        }
-        const data = await response.json();
-        
-        // Convert the array of sizes into the required format with proper capitalization
-        const priceMap = data.sizes.reduce((acc: { [key: string]: number }, item: any) => {
-          const displayName = item.size_name
-            .split('_')
-            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-          acc[displayName] = item.price;
-          return acc;
-        }, {});
-        
-        setBasePrices(priceMap);
-      } catch (error) {
-        console.error('Error fetching base prices:', error);
+      interface SizeData {
+          size_name: string;
+          price: number;
       }
-    };
-  
-    fetchBasePrices();
+
+      const fetchBasePrices = async () => {
+          try {
+              const response = await fetch('/api/fetchItemPrices');
+              if (!response.ok) {
+                  throw new Error('Failed to fetch base prices');
+              }
+              const data = await response.json();
+              
+              const priceMap = data.sizes.reduce((acc: Record<string, number>, item: SizeData) => {
+                  const displayName = item.size_name
+                      .split('_')
+                      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ');
+                  acc[displayName] = item.price;
+                  return acc;
+              }, {});
+              
+              setBasePrices(priceMap);
+          } catch (error) {
+              console.error('Error fetching base prices:', error);
+          }
+      };
+
+      fetchBasePrices();
   }, []);
 
   useEffect(() => {
