@@ -11,32 +11,11 @@ function Login({ onLoginSuccess }) {
       sessionStorage.setItem('token', credentialResponse.credential);
       sessionStorage.setItem('userEmail', decodedToken.email);
       
-      // Make API call to your backend to get employee information
-      const response = await fetch('/api/employeeLookup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: decodedToken.email }),
-      });
+      // Show success message
+      alert(`Successfully logged in as ${decodedToken.email}`);
       
-      if (response.ok) {
-        const employeeData = await response.json();
-        
-        // Store employee data in sessionStorage matching the backend response
-        sessionStorage.setItem('employeeId', employeeData.employeeId);
-        sessionStorage.setItem('employeeName', employeeData.name);
-        sessionStorage.setItem('employeePosition', employeeData.position);
-        
-        // Show success message
-        alert(`Successfully logged in as ${employeeData.name}`);
-        
-        // Call the parent component's success handler
-        onLoginSuccess(decodedToken.email, credentialResponse.credential, employeeData);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Employee not found');
-      }
+      // Call the parent component's success handler
+      onLoginSuccess(decodedToken.email, credentialResponse.credential);
       
     } catch (error) {
       console.error('Error processing login:', error);
@@ -58,11 +37,10 @@ function Login({ onLoginSuccess }) {
         type="standard"
         shape="rectangular"
         width="250"
-        prompt="select_account consent"
-        auto_select="false"
+        prompt="select_account"
+        auto_select={false}
         ux_mode="popup"
         context="signin"
-        hosted_domain=""
       />
     </div>
   );
