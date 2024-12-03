@@ -6,6 +6,7 @@ import LogOutButton from "./_components/logout";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
 import WeatherWidget from "./weather/WeatherWidget"; 
+
 interface WindowWithGoogleLogout extends Window {
   googleLogout?: () => void;
 }
@@ -49,13 +50,11 @@ export default function Home() {
 
   useEffect(() => {
     // Check sessionStorage instead of localStorage
-    const token = sessionStorage.getItem('token');
     const storedEmail = sessionStorage.getItem('userEmail');
-    if (token && storedEmail) {
+    if (storedEmail) {
       setIsLoggedIn(true);
       setUserEmail(storedEmail);
       setUserRole(checkEmployeeRole(storedEmail));
-      console.log(token);
     }
 
     // Add event listener for beforeunload
@@ -77,10 +76,23 @@ export default function Home() {
     };
   }, [isLoggedIn]);
 
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Handles the login success event by setting the isLoggedIn state to true, 
+   * the userEmail state to the given email, and the userRole state to the 
+   * role corresponding to the given email. Also stores the token and email
+   * in sessionStorage.
+   * @param {string} email The email of the logged in user
+   * @param {string} token The authentication token
+   */
+/******  f7d51337-64e6-4ff9-8a96-e05bc8b8fce8  *******/
   const handleLoginSuccess = (email: string, token: string) => {
     setIsLoggedIn(true);
     setUserEmail(email);
     setUserRole(checkEmployeeRole(email));
+    // Store the token in sessionStorage
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('userEmail', email);
   };
 
   const handleLogout = () => {
