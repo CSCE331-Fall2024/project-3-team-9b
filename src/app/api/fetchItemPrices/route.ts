@@ -10,7 +10,7 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
-  ssl: { rejectUnauthorized: false }, // Modify based on SSL requirements
+  ssl: { rejectUnauthorized: false },
 });
 
 export async function GET() {
@@ -23,10 +23,21 @@ export async function GET() {
   }
 }
 
-console.log("Database Configuration:", {
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD ? '*****' : '(not set)',
-  port: process.env.DB_PORT,
-});
+export async function POST(req: Request) {
+  try {
+    const { size_id, new_price } = await req.json();
+    const updateResult = await pool.query(
+      'UPDATE sizes SET price = $1 WHERE size_id = $2 RETURNING *;',
+      [new_price, size_id]
+    );
+    
+    if (updateResult.rows.length === 0) {
+      return NextResponse.json({ error: 'Size not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ updatedSize: updateResult.rows[0] });
+  } catch (error) {
+    console.error('Error updating item price:', error);
+    return NextResponse.json({ error: 'Error updating item price' }, { status: 500 });
+  }
+}

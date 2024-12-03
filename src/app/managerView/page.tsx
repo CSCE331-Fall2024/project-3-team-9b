@@ -68,7 +68,9 @@ export default function ManagerView() {
   const [salesHistory, setSalesHistory] = useState<SalesHistoryEntry[]>([]);
   const [weeklySalesHistory, setWeeklySalesHistory] = useState<WeeklySalesHistoryEntry[]>([]);
   const [changeItemPrices, setChangeItemPrices] = useState<ChangeItemPricesEntry[]>([]);
-
+  const [sizeId, setSizeId] = useState('');
+  const [newPrice, setNewPrice] = useState('');
+  
   // Fetch data based on the active tab
   useEffect(() => {
     const fetchData = async () => {
@@ -164,6 +166,35 @@ export default function ManagerView() {
   }, [activeTab]);
 
   const handleTabChange = (tab: string) => setActiveTab(tab);
+
+  const handleUpdatePrice = async () => {
+    try {
+      const response = await fetch('/api/fetchItemPrices', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ size_id: parseInt(sizeId), new_price: parseFloat(newPrice) }),
+      });
+  
+      if (response.ok) {
+        const updatedSize = await response.json();
+        // Update the state with the new price
+        setChangeItemPrices(prevPrices =>
+          prevPrices.map(size =>
+            size.size_id === updatedSize.updatedSize.size_id ? updatedSize.updatedSize : size
+          )
+        );
+        // Clear the input fields
+        setSizeId('');
+        setNewPrice('');
+      } else {
+        console.error('Failed to update price');
+      }
+    } catch (error) {
+      console.error('Error updating price:', error);
+    }
+  };
 
   return (
     <div
@@ -315,15 +346,39 @@ export default function ManagerView() {
         )}
         {activeTab === "Change Item Prices" && (
           <div>
-          <h3 className="text-xl font-semibold mb-4">Size Prices</h3>
-          <ul>
-            {changeItemPrices.map((sizes, index) => (
-              <li key={index}>
-                ID: {sizes.size_id} | {sizes.size_name}: ${sizes.price}
-              </li>
-            ))}
-          </ul>
-        </div>
+            <h3 className="text-xl font-semibold mb-4">Item Prices</h3>
+            <ul>
+              {changeItemPrices.map((size, index) => (
+                <li key={index}>
+                  ID: {size.size_id} | {size.size_name}: ${size.price}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4">
+              <h4 className="text-lg font-semibold mb-2">Update Price</h4>
+              <input
+                type="number"
+                placeholder="Size ID"
+                value={sizeId}
+                onChange={(e) => setSizeId(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="number"
+                step="0.01"
+                placeholder="New Price"
+                value={newPrice}
+                onChange={(e) => setNewPrice(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <button
+                onClick={handleUpdatePrice}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Update Price
+              </button>
+            </div>
+          </div>
         )}
         {activeTab === "Switch to Cashier" && (
           <div>
