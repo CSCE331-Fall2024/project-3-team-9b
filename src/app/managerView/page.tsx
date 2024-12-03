@@ -23,9 +23,11 @@ interface InventoryItem {
 }
 
 interface Employee {
+  employee_id: number;  
   name: string;
   position: string;
   salary: number;
+  email: string;  
 }
 
 interface IngredientUsage {
@@ -63,6 +65,12 @@ export default function ManagerView() {
   const [zReport, setZReport] = useState<ZReportEntry[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [newEmployeeName, setNewEmployeeName] = useState("");
+  const [newEmployeeSalary, setNewEmployeeSalary] = useState("");
+  const [newEmployeePosition, setNewEmployeePosition] = useState("");
+  const [newEmployeeGender, setNewEmployeeGender] = useState("");
+  const [newEmployeeEmail, setNewEmployeeEmail] = useState("");
+
   const [ingredientCount, setIngredientCount] = useState<IngredientUsage[]>([]);
   const [peakSalesDays, setPeakSalesDays] = useState<PeakSalesDay[]>([]);
   const [salesHistory, setSalesHistory] = useState<SalesHistoryEntry[]>([]);
@@ -70,7 +78,7 @@ export default function ManagerView() {
   const [changeItemPrices, setChangeItemPrices] = useState<ChangeItemPricesEntry[]>([]);
   const [sizeId, setSizeId] = useState('');
   const [newPrice, setNewPrice] = useState('');
-  
+
   // Fetch data based on the active tab
   useEffect(() => {
     const fetchData = async () => {
@@ -176,16 +184,16 @@ export default function ManagerView() {
         },
         body: JSON.stringify({ size_id: parseInt(sizeId), new_price: parseFloat(newPrice) }),
       });
-  
+
       if (response.ok) {
         const updatedSize = await response.json();
-        // Update the state with the new price
+        
         setChangeItemPrices(prevPrices =>
           prevPrices.map(size =>
             size.size_id === updatedSize.updatedSize.size_id ? updatedSize.updatedSize : size
           )
         );
-        // Clear the input fields
+        
         setSizeId('');
         setNewPrice('');
       } else {
@@ -195,6 +203,72 @@ export default function ManagerView() {
       console.error('Error updating price:', error);
     }
   };
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch("/api/fetchEmployees");
+      const data = await response.json();
+      setEmployees(data.employees);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const handleAddEmployee = async () => {
+    console.log("Attempting to add employee", { 
+        name: newEmployeeName,
+        gender: newEmployeeGender,
+        salary: newEmployeeSalary,
+        position: newEmployeePosition,
+        email: newEmployeeEmail,
+    });
+
+    try {
+        const requestBody = { 
+            name: newEmployeeName,
+            gender: newEmployeeGender,
+            salary: parseFloat(newEmployeeSalary), 
+            position: newEmployeePosition,
+            email: newEmployeeEmail,
+        };
+
+        console.log("Request body:", requestBody); 
+
+        const response = await fetch('/api/fetchEmployees', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        console.log("Fetch response received", response); 
+
+        if (response.ok) {
+            const responseBody = await response.json();
+            console.log("Response body:", responseBody); 
+            setEmployees(prev => [...prev, responseBody]); 
+            setNewEmployeeName("");
+            setNewEmployeeGender("");
+            setNewEmployeeSalary("");
+            setNewEmployeePosition("");
+            setNewEmployeeEmail("");
+        } else {
+            const errorText = await response.text();
+            console.error('Failed to add employee:', errorText);
+            throw new Error(errorText);
+        }
+    } catch (error) {
+        console.error('Error adding employee:', error);
+    }
+};
+
+  
+
+  
 
   return (
     <div
@@ -288,23 +362,57 @@ export default function ManagerView() {
             <h3 className="text-xl font-semibold mb-4">Employees</h3>
             <ul>
               {employees.map((employee, index) => (
-                <li key={index}>
-                  {employee.name} - {employee.position}: ${employee.salary}
+                <li key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center' }}>
+                  <span>
+                    {employee.name} - {employee.position}: ${employee.salary}
+                  </span>
                 </li>
               ))}
             </ul>
-          </div>
-        )}
-        {activeTab === "Inventory Usage" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Inventory Usage</h3>
-            <ul>
-              {ingredientCount.map((item, index) => (
-                <li key={index}>
-                  {item.food_name}: {item.total_ingredients_used} ingredients used
-                </li>
-              ))}
-            </ul>
+            <div className="mt-4">
+              <h4 className="text-lg font-semibold mb-2">Add Employee</h4>
+              <input
+                type="text"
+                placeholder="Name"
+                value={newEmployeeName}
+                onChange={(e) => setNewEmployeeName(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="number"
+                placeholder="Salary"
+                value={newEmployeeSalary}
+                onChange={(e) => setNewEmployeeSalary(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Position"
+                value={newEmployeePosition}
+                onChange={(e) => setNewEmployeePosition(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Gender"
+                value={newEmployeeGender}
+                onChange={(e) => setNewEmployeeGender(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={newEmployeeEmail}
+                onChange={(e) => setNewEmployeeEmail(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <button
+                onClick={handleAddEmployee}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Add Employee
+              </button>
+            </div>
           </div>
         )}
         {activeTab === "Peak Sales Day" && (
@@ -402,6 +510,5 @@ export default function ManagerView() {
       </Link>
     </div>
     </div>
-
   );
 }
