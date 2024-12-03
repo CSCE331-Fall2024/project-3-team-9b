@@ -42,6 +42,7 @@ export default function CashierView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isALaCarte, setIsALaCarte] = useState(false);
+  const [basePrices, setBasePrices] = useState<{ [key: string]: number }>({});
 
   const sizeLimits = {
     'Bowl': { sides: 1, entrees: 1 },
@@ -50,12 +51,12 @@ export default function CashierView() {
     'A La Carte' : { sides: 10000, entrees: 10000},
   };
 
-  const basePrices: { [key: string]: number } = {
-    'Bowl': 8.30,
-    'Plate': 9.80,
-    'Bigger Plate': 11.30,
-    'A La Carte' : 0.0,
-  };
+  // const basePrices: { [key: string]: number } = {
+  //   'Bowl': 8.30,
+  //   'Plate': 9.80,
+  //   'Bigger Plate': 11.30,
+  //   'A La Carte' : 0.0,
+  // };
 
   const aLaCartPrices: { [key: string]: number } = {
     'side' : 4.40,
@@ -63,6 +64,34 @@ export default function CashierView() {
     'drink' : 0.0,
     'appetizer' : 0.0,
   };
+
+  useEffect(() => {
+    const fetchBasePrices = async () => {
+      try {
+        const response = await fetch('/api/fetchItemPrices');
+        if (!response.ok) {
+          throw new Error('Failed to fetch base prices');
+        }
+        const data = await response.json();
+        
+        // Convert the array of sizes into the required format with proper capitalization
+        const priceMap = data.sizes.reduce((acc: { [key: string]: number }, item: any) => {
+          const displayName = item.size_name
+            .split('_')
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+          acc[displayName] = item.price;
+          return acc;
+        }, {});
+        
+        setBasePrices(priceMap);
+      } catch (error) {
+        console.error('Error fetching base prices:', error);
+      }
+    };
+  
+    fetchBasePrices();
+  }, []);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -113,9 +142,9 @@ export default function CashierView() {
     setSelectedSize(size);
     setIsALaCarte(size === 'A La Carte');
     setCurrentOrder([]);
-    setCurrentOrderSubtotal(basePrices[size]);
-    setTotalCost(prevTotal => prevTotal + basePrices[size]);
-
+    const basePrice = basePrices[size] || 0;
+    setCurrentOrderSubtotal(basePrice);
+    setTotalCost(prevTotal => prevTotal + basePrice);
   };
 
   const handleAddToOrder = (item: Food) => {
