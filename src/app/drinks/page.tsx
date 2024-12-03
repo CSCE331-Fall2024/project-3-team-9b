@@ -4,6 +4,7 @@ import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
+import WeatherWidget from '@components/WeatherWidget'; 
 
 type Drink = {
   food_id: number; // Unique identifier
@@ -139,6 +140,7 @@ export default function Drinks() {
           Back
         </Link>
     </div>
+    <WeatherWidget/>
     </>
   );
 }

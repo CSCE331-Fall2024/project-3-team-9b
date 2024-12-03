@@ -4,6 +4,7 @@ import {useEffect, useState } from 'react';
 import Link from "next/link";
 import Image  from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
+import WeatherWidget from '@components/WeatherWidget'; 
 
 
 interface Size {
@@ -85,6 +86,7 @@ return (
           <div>$11.30+</div>
         </Link> */}
       </div>
+      <WeatherWidget/>
     </div>
   );
 }

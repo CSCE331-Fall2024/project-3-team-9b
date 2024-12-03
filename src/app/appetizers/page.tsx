@@ -4,6 +4,7 @@ import Link from "next/link";
 import ShoppingCart from '@components/shoppingCart';
 import Image from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
+import WeatherWidget from '@components/WeatherWidget'; 
 
 type Food = {
   food_id: number;
@@ -195,6 +196,7 @@ export default function Appetizers() {
           Next
         </Link>
     </div>
+    <WeatherWidget/>
     </>
   );
 }
