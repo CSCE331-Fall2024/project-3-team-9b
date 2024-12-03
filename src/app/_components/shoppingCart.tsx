@@ -45,6 +45,11 @@ export default function ShoppingCart() {
 
             // shoppingData.currentPrice = (Number(shoppingData.currentPrice) - 1.5).toString();
         }
+        else if (shoppingData.cartItems[index].includes("/l") && shoppingData.cartItems[index].includes("/e")){
+            setShoppingData({...shoppingData,  currentPrice: shoppingData.currentPrice - 5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+
+            // shoppingData.currentPrice = (Number(shoppingData.currentPrice) - 1.5).toString();
+        }
         else if (shoppingData.cartItems[index].includes("/p") && shoppingData.cartItems[index].includes("/e")){
             setShoppingData({...shoppingData, numEntrees: shoppingData.numEntrees + 1, currentPrice: shoppingData.currentPrice - 1.5, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
 
