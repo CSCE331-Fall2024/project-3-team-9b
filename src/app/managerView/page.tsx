@@ -57,6 +57,16 @@ interface ChangeItemPricesEntry {
   size_id: number;
 }
 
+interface FoodItem {
+  food_id: number;
+  food_name: string;
+  quantity: number;
+  type: string;
+  calories: number;
+  available: boolean;
+  premium: boolean;
+}
+
 export default function ManagerView() {
   const [activeTab, setActiveTab] = useState("X-Report");
 
@@ -78,6 +88,90 @@ export default function ManagerView() {
   const [changeItemPrices, setChangeItemPrices] = useState<ChangeItemPricesEntry[]>([]);
   const [sizeId, setSizeId] = useState('');
   const [newPrice, setNewPrice] = useState('');
+
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [newFoodName, setNewFoodName] = useState("");
+  const [newFoodQuantity, setNewFoodQuantity] = useState("");
+  const [newFoodType, setNewFoodType] = useState("");
+  const [newFoodCalories, setNewFoodCalories] = useState("");
+  const [newFoodAvailable, setNewFoodAvailable] = useState(true);
+  const [newFoodPremium, setNewFoodPremium] = useState(false);
+  const [removeFoodId, setRemoveFoodId] = useState("");
+  const [error, setError] = useState("");
+
+  const handleAddFood = async () => {
+    try {
+      if (!newFoodName || !newFoodQuantity || !newFoodType || !newFoodCalories) {
+        setError("All fields are required");
+        return;
+      }
+  
+      const foodData = {
+        food_name: newFoodName,
+        quantity: parseInt(newFoodQuantity),
+        type: newFoodType,
+        calories: parseInt(newFoodCalories),
+        available: newFoodAvailable,
+        premium: newFoodPremium,
+      };
+  
+      console.log('Sending request to API with:', foodData);
+  
+      const response = await fetch('/api/fetchMenu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(foodData),
+      });
+  
+      if (!response.ok) {
+        try {
+          const errorData = await response.json();
+          console.error('Error response from API:', errorData);
+          throw new Error(errorData.error || 'Failed to add food item');
+        } catch (parseError) {
+          console.error('Error parsing response:', parseError);
+          throw new Error('Unexpected error occurred');
+        }
+      }
+  
+      const newFood = await response.json();
+      setFoodItems(prev => [...prev, newFood]);
+  
+      // Reset form
+      setNewFoodName("");
+      setNewFoodQuantity("");
+      setNewFoodType("");
+      setNewFoodCalories("");
+      setNewFoodAvailable(true);
+      setNewFoodPremium(false);
+      setError("");
+    } catch (error) {
+      console.error('Error adding food item:', error);
+      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+    }
+  };
+  
+
+  const handleRemoveFood = async () => {
+    try {
+      const response = await fetch('/api/fetchMenu', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ food_id: parseInt(removeFoodId) }),
+      });
+
+      if (response.ok) {
+        setFoodItems(prev => prev.filter(item => item.food_id !== parseInt(removeFoodId)));
+        setRemoveFoodId("");
+      } else {
+        console.error('Failed to remove food item');
+      }
+    } catch (error) {
+      console.error('Error removing food item:', error);
+    }
+  };
 
   // Fetch data based on the active tab
   useEffect(() => {
@@ -163,6 +257,14 @@ export default function ManagerView() {
             const changeItemsData = await changeItemPricesResponse.json();
             setChangeItemPrices(changeItemsData.sizes || []);
           default:
+            break;
+          case "Menu":
+            const foodItemsResponse = await fetch("/api/fetchMenu");
+            if (!foodItemsResponse.ok) {
+              throw new Error(`Menu API Error: ${foodItemsResponse.status}`);
+            }
+            const foodItemsData = await foodItemsResponse.json();
+            setFoodItems(foodItemsData.items || []);
             break;
         }
       } catch (error) {
@@ -291,7 +393,8 @@ export default function ManagerView() {
         "Peak Sales Day", 
         "Realistic Sales History", 
         "Weekly Sales History",
-        "Change Item Prices"
+        "Change Item Prices",
+        "Menu"
       ].map((tab) => (
         <button
           key={tab}
@@ -498,6 +601,92 @@ export default function ManagerView() {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+        {activeTab === "Menu" && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Menu Items</h3>
+            <ul>
+              {foodItems.map((item) => (
+                <li key={item.food_id} className="mb-2">
+                  ID: {item.food_id} | {item.food_name} - Quantity: {item.quantity}, Type: {item.type}, 
+                  Calories: {item.calories}, Available: {item.available ? 'Yes' : 'No'}, 
+                  Premium: {item.premium ? 'Yes' : 'No'}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4">
+              <h4 className="text-lg font-semibold mb-2">Add New Food Item</h4>
+              {error && <div className="text-red-500 mt-2 mb-2">{error}</div>}
+              <input
+                type="text"
+                placeholder="Food Name"
+                value={newFoodName}
+                onChange={(e) => setNewFoodName(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="number"
+                placeholder="Quantity"
+                value={newFoodQuantity}
+                onChange={(e) => setNewFoodQuantity(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Type"
+                value={newFoodType}
+                onChange={(e) => setNewFoodType(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <input
+                type="number"
+                placeholder="Calories"
+                value={newFoodCalories}
+                onChange={(e) => setNewFoodCalories(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <label className="mr-2">
+                Available:
+                <input
+                  type="checkbox"
+                  checked={newFoodAvailable}
+                  onChange={(e) => setNewFoodAvailable(e.target.checked)}
+                  className="ml-1"
+                />
+              </label>
+              <label className="mr-2">
+                Premium:
+                <input
+                  type="checkbox"
+                  checked={newFoodPremium}
+                  onChange={(e) => setNewFoodPremium(e.target.checked)}
+                  className="ml-1"
+                />
+              </label>
+              <button
+                onClick={handleAddFood}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Add Food Item
+              </button>
+            </div>
+            <div className="mt-4">
+              <h4 className="text-lg font-semibold mb-2">Remove Food Item</h4>
+              <input
+                type="number"
+                placeholder="Food ID"
+                value={removeFoodId}
+                onChange={(e) => setRemoveFoodId(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
+              <button
+                onClick={handleRemoveFood}
+                className="bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Remove Food Item
+              </button>
+            </div>
           </div>
         )}
       </div>
