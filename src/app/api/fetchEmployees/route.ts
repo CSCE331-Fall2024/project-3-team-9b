@@ -15,7 +15,7 @@ const pool = new Pool({
 });
 
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const result = await pool.query('SELECT Employee_ID, Name, Gender, Salary, Position, Email FROM Employees;');
     return new NextResponse(JSON.stringify({ employees: result.rows }), {

@@ -164,7 +164,7 @@ export default function ShoppingCart() {
     function listCartItems() {
 
         // check if temperature is under 60F, if it is give a 15% discount
-        let temperature = Number(sessionStorage.getItem('temperature'));
+        const temperature = Number(sessionStorage.getItem('temperature'));
         if (temperature < 60 && !weatherDiscount) {
             setWeatherDiscount(true);
         }
