@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
+    "chart.js": "^4.4.7",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "gapi-script": "^1.2.0",
@@ -20,9 +21,11 @@
     "openai": "^4.73.1",
     "pg": "^8.13.1",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/chart.js": "^2.9.41",
     "@types/express": "^5.0.0",
     "@types/next": "^8.0.7",
     "@types/node": "^20",

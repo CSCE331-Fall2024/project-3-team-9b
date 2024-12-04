@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import InventoryChart from "../_components/InventoryChart";
+import InventoryUsageChart from "../_components/InventoryUsageChart";
 
 // Define interfaces for the data structures
 interface XReportEntry {
@@ -420,17 +422,35 @@ export default function ManagerView() {
       <div className="bg-white text-red-700 rounded-lg shadow-lg p-4">
         {activeTab === "X-Report" && (
           <div>
-            <h3 className="text-xl font-semibold mb-4">X-Report</h3>
-            <ul>
+          <h3 className="text-xl font-semibold mb-4">X-Report</h3>
+          <table className="w-full border-collapse border border-red-500 text-center">
+            <thead>
+              <tr className="bg-red-500 text-white">
+                <th className="border border-red-500 px-4 py-2">Hour</th>
+                <th className="border border-red-500 px-4 py-2">Employee Name</th>
+                <th className="border border-red-500 px-4 py-2">Orders</th>
+                <th className="border border-red-500 px-4 py-2">Total Sales</th>
+              </tr>
+            </thead>
+            <tbody>
               {xReport.map((entry, index) => (
-                <li key={index}>
-                  {entry.hour_of_day}: {entry.employee_name} -{" "}
-                  {entry.employee_orders} orders, $
-                  {entry.total_sales_for_hour}
-                </li>
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-red-100" : "bg-white"}
+                >
+                  <td className="border border-red-500 px-4 py-2">{entry.hour_of_day}</td>
+                  <td className="border border-red-500 px-4 py-2">{entry.employee_name}</td>
+                  <td className="border border-red-500 px-4 py-2">{entry.employee_orders}</td>
+                  <td className="border border-red-500 px-4 py-2">
+                    ${typeof entry.total_sales_for_hour === "number"
+                      ? entry.total_sales_for_hour.toFixed(2) 
+                      : parseFloat(entry.total_sales_for_hour).toFixed(2)} {}
+                  </td>
+                </tr>
               ))}
-            </ul>
-          </div>
+            </tbody>
+          </table>
+        </div>
         )}
         {activeTab === "Z-Report" && (
           <div>
@@ -453,15 +473,26 @@ export default function ManagerView() {
         )}
         {activeTab === "Manage Inventory" && (
           <div>
-            <h3 className="text-xl font-semibold mb-4">Inventory</h3>
-            <ul>
-              {inventory.map((item, index) => (
-                <li key={index}>
-                  {item.ingredient_name}: {item.quantity} units
-                </li>
-              ))}
-            </ul>
-          </div>
+          <h3 className="text-xl font-semibold mb-4">Inventory</h3>
+          {inventory.length > 0 ? (
+            <>
+              <InventoryChart inventoryData={inventory} />
+              <ul className="mt-4">
+                {inventory
+                  .slice() 
+                  .sort((a, b) => a.quantity - b.quantity) 
+                  .map((item, index) => (
+                    <li key={index}>
+                      {item.ingredient_name}: {item.quantity} units
+                    </li>
+                  ))}
+              </ul>
+            </>
+          ) : (
+            <p>No inventory data available.</p>
+          )}
+        </div>
+      
         )}
         {activeTab === "Manage Employees" && (
           <div>
@@ -523,15 +554,25 @@ export default function ManagerView() {
         )}
         {activeTab === "Inventory Usage" && (
           <div>
-            <h3 className="text-xl font-semibold mb-4">Inventory Usage</h3>
-            <ul>
-              {ingredientCount.map((ingredient, index) => (
-                <li key={index}>
-                  {ingredient.food_name}: {ingredient.total_ingredients_used}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <h3 className="text-xl font-semibold mb-4">Inventory Usage</h3>
+          {ingredientCount.length > 0 ? (
+            <>
+              <InventoryUsageChart usageData={ingredientCount} />
+              <ul className="mt-4">
+                {ingredientCount
+                  .slice() 
+                  .sort((a, b) => a.total_ingredients_used - b.total_ingredients_used) 
+                  .map((ingredient, index) => (
+                    <li key={index}>
+                      {ingredient.food_name}: {ingredient.total_ingredients_used} units
+                    </li>
+                  ))}
+              </ul>
+            </>
+          ) : (
+            <p>No usage data available.</p>
+          )}
+        </div>
         )}
         {activeTab === "Peak Sales Day" && (
           <div>
