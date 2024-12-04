@@ -6,6 +6,7 @@ import Image  from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
 import WeatherWidget from '@components/WeatherWidget'; 
 import ChatBot from '@components/ChatBot'; 
+import ZoomSlider from "@components/ZoomSlider";
 
 
 interface Size {
@@ -31,11 +32,13 @@ export default function CustomerView() {
 }, []);
   console.log(sizes);
 
-return (
-    <div className="flex flex-col items-center h-screen rounded-full bg-red-800 mb-40">
-      {/* View Menu link at the top */}
-      <Link href = "/menuBoardView" className="px-6 py-3 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">View Menu</Link> 
-      <h1 className="text-3xl font-bold text-gray-800 mt-10">Choose your size</h1>
+  return (
+    <div className="relative flex flex-col items-center min-h-screen bg-red-800">
+      <ZoomSlider />
+      <div className="flex flex-col items-center w-full">
+        {/* View Menu link at the top */}
+        <Link href="/menuBoardView" className="px-6 py-3 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">View Menu</Link> 
+        <h1 className="text-3xl font-bold text-white-800 mt-10">Choose your size</h1>
 
       {/* Meal sizes */}
       {/* <div className="flex flex-row space-x-4">
@@ -86,6 +89,7 @@ return (
           <div className='mt-4'>1 Side & 3 Entrees</div>
           <div>$11.30+</div>
         </Link> */}
+       </div>
       </div>
       <WeatherWidget/>
       <ChatBot/>

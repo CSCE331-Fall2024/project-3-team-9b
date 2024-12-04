@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useShoppingDataContext } from '@components/shoppingData';
 import WeatherWidget from '@components/WeatherWidget'; 
 import ChatBot from '@components/ChatBot'; 
+import ZoomSlider from "@components/ZoomSlider";
 
 type Food = {
   food_id: number;
@@ -61,6 +62,8 @@ export default function Sides() {
     <>
       <ShoppingCart/>
       <div className="flex flex-col min-h-screen h-fit items-center rounded-full bg-red-800">
+      <ZoomSlider />
+      <div className="flex flex-col items-center w-full">
         {/* Static Navigation Section */}
         {/* <div className="fixed top-0 left-0 right-0 flex justify-center py-4 z-10"> */}
           <Link href="/menuBoardView" 
@@ -175,6 +178,7 @@ export default function Sides() {
           Next
         </Link>
       </div>
+    </div>
     </div>
     <WeatherWidget/>
     <ChatBot/>

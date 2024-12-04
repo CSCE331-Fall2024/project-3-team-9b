@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import WeatherWidget from "./weather/WeatherWidget";
 
 
+
 interface WindowWithGoogleLogout extends Window {
   googleLogout?: () => void;
 }

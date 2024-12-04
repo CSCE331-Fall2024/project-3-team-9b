@@ -15,19 +15,16 @@ const ZoomSlider: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 bg-white p-4 z-50 shadow-md">
-      <label htmlFor="zoom-slider" className="block text-sm font-medium text-gray-700 mb-2">
-        Zoom: {zoom}%
-      </label>
+    <div className="absolute top-20 middle-2 z-50 flex items-center bg-transparent">
       <input
-        id="zoom-slider"
         type="range"
         min="100"
         max="200"
         value={zoom}
         onChange={handleZoomChange}
-        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        className="w-24 h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer"
       />
+      <span className="ml-2 text-xs text-white-600">{zoom}%</span>
     </div>
   );
 };
