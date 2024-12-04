@@ -28,16 +28,16 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
       const body = await request.json();
-      const { food_name, quantity, type, calories, available, premium } = body;
+      const { food_id, food_name, quantity, type, calories, available, premium } = body;
   
       // Validate request body
-      if (!food_name || quantity === undefined || !type || calories === undefined || available === undefined || premium === undefined) {
+      if (!food_id || !food_name || quantity === undefined || !type || calories === undefined || available === undefined || premium === undefined) {
         return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
       }
   
       const result = await pool.query(
-        'INSERT INTO food (food_name, quantity, type, calories, available, premium) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [food_name, quantity, type, calories, available, premium]
+        'INSERT INTO food (food_id, food_name, quantity, type, calories, available, premium) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [food_id, food_name, quantity, type, calories, available, premium]
       );
   
       return NextResponse.json(result.rows[0], { status: 201 });

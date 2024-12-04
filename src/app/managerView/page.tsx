@@ -90,6 +90,7 @@ export default function ManagerView() {
   const [newPrice, setNewPrice] = useState('');
 
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [newFoodID, setNewFoodID] = useState("");
   const [newFoodName, setNewFoodName] = useState("");
   const [newFoodQuantity, setNewFoodQuantity] = useState("");
   const [newFoodType, setNewFoodType] = useState("");
@@ -101,12 +102,13 @@ export default function ManagerView() {
 
   const handleAddFood = async () => {
     try {
-      if (!newFoodName || !newFoodQuantity || !newFoodType || !newFoodCalories) {
+      if (!newFoodID || !newFoodName || !newFoodQuantity || !newFoodType || !newFoodCalories) {
         setError("All fields are required");
         return;
       }
   
       const foodData = {
+        food_id: newFoodID,
         food_name: newFoodName,
         quantity: parseInt(newFoodQuantity),
         type: newFoodType,
@@ -138,6 +140,7 @@ export default function ManagerView() {
       setFoodItems(prev => [...prev, newFood]);
   
       // Reset form
+      setNewFoodID("");
       setNewFoodName("");
       setNewFoodQuantity("");
       setNewFoodType("");
@@ -374,7 +377,7 @@ export default function ManagerView() {
 
   return (
     <div
-      className="min-h-screen bg-rose-400 text-white p-6"
+      className="min-h-screen bg-red-400 text-white p-6"
       style={{ fontFamily: "Arial, sans-serif" }}
     >
       {/* Header Panel */}
@@ -383,7 +386,7 @@ export default function ManagerView() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-4 border-b-2 border-rose-500 pb-2 mb-6">
+      <div className="flex space-x-4 border-b-2 border-red-500 pb-2 mb-6">
       {[ 
         "X-Report", 
         "Z-Report", 
@@ -399,7 +402,7 @@ export default function ManagerView() {
         <button
           key={tab}
           className={`px-4 py-2 rounded-lg font-semibold ${
-            activeTab === tab ? "bg-white text-rose-400" : "bg-rose-500 hover:bg-rose-600"
+            activeTab === tab ? "bg-white text-red-400" : "bg-red-500 hover:bg-red-600"
           }`}
           onClick={() => handleTabChange(tab)}
         >
@@ -414,7 +417,7 @@ export default function ManagerView() {
       </div>
 
       {/* Content Panel */}
-      <div className="bg-white text-rose-700 rounded-lg shadow-lg p-4">
+      <div className="bg-white text-red-700 rounded-lg shadow-lg p-4">
         {activeTab === "X-Report" && (
           <div>
             <h3 className="text-xl font-semibold mb-4">X-Report</h3>
@@ -618,6 +621,13 @@ export default function ManagerView() {
             <div className="mt-4">
               <h4 className="text-lg font-semibold mb-2">Add New Food Item</h4>
               {error && <div className="text-red-500 mt-2 mb-2">{error}</div>}
+              <input
+                type="text"
+                placeholder="ID"
+                value={newFoodID}
+                onChange={(e) => setNewFoodID(e.target.value)}
+                className="mr-2 p-2 border rounded"
+              />
               <input
                 type="text"
                 placeholder="Food Name"
