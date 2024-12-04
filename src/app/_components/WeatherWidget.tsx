@@ -59,9 +59,9 @@ export default function WeatherWidget() {
                             <Image
                                 src={weather.icon}
                                 alt="Weather icon"
-                                width={50}
-                                height={50}
-                                className="mb-2"
+                                width={400} // Updated size
+                                height={400} // Updated size
+                                className="mb-4" // Increased margin below the icon
                             />
                             <p className="text-xl font-semibold text-gray-800">
                                 {weather.temperature.toFixed(1)} °F

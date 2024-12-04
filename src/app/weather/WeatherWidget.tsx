@@ -59,8 +59,8 @@ export default function WeatherWidget() {
                             <Image
                                 src={weather.icon}
                                 alt="Weather icon"
-                                width={50}
-                                height={50}
+                                width={400}
+                                height={400}
                                 className="mb-2"
                             />
                             <p className="text-xl font-semibold text-gray-800">
