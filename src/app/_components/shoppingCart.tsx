@@ -27,6 +27,7 @@ export default function ShoppingCart() {
 
     const [cart, showCart] = useState(false);
     const [conformation, showConformation] = useState(false);
+    const [weatherDiscount, setWeatherDiscount] = useState(false);
 
     const toggleCart = () => {
         showCart(!cart);
@@ -94,6 +95,11 @@ export default function ShoppingCart() {
 
     
     const checkout = async () => {
+        // apply discount before sending to db
+        if (weatherDiscount) {
+            shoppingData.currentPrice = Number((shoppingData.currentPrice * 0.85).toFixed(2));
+        }
+
         try {
             const response = await fetch('/api/checkout', {
                 method: 'POST',
@@ -156,6 +162,13 @@ export default function ShoppingCart() {
 
     
     function listCartItems() {
+
+        // check if temperature is under 60F, if it is give a 15% discount
+        let temperature = Number(sessionStorage.getItem('temperature'));
+        if (temperature < 60 && !weatherDiscount) {
+            setWeatherDiscount(true);
+        }
+
         // return currentItems.map((item: string, index: number) => (
             return (shoppingData.cartItems).map((item: string, index: number) => (
 
@@ -169,14 +182,21 @@ export default function ShoppingCart() {
 
     return (
         <>
-            <button className="absolute right-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><Image src="/ShoppingCart.png" alt="Shopping Cart" width={200} height={200} /></button>
-            <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 right-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
+            <button className="absolute left-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><Image src="/ShoppingCart.png" alt="Shopping Cart" width={200} height={200} /></button>
+            <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 left-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
                 <div className="relative bg-red-400 rounded-lg h-[75%] w-3/4 flex flex-col items-center justify-start">
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>
                     <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
                     <div className="absolute w-full h-10 bottom-0 rounded-lg bg-white flex flex-row justify-around items-center">
-                        <div className="text-gray-800">Price:</div>
-                        <div className="text-gray-800">${shoppingData.currentPrice}</div>
+                    <div className="text-gray-800">Price:</div>
+                    <div className="flex items-center">
+                        <div className="text-gray-800">
+                        ${weatherDiscount ? (shoppingData.currentPrice * 0.85).toFixed(2) : shoppingData.currentPrice.toFixed(2)}
+                        </div>
+                        {weatherDiscount && (
+                        <span className="text-green-600 ml-2 text-sm font-bold">15% OFF</span>
+                        )}
+                    </div>
                     </div>
                 </div>
                 <Link href="/customerView"><button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button></Link>
@@ -190,7 +210,12 @@ export default function ShoppingCart() {
                     {shoppingData.cartItems.map((item: string, index: number) => {
                         return <div key={index} className="text-gray-800">{item.replace("/p", "").replace("/e", "").replace("/a", "").replace("/d", "").replace("/s", "").replace("/l", "")}</div>
                     })}
-                    <div className="text-gray-800 text-2xl">Total: ${shoppingData.currentPrice}</div>
+                    <div className="flex items-center">
+                        <div className="text-gray-800 text-2xl">Total: ${weatherDiscount ? (shoppingData.currentPrice * 0.85).toFixed(2) : shoppingData.currentPrice.toFixed(2)}</div>
+                        {weatherDiscount && (
+                        <span className="text-green-600 ml-2 text-sm font-bold">15% OFF</span>
+                        )}
+                    </div>
                 </div>
                 <div className="flex justify-around w-full text-gray-800">
                     <button className="bg-red-700 p-10 rounded-xl text-white" onClick={() => showConformation(false)}>No</button>

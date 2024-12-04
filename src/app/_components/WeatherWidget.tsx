@@ -25,6 +25,8 @@ export default function WeatherWidget() {
                     condition: data.condition,
                     icon: data.icon || '/default-weather.png', // Default icon fallback
                 });
+                // store current temperature during session
+                sessionStorage.setItem("temperature", data.temperature);
                 setError(null);
             } else {
                 setError(data.error);

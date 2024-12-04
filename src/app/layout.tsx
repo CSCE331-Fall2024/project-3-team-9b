@@ -41,7 +41,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="bg-red-400">
-        <div id="google_translate_element" className="fixed top-0 left-0 m-4 z-50"></div>
+        <div id="google_translate_element" className="fixed top-0 right-0 m-4 z-50"></div>
         <shoppingDataContext.Provider value={[shoppingData, setShoppingData]}>
         {children}
         </shoppingDataContext.Provider>

@@ -15,7 +15,7 @@ const pool = new Pool({
 
 export async function GET() {
   try {
-    const result = await pool.query('SELECT * FROM sizes;');
+    const result = await pool.query('SELECT * FROM sizes WHERE size_id IN (0, 1, 2, 3) ORDER BY size_id;');
     // console.log(result.rows);
     return NextResponse.json({ sizes: result.rows });
   } catch (error) {
