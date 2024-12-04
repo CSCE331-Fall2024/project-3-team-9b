@@ -521,6 +521,18 @@ export default function ManagerView() {
             </div>
           </div>
         )}
+        {activeTab === "Inventory Usage" && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Inventory Usage</h3>
+            <ul>
+              {ingredientCount.map((ingredient, index) => (
+                <li key={index}>
+                  {ingredient.food_name}: {ingredient.total_ingredients_used}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {activeTab === "Peak Sales Day" && (
           <div>
             <h3 className="text-xl font-semibold mb-4">Peak Sales Day</h3>
