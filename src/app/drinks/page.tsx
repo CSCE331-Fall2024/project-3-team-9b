@@ -74,7 +74,7 @@ export default function Drinks() {
         </Link>
       <div>
       <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
-          <h1 className="text-3xl font-bold text-gray-800 mt-10">Drinks</h1>
+          <h1 className="text-3xl font-bold text-white-800 mt-10">Drinks</h1>
           <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
             {drinks.map((item) => (
               <div key={item.food_id} className="">
@@ -133,13 +133,15 @@ export default function Drinks() {
       </div>
 
       {/* Navigation Buttons */}
-      <Link
+      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex justify-center space-x-4">
+        <Link
           href="/appetizers"
-          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
         </Link>
+      </div>
     </div>
     <WeatherWidget/>
     <ChatBot/>

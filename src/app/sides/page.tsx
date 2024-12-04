@@ -103,7 +103,7 @@ export default function Sides() {
             )} */}
           <div>
             <div className='flex flex-col items-center mb-40 h-full gap-y-5'>
-              <h1 className="text-3xl font-bold text-gray-800 mt-10">Sides</h1>
+              <h1 className="text-3xl font-bold text-white-800 mt-10">Sides</h1>
               <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
               {sides.map((item) => (
                 <div key={item.food_id} className="h-100">
@@ -165,23 +165,19 @@ export default function Sides() {
         </div>
 
         {/* Navigation Buttons */}
-        {/* <Link
-          href="/customerView"
-          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label="Back to sides"
-        >
-          Back
-        </Link> */}
-        <Link
-          href="/entrees"
-          className="fixed bottom-10 right-10 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          aria-label="Go to appetizers"
-        >
+        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex justify-center space-x-4">
+    
+          <Link
+            href="/entrees"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            aria-label="Go to appetizers"
+          >
           Next
         </Link>
       </div>
-      <WeatherWidget/>
-      <ChatBot/>
+    </div>
+    <WeatherWidget/>
+    <ChatBot/>
     </>
   );
 }

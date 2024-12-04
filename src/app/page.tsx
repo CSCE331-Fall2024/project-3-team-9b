@@ -5,7 +5,8 @@ import LoginButton from "./_components/login";
 import LogOutButton from "./_components/logout";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useState, useEffect } from 'react';
-import WeatherWidget from "./weather/WeatherWidget"; 
+import WeatherWidget from "./weather/WeatherWidget";
+
 
 interface WindowWithGoogleLogout extends Window {
   googleLogout?: () => void;

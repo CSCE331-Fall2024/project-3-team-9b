@@ -102,7 +102,7 @@ export default function Entrees() {
         </Link>
       <div>
       <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
-          <h1 className="text-3xl font-bold text-gray-800 mt-10">Entrees</h1>
+          <h1 className="text-3xl font-bold text-white-800 mt-10">Entrees</h1>
           <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
             {entrees.map((item) => (
               <div key={item.food_id} className="">
@@ -167,22 +167,22 @@ export default function Entrees() {
       </div>
 
       {/* Navigation Buttons */}
-      {/* <div className="fixed bottom-0 left-0 right-0 flex justify-between p-4"> */}
+      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex justify-center space-x-4">
         <Link
           href="/sides"
-          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/appetizers"
-          className="fixed bottom-10 right-0 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           aria-label="Go to appetizers"
         >
           Next
         </Link>
-      {/* </div> */}
+      </div>
     </div>
     <WeatherWidget/>
     <ChatBot/>

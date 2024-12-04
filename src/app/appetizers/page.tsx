@@ -118,7 +118,7 @@ export default function Appetizers() {
           )} */}
         <div>
         <div className='flex flex-col items-center gap-y-5 mb-40 h-full'>
-        <h1 className="text-3xl font-bold text-gray-800 mt-10">Appetizers</h1>
+        <h1 className="text-3xl font-bold text-white-800 mt-10">Appetizers</h1>
         <div className='flex flex-row gap-4 items-center justify-center mx-10 flex-wrap mb-40'>
         {appetizers.map((item) => (
             <div key={item.food_id} className="">
@@ -182,23 +182,26 @@ export default function Appetizers() {
 
 
       {/* Navigation Buttons */}
-      <Link
+      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex justify-center space-x-4">
+        <Link
           href="/entrees"
-          className="fixed bottom-10 left-10 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           aria-label="Back to sides"
         >
           Back
         </Link>
         <Link
           href="/drinks"
-          className="fixed bottom-10 right-10 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           aria-label="Go to appetizers"
         >
           Next
         </Link>
+      </div>
     </div>
     <WeatherWidget/>
     <ChatBot/>
     </>
   );
 }
+
