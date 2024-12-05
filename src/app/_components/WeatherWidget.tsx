@@ -10,6 +10,7 @@ export default function WeatherWidget() {
         icon: string;
     } | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [weatherDiscount, setWeatherDiscount] = useState(false);
 
     const toggleVisibility = () => setIsVisible(!isVisible); // Toggle the widget
 
@@ -24,6 +25,8 @@ export default function WeatherWidget() {
                     condition: data.condition,
                     icon: data.icon || '/default-weather.png', // Fallback icon
                 });
+                // store current temperature during session
+                sessionStorage.setItem("temperature", data.temperature);
                 setError(null);
             } else {
                 setError(data.error);
