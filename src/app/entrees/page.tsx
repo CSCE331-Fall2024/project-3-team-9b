@@ -56,6 +56,10 @@ export default function Entrees() {
   };
 
   const handleAddToCart = () => {
+    if (shoppingData.numEntrees === 0){
+      alert('You cannot add anymore entrees to the cart');
+      return;
+    }
     if (typeof window !== 'undefined' && selectedEntree) {
       const selectedEntreeItem = entrees.find(entree => entree.food_id === selectedEntree);
       if (selectedEntreeItem?.premium && shoppingData.size === 3){

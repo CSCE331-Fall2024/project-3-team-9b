@@ -27,7 +27,7 @@ export default function ShoppingCart() {
 
     function removeAllItems(): void {
         // setCurrentItems([]);
-        setShoppingData({size: -1, currentPrice: 0, numEntrees: 0, cartItems: []});
+        setShoppingData({size: -1, currentPrice: 0, numEntrees: 0, cartItems: [], numSides: 0});
     }
 
     const [cart, showCart] = useState(false);
@@ -84,6 +84,9 @@ export default function ShoppingCart() {
         }
         else if(shoppingData.cartItems[index].includes("/l") && shoppingData.cartItems[index].includes("/s")){
             setShoppingData({...shoppingData, currentPrice: shoppingData.currentPrice - 4, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
+        }
+        else if(shoppingData.cartItems[index].includes("/s")){
+            setShoppingData({...shoppingData, numSides: shoppingData.numSides + 1, cartItems: [...shoppingData.cartItems.slice(0, index), ...shoppingData.cartItems.slice(index + 1)]})
         }
 
         else if(shoppingData.cartItems[index].includes("/p")){
@@ -147,7 +150,7 @@ export default function ShoppingCart() {
         } catch (error) {
             console.error('Error during checkout:', error);
         }
-        setShoppingData({size: -1, currentPrice: 0, numEntrees: 0, cartItems: []});
+        removeAllItems();
         console.log("Checkout successful!");
     }
 
@@ -211,7 +214,7 @@ export default function ShoppingCart() {
             <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 left-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
                 <div className="relative bg-red-400 rounded-lg h-[75%] w-3/4 flex flex-col items-center justify-start">
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>
-                    <div className="text-black flex flex-col h-full gap-y-6 w-2/3">{listCartItems()}</div>
+                    <div className="text-black flex flex-col h-4/5 gap-y-6 w-2/3 overflow-y-auto">{listCartItems()}</div>
                     <div className="absolute w-full h-10 bottom-0 rounded-lg bg-white flex flex-row justify-around items-center">
                     <div className="text-gray-800">Price:</div>
                     <div className="flex items-center">

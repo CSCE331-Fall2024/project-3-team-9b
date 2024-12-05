@@ -42,17 +42,21 @@ export default function Sides() {
   };
 
   const handleAddToCart = () => {
+    if (shoppingCart.numSides === 0) {
+      alert('You cannot add anymore sides to the cart');
+      return;
+    }
     if (typeof window !== 'undefined') {
       let selectedSideItem = sides.find(side => side.food_id === selectedSide);
       if (selectedSide === 101){
         selectedSideItem = sides.find(side => side.food_id === 0);
       }
       if (selectedSideItem && shoppingCart.size === 3){
-        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name + "/l/s"], currentPrice: shoppingCart.currentPrice + 4});
+        setShoppingCart({...shoppingCart, numSides: shoppingCart.numSides - 1, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name + "/l/s"], currentPrice: shoppingCart.currentPrice + 4});
       }
       else if (selectedSideItem) {
         // sessionStorage.setItem('newItem', JSON.stringify(selectedSideItem.food_name));
-        setShoppingCart({...shoppingCart, cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name]});
+        setShoppingCart({...shoppingCart, numSides: shoppingCart.numSides - 1,cartItems: [...shoppingCart.cartItems, selectedSideItem.food_name + "/s"]});
       }
       setSelectedSide(null);
     }
