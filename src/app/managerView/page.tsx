@@ -12,13 +12,13 @@ interface XReportEntry {
   total_sales_for_hour: number;
 }
 
-interface ZReportEntry {
-  hour_of_day: string; 
-  employee_name: string;
-  employee_orders: number;
-  total_sales: number;
-  total_sales_for_day: number; 
-}
+// interface ZReportEntry {
+//   hour_of_day: string; 
+//   employee_name: string;
+//   employee_orders: number;
+//   total_sales: number;
+//   total_sales_for_day: number; 
+// }
 
 interface InventoryItem {
   ingredient_name: string;
@@ -76,7 +76,7 @@ export default function ManagerView() {
 
   // State variables for each tab's data
   const [xReport, setXReport] = useState<XReportEntry[]>([]);
-  const [zReport, setZReport] = useState<ZReportEntry[]>([]);
+  // const [zReport, setZReport] = useState<ZReportEntry[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [newEmployeeName, setNewEmployeeName] = useState("");
@@ -194,14 +194,14 @@ export default function ManagerView() {
             setXReport(xReportData.sides || []);
             break;
 
-          case "Z-Report":
-            const zReportResponse = await fetch("/api/fetchZReport");
-            if (!zReportResponse.ok) {
-              throw new Error(`Z-Report API Error: ${zReportResponse.status}`);
-            }
-            const zReportData = await zReportResponse.json();
-            setZReport(zReportData.zReport || []);
-            break;
+          // case "Z-Report":
+          //   const zReportResponse = await fetch("/api/fetchZReport");
+          //   if (!zReportResponse.ok) {
+          //     throw new Error(`Z-Report API Error: ${zReportResponse.status}`);
+          //   }
+          //   const zReportData = await zReportResponse.json();
+          //   setZReport(zReportData.zReport || []);
+          //   break;
 
           case "Manage Inventory":
             const inventoryResponse = await fetch("/api/fetchInventory");
@@ -454,7 +454,7 @@ export default function ManagerView() {
           </table>
         </div>
         )}
-        {activeTab === "Z-Report" && (
+        {/* {activeTab === "Z-Report" && (
           <div>
           <h3 className="text-xl font-semibold mb-4">Z-Report</h3>
           {zReport.length > 0 ? (
@@ -466,8 +466,8 @@ export default function ManagerView() {
                   <th className="border border-gray-400 px-4 py-2">Orders Taken</th>
                   <th className="border border-gray-400 px-4 py-2">Hourly Sales</th>
                 </tr>
-              </thead>
-              <tbody>
+              </thead> */}
+              {/* <tbody>
                 {zReport.map((entry, index) => (
                   <tr
                     key={index}
@@ -497,7 +497,7 @@ export default function ManagerView() {
             </p>
           </div>
         </div>
-        )}
+        )} */}
         {activeTab === "Manage Inventory" && (
           <div>
           <h3 className="text-xl font-semibold mb-4">Inventory</h3>
