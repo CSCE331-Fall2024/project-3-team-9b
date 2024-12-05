@@ -53,6 +53,18 @@ export default function MenuBoardView() {
         <div>{foodDisplaySquare("/CreamCheeseRangoon.png", "Cream Cheese Rangoon")}</div>
         <div>{foodDisplaySquare("/ApplePieRoll.png", "Apple Pie Roll")}</div>
       </div>
+
+      <div className="text-2xl my-10 underline">Drinks</div>
+      <div className="flex flex-row justify-center items-center flex-wrap gap-5 mb-10">
+        <div>{foodDisplaySquare("/BottledWater.png", "Bottled Water")}</div>
+        <div>{foodDisplaySquare("/Coca-Cola.png", "Coca-Cola")}</div>
+        <div>{foodDisplaySquare("/DietCoke.png", "Diet Coke")}</div>
+        <div>{foodDisplaySquare("/IcedTea.png", "Iced Tea")}</div>
+        <div>{foodDisplaySquare("/MinuteMaidLemonade.png", "Minute Maid Lemonade")}</div>
+        <div>{foodDisplaySquare("/Sprite.png", "Sprite")}</div>
+
+
+      </div>
     </div>
   );
 }
