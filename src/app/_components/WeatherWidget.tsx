@@ -67,6 +67,9 @@ export default function WeatherWidget() {
                                 height={400} // Updated size
                                 className="mb-4" // Increased margin below the icon
                             />
+                            {weatherDiscount && (
+                                <span className="text-green-600 ml-2 text-sm font-bold">15% OFF WINTER SALE!</span>
+                            )}
                             <p className="text-xl font-semibold text-gray-800">
                                 {weather.temperature.toFixed(1)} °F
                             </p>
