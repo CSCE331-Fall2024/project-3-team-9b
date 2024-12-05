@@ -13,10 +13,11 @@ interface XReportEntry {
 }
 
 interface ZReportEntry {
+  hour_of_day: string; 
   employee_name: string;
   employee_orders: number;
   total_sales: number;
-  total_sales_for_day: number;
+  total_sales_for_day: number; 
 }
 
 interface InventoryItem {
@@ -30,6 +31,7 @@ interface Employee {
   position: string;
   salary: number;
   email: string;  
+  gender: string;
 }
 
 interface IngredientUsage {
@@ -418,33 +420,33 @@ export default function ManagerView() {
       </Link>
       </div>
 
-      {/* Content Panel */}
-      <div className="bg-white text-red-700 rounded-lg shadow-lg p-4">
+       {/* Content Panel */}
+       <div className="bg-white text-red-700 rounded-lg shadow-lg p-4">
         {activeTab === "X-Report" && (
           <div>
           <h3 className="text-xl font-semibold mb-4">X-Report</h3>
-          <table className="w-full border-collapse border border-red-500 text-center">
+          <table className="w-full border-collapse border border-gray-300 text-center">
             <thead>
-              <tr className="bg-red-500 text-white">
-                <th className="border border-red-500 px-4 py-2">Hour</th>
-                <th className="border border-red-500 px-4 py-2">Employee Name</th>
-                <th className="border border-red-500 px-4 py-2">Orders</th>
-                <th className="border border-red-500 px-4 py-2">Total Sales</th>
+              <tr className="bg-gray-300">
+                <th className="border border-gray-400 px-4 py-2">Hour</th>
+                <th className="border border-gray-400 px-4 py-2">Employee Name</th>
+                <th className="border border-gray-400 px-4 py-2">Orders</th>
+                <th className="border border-gray-400 px-4 py-2">Total Sales</th>
               </tr>
             </thead>
             <tbody>
               {xReport.map((entry, index) => (
                 <tr
                   key={index}
-                  className={index % 2 === 0 ? "bg-red-100" : "bg-white"}
+                  className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
                 >
-                  <td className="border border-red-500 px-4 py-2">{entry.hour_of_day}</td>
-                  <td className="border border-red-500 px-4 py-2">{entry.employee_name}</td>
-                  <td className="border border-red-500 px-4 py-2">{entry.employee_orders}</td>
-                  <td className="border border-red-500 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">{entry.hour_of_day}</td>
+                  <td className="border border-gray-400 px-4 py-2">{entry.employee_name}</td>
+                  <td className="border border-gray-400 px-4 py-2">{entry.employee_orders}</td>
+                  <td className="border border-gray-400 px-4 py-2">
                     ${typeof entry.total_sales_for_hour === "number"
-                      ? entry.total_sales_for_hour.toFixed(2) 
-                      : parseFloat(entry.total_sales_for_hour).toFixed(2)} {}
+                      ? entry.total_sales_for_hour.toFixed(2)
+                      : parseFloat(entry.total_sales_for_hour).toFixed(2)}{" "}
                   </td>
                 </tr>
               ))}
@@ -454,22 +456,47 @@ export default function ManagerView() {
         )}
         {activeTab === "Z-Report" && (
           <div>
-            <h3 className="text-xl font-semibold mb-4">Z-Report</h3>
-            {zReport.length > 0 ? (
-              <ul>
+          <h3 className="text-xl font-semibold mb-4">Z-Report</h3>
+          {zReport.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-300 text-center">
+              <thead>
+                <tr className="bg-gray-300">
+                  <th className="border border-gray-400 px-4 py-2">Hour</th>
+                  <th className="border border-gray-400 px-4 py-2">Employee Name</th>
+                  <th className="border border-gray-400 px-4 py-2">Orders Taken</th>
+                  <th className="border border-gray-400 px-4 py-2">Hourly Sales</th>
+                </tr>
+              </thead>
+              <tbody>
                 {zReport.map((entry, index) => (
-                  <li key={index} className="mb-2">
-                    <strong>Employee:</strong> {entry.employee_name} <br />
-                    <strong>Orders Taken:</strong> {entry.employee_orders} <br />
-                    <strong>Total Sales:</strong> ${entry.total_sales.toFixed(2)} <br />
-                    <strong>Total Sales for the Day:</strong> ${entry.total_sales_for_day.toFixed(2)}
-                  </li>
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                  >
+                    <td className="border border-gray-400 px-4 py-2">{entry.hour_of_day}</td>
+                    <td className="border border-gray-400 px-4 py-2">{entry.employee_name}</td>
+                    <td className="border border-gray-400 px-4 py-2">{entry.employee_orders}</td>
+                    <td className="border border-gray-400 px-4 py-2">
+                      ${entry.total_sales.toFixed(2)}
+                    </td>
+                  </tr>
                 ))}
-              </ul>
-            ) : (
-              <p>No data available for Z-Report.</p>
-            )}
+              </tbody>
+            </table>
+          ) : (
+            <p>No data available for Z-Report.</p>
+          )}
+          <div className="mt-4">
+            <h4 className="text-lg font-semibold">Daily Totals:</h4>
+            <p>
+              <strong>Total Orders:</strong> {zReport.reduce((sum, entry) => sum + entry.employee_orders, 0)}
+            </p>
+            <p>
+              <strong>Total Sales:</strong> $
+              {zReport.reduce((sum, entry) => sum + entry.total_sales, 0).toFixed(2)}
+            </p>
           </div>
+        </div>
         )}
         {activeTab === "Manage Inventory" && (
           <div>
@@ -496,61 +523,81 @@ export default function ManagerView() {
         )}
         {activeTab === "Manage Employees" && (
           <div>
-            <h3 className="text-xl font-semibold mb-4">Employees</h3>
-            <ul>
-              {employees.map((employee, index) => (
-                <li key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center' }}>
-                  <span>
-                    {employee.name} - {employee.position}: ${employee.salary}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4">
-              <h4 className="text-lg font-semibold mb-2">Add Employee</h4>
-              <input
-                type="text"
-                placeholder="Name"
-                value={newEmployeeName}
-                onChange={(e) => setNewEmployeeName(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="number"
-                placeholder="Salary"
-                value={newEmployeeSalary}
-                onChange={(e) => setNewEmployeeSalary(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="Position"
-                value={newEmployeePosition}
-                onChange={(e) => setNewEmployeePosition(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="Gender"
-                value={newEmployeeGender}
-                onChange={(e) => setNewEmployeeGender(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={newEmployeeEmail}
-                onChange={(e) => setNewEmployeeEmail(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <button
-                onClick={handleAddEmployee}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Add Employee
-              </button>
-            </div>
+          <h3 className="text-xl font-semibold mb-4">Employees</h3>
+          {employees.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-300 text-center">
+              <thead>
+                <tr className="bg-gray-300">
+                  <th className="border border-gray-400 px-4 py-2">Name</th>
+                  <th className="border border-gray-400 px-4 py-2">Position</th>
+                  <th className="border border-gray-400 px-4 py-2">Salary</th>
+                  <th className="border border-gray-400 px-4 py-2">Gender</th>
+                  <th className="border border-gray-400 px-4 py-2">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees.map((employee, index) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                  >
+                    <td className="border border-gray-400 px-4 py-2">{employee.name}</td>
+                    <td className="border border-gray-400 px-4 py-2">{employee.position}</td>
+                    <td className="border border-gray-400 px-4 py-2">${employee.salary}</td>
+                    <td className="border border-gray-400 px-4 py-2">{employee.gender || "N/A"}</td>
+                    <td className="border border-gray-400 px-4 py-2">{employee.email || "N/A"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No employees available.</p>
+          )}
+          <div className="mt-4">
+            <h4 className="text-lg font-semibold mb-2">Add Employee</h4>
+            <input
+              type="text"
+              placeholder="Name"
+              value={newEmployeeName}
+              onChange={(e) => setNewEmployeeName(e.target.value)}
+              className="mr-2 p-2 border rounded"
+            />
+            <input
+              type="number"
+              placeholder="Salary"
+              value={newEmployeeSalary}
+              onChange={(e) => setNewEmployeeSalary(e.target.value)}
+              className="mr-2 p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Position"
+              value={newEmployeePosition}
+              onChange={(e) => setNewEmployeePosition(e.target.value)}
+              className="mr-2 p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Gender"
+              value={newEmployeeGender}
+              onChange={(e) => setNewEmployeeGender(e.target.value)}
+              className="mr-2 p-2 border rounded"
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={newEmployeeEmail}
+              onChange={(e) => setNewEmployeeEmail(e.target.value)}
+              className="mr-2 p-2 border rounded"
+            />
+            <button
+              onClick={handleAddEmployee}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Add Employee
+            </button>
           </div>
+        </div>
         )}
         {activeTab === "Inventory Usage" && (
           <div>
@@ -576,181 +623,250 @@ export default function ManagerView() {
         )}
         {activeTab === "Peak Sales Day" && (
           <div>
-            <h3 className="text-xl font-semibold mb-4">Peak Sales Day</h3>
-            <ul>
-              {peakSalesDays.map((day, index) => (
-                <li key={index}>
-                  {day.sales_day}: ${day.total_order_sum}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {activeTab === "Realistic Sales History" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Realistic Sales History</h3>
-            <ul>
-              {salesHistory.map((hour, index) => (
-                <li key={index}>
-                  {hour.hour_of_day}: {hour.total_orders} orders, $
-                  {hour.total_order_sum}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {activeTab === "Weekly Sales History" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Weekly Sales History</h3>
-            <ul>
-              {weeklySalesHistory.map((week, index) => (
-                <li key={index}>
-                  Week {week.week_number}: {week.total_orders} orders
-                </li>
-              ))}
-            </ul>
-          </div>
+          <h3 className="text-xl font-semibold mb-4">Peak Sales Day</h3>
+          {peakSalesDays.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-300 text-center">
+              <thead>
+                <tr className="bg-gray-300">
+                  <th className="border border-gray-400 px-4 py-2">Sales Day</th>
+                  <th className="border border-gray-400 px-4 py-2">Total Order Sum</th>
+                </tr>
+              </thead>
+              <tbody>
+                {peakSalesDays.map((day, index) => (
+                  <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <td className="border border-gray-400 px-4 py-2">
+                      {day.sales_day.split("T")[0]}
+                    </td>
+                    <td className="border border-gray-400 px-4 py-2">${day.total_order_sum}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No data available for Peak Sales Day.</p>
+          )}
+        </div>
+      )}
+      
+      {activeTab === "Realistic Sales History" && (
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Realistic Sales History</h3>
+          {salesHistory.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-300 text-center">
+              <thead>
+                <tr className="bg-gray-300">
+                  <th className="border border-gray-400 px-4 py-2">Hour</th>
+                  <th className="border border-gray-400 px-4 py-2">Total Orders</th>
+                  <th className="border border-gray-400 px-4 py-2">Total Order Sum</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salesHistory.map((hour, index) => (
+                  <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <td className="border border-gray-400 px-4 py-2">{hour.hour_of_day}</td>
+                    <td className="border border-gray-400 px-4 py-2">{hour.total_orders}</td>
+                    <td className="border border-gray-400 px-4 py-2">${hour.total_order_sum}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No data available for Realistic Sales History.</p>
+          )}
+        </div>
+      )}
+      
+      {activeTab === "Weekly Sales History" && (
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Weekly Sales History</h3>
+          {weeklySalesHistory.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-300 text-center">
+              <thead>
+                <tr className="bg-gray-300">
+                  <th className="border border-gray-400 px-4 py-2">Week Number</th>
+                  <th className="border border-gray-400 px-4 py-2">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody>
+                {weeklySalesHistory.map((week, index) => (
+                  <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <td className="border border-gray-400 px-4 py-2">Week {week.week_number}</td>
+                    <td className="border border-gray-400 px-4 py-2">{week.total_orders}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No data available for Weekly Sales History.</p>
+          )}
+        </div>
         )}
         {activeTab === "Change Item Prices" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Item Prices</h3>
-            <ul>
-              {changeItemPrices.map((size, index) => (
-                <li key={index}>
-                  ID: {size.size_id} | {size.size_name}: ${size.price}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4">
-              <h4 className="text-lg font-semibold mb-2">Update Price</h4>
-              <input
-                type="number"
-                placeholder="Size ID"
-                value={sizeId}
-                onChange={(e) => setSizeId(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="number"
-                step="0.01"
-                placeholder="New Price"
-                value={newPrice}
-                onChange={(e) => setNewPrice(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <button
-                onClick={handleUpdatePrice}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Update Price
-              </button>
-            </div>
-          </div>
-        )}
-        {activeTab === "Switch to Cashier" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Weekly Sales History</h3>
-            <ul>
-              {weeklySalesHistory.map((week, index) => (
-                <li key={index}>
-                  Week {week.week_number}: {week.total_orders} orders
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {activeTab === "Menu" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Menu Items</h3>
-            <ul>
-              {foodItems.map((item) => (
-                <li key={item.food_id} className="mb-2">
-                  ID: {item.food_id} | {item.food_name} - Quantity: {item.quantity}, Type: {item.type}, 
-                  Calories: {item.calories}, Available: {item.available ? 'Yes' : 'No'}, 
-                  Premium: {item.premium ? 'Yes' : 'No'}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4">
-              <h4 className="text-lg font-semibold mb-2">Add New Food Item</h4>
-              {error && <div className="text-red-500 mt-2 mb-2">{error}</div>}
-              <input
-                type="text"
-                placeholder="ID"
-                value={newFoodID}
-                onChange={(e) => setNewFoodID(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="Food Name"
-                value={newFoodName}
-                onChange={(e) => setNewFoodName(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="number"
-                placeholder="Quantity"
-                value={newFoodQuantity}
-                onChange={(e) => setNewFoodQuantity(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="Type"
-                value={newFoodType}
-                onChange={(e) => setNewFoodType(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <input
-                type="number"
-                placeholder="Calories"
-                value={newFoodCalories}
-                onChange={(e) => setNewFoodCalories(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <label className="mr-2">
-                Available:
-                <input
-                  type="checkbox"
-                  checked={newFoodAvailable}
-                  onChange={(e) => setNewFoodAvailable(e.target.checked)}
-                  className="ml-1"
-                />
-              </label>
-              <label className="mr-2">
-                Premium:
-                <input
-                  type="checkbox"
-                  checked={newFoodPremium}
-                  onChange={(e) => setNewFoodPremium(e.target.checked)}
-                  className="ml-1"
-                />
-              </label>
-              <button
-                onClick={handleAddFood}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Add Food Item
-              </button>
-            </div>
-            <div className="mt-4">
-              <h4 className="text-lg font-semibold mb-2">Remove Food Item</h4>
-              <input
-                type="number"
-                placeholder="Food ID"
-                value={removeFoodId}
-                onChange={(e) => setRemoveFoodId(e.target.value)}
-                className="mr-2 p-2 border rounded"
-              />
-              <button
-                onClick={handleRemoveFood}
-                className="bg-red-500 text-white px-4 py-2 rounded"
-              >
-                Remove Food Item
-              </button>
-            </div>
-          </div>
+           <div>
+           <h3 className="text-xl font-semibold mb-4">Item Prices</h3>
+           {changeItemPrices.length > 0 ? (
+             <table className="w-full border-collapse border border-gray-300 text-center">
+               <thead>
+                 <tr className="bg-gray-300">
+                   <th className="border border-gray-400 px-4 py-2">Size ID</th>
+                   <th className="border border-gray-400 px-4 py-2">Size Name</th>
+                   <th className="border border-gray-400 px-4 py-2">Price</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {changeItemPrices.map((size, index) => (
+                   <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                     <td className="border border-gray-400 px-4 py-2">{size.size_id}</td>
+                     <td className="border border-gray-400 px-4 py-2">{size.size_name}</td>
+                     <td className="border border-gray-400 px-4 py-2">${size.price}</td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
+           ) : (
+             <p>No item prices available.</p>
+           )}
+           <div className="mt-4">
+             <h4 className="text-lg font-semibold mb-2">Update Price</h4>
+             <input
+               type="number"
+               placeholder="Size ID"
+               value={sizeId}
+               onChange={(e) => setSizeId(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <input
+               type="number"
+               step="0.01"
+               placeholder="New Price"
+               value={newPrice}
+               onChange={(e) => setNewPrice(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <button
+               onClick={handleUpdatePrice}
+               className="bg-blue-500 text-white px-4 py-2 rounded"
+             >
+               Update Price
+             </button>
+           </div>
+         </div>
+       )}
+       
+       {activeTab === "Menu" && (
+         <div>
+           <h3 className="text-xl font-semibold mb-4">Menu Items</h3>
+           {foodItems.length > 0 ? (
+             <table className="w-full border-collapse border border-gray-300 text-center">
+               <thead>
+                 <tr className="bg-gray-300">
+                   <th className="border border-gray-400 px-4 py-2">Food ID</th>
+                   <th className="border border-gray-400 px-4 py-2">Food Name</th>
+                   <th className="border border-gray-400 px-4 py-2">Quantity</th>
+                   <th className="border border-gray-400 px-4 py-2">Type</th>
+                   <th className="border border-gray-400 px-4 py-2">Calories</th>
+                   <th className="border border-gray-400 px-4 py-2">Available</th>
+                   <th className="border border-gray-400 px-4 py-2">Premium</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {foodItems.map((item, index) => (
+                   <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                     <td className="border border-gray-400 px-4 py-2">{item.food_id}</td>
+                     <td className="border border-gray-400 px-4 py-2">{item.food_name}</td>
+                     <td className="border border-gray-400 px-4 py-2">{item.quantity}</td>
+                     <td className="border border-gray-400 px-4 py-2">{item.type}</td>
+                     <td className="border border-gray-400 px-4 py-2">{item.calories}</td>
+                     <td className="border border-gray-400 px-4 py-2">{item.available ? "Yes" : "No"}</td>
+                     <td className="border border-gray-400 px-4 py-2">{item.premium ? "Yes" : "No"}</td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
+           ) : (
+             <p>No menu items available.</p>
+           )}
+           <div className="mt-4">
+             <h4 className="text-lg font-semibold mb-2">Add New Food Item</h4>
+             {error && <div className="text-red-500 mt-2 mb-2">{error}</div>}
+             <input
+               type="text"
+               placeholder="ID"
+               value={newFoodID}
+               onChange={(e) => setNewFoodID(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <input
+               type="text"
+               placeholder="Food Name"
+               value={newFoodName}
+               onChange={(e) => setNewFoodName(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <input
+               type="number"
+               placeholder="Quantity"
+               value={newFoodQuantity}
+               onChange={(e) => setNewFoodQuantity(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <input
+               type="text"
+               placeholder="Type"
+               value={newFoodType}
+               onChange={(e) => setNewFoodType(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <input
+               type="number"
+               placeholder="Calories"
+               value={newFoodCalories}
+               onChange={(e) => setNewFoodCalories(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <label className="mr-2">
+               Available:
+               <input
+                 type="checkbox"
+                 checked={newFoodAvailable}
+                 onChange={(e) => setNewFoodAvailable(e.target.checked)}
+                 className="ml-1"
+               />
+             </label>
+             <label className="mr-2">
+               Premium:
+               <input
+                 type="checkbox"
+                 checked={newFoodPremium}
+                 onChange={(e) => setNewFoodPremium(e.target.checked)}
+                 className="ml-1"
+               />
+             </label>
+             <button
+               onClick={handleAddFood}
+               className="bg-blue-500 text-white px-4 py-2 rounded"
+             >
+               Add Food Item
+             </button>
+           </div>
+           <div className="mt-4">
+             <h4 className="text-lg font-semibold mb-2">Remove Food Item</h4>
+             <input
+               type="number"
+               placeholder="Food ID"
+               value={removeFoodId}
+               onChange={(e) => setRemoveFoodId(e.target.value)}
+               className="mr-2 p-2 border rounded"
+             />
+             <button
+               onClick={handleRemoveFood}
+               className="bg-red-500 text-white px-4 py-2 rounded"
+             >
+               Remove Food Item
+             </button>
+           </div>
+         </div>
         )}
       </div>
       <div className="flex mt-6">
