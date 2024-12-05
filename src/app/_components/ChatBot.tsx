@@ -26,15 +26,15 @@ const Chatbot = () => {
       const data = await response.json();
 
       if (data.reply) {
-        setResponses((prev) => [...prev, `You: ${input}`, `Bot: ${data.reply}`]);
+        setResponses((prev) => [...prev, `You: ${input}`, `PandaBot: ${data.reply}`]);
       } else {
-        setResponses((prev) => [...prev, `You: ${input}`, "Bot: No response received"]);
+        setResponses((prev) => [...prev, `You: ${input}`, "PandaBot: No response received"]);
       }
 
       setInput("");
     } catch (error) {
       console.error("Error:", error);
-      setResponses((prev) => [...prev, "Bot: Failed to get a response"]);
+      setResponses((prev) => [...prev, "PandaBot: Failed to get a response"]);
     }
   };
 
@@ -45,7 +45,7 @@ const Chatbot = () => {
   return (
     <div style={styles.container as React.CSSProperties}>
       <div style={styles.header as React.CSSProperties}>
-        <span>Chatbot</span>
+        <span>PandaBot</span>
         <button onClick={toggleMinimize} style={styles.toggleButton as React.CSSProperties}>
           {isMinimized ? "+" : "−"}
         </button>
