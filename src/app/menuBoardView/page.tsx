@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 
 function foodDisplaySquare(urlName: string, name: string){
   return(
-    <div className="flex flex-col items-center justify-center bg-white rounded-xl">
+    <div className="flex flex-col items-center w-[400px] justify-center bg-white rounded-xl">
       <Image 
       src= {urlName}
       alt = "food"
-      width={300}
+      width={250}
       height={300}
       />
       <div className="bg-gray-400 w-full text-center rounded-xl text-lg">{name}</div>

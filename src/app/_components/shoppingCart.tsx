@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {useState } from "react";
+import {useState, useEffect } from "react";
 import Image from "next/image";
 import { useShoppingDataContext } from "./shoppingData";
 
@@ -16,6 +16,11 @@ export default function ShoppingCart() {
     // const shoppingData = useShoppingDataContext();
     // const [shoppingData, changeShoppingData] = useContext(shoppingDataContext);
     const [shoppingData, setShoppingData] = useShoppingDataContext();
+    const [weather, setWeather] = useState<{
+        temperature: number;
+        condition: string;
+        icon: string;
+    } | null>(null);
 
 
     console.log(shoppingData);
@@ -31,6 +36,27 @@ export default function ShoppingCart() {
 
     const toggleCart = () => {
         showCart(!cart);
+    };
+
+    useEffect(() => {
+        fetchWeather();
+    },[]);
+
+    const fetchWeather = async () => {
+        try {
+            const response = await fetch(`/api/fetchWeather?city=College Station`);
+            const data = await response.json();
+
+            if (response.ok) {
+                setWeather({
+                    temperature: data.temperature,
+                    condition: data.condition,
+                    icon: data.icon || '/default-weather.png', // Fallback icon
+                });
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     const removeItem = (index: number) => {
@@ -164,8 +190,7 @@ export default function ShoppingCart() {
     function listCartItems() {
 
         // check if temperature is under 60F, if it is give a 15% discount
-        const temperature = Number(sessionStorage.getItem('temperature'));
-        if (temperature < 60 && !weatherDiscount) {
+        if (weather && weather.temperature < 60 && !weatherDiscount) {
             setWeatherDiscount(true);
         }
 
