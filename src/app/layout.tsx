@@ -20,6 +20,7 @@ export default function RootLayout({
     currentPrice: 0.0,
     cartItems: [],
     size: -1,
+    numSides: 0
   
 });
   return (

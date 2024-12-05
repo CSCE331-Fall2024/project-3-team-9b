@@ -12,10 +12,11 @@ export interface shoppingDataInterface {
     currentPrice: number;
     cartItems: string[];
     size: number;
+    numSides: number;
 }
 
 
-export const shoppingDataContext = createContext<[shoppingDataInterface, Dispatch<SetStateAction<shoppingDataInterface>>]>([{numEntrees: 0, currentPrice: 0, cartItems: [], size: -1}, () => {}]);
+export const shoppingDataContext = createContext<[shoppingDataInterface, Dispatch<SetStateAction<shoppingDataInterface>>]>([{numEntrees: 0, currentPrice: 0, cartItems: [], size: -1, numSides: -0}, () => {}]);
 
 export function useShoppingDataContext(){
     const data = useContext(shoppingDataContext);
