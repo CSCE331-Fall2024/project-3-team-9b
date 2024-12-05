@@ -211,8 +211,8 @@ export default function ShoppingCart() {
     return (
         <>
             <button className="absolute left-2 top-2 z-10 w-20 h-20" onClick={toggleCart}><Image src="/ShoppingCart.png" alt="Shopping Cart" width={200} height={200} /></button>
-            <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-full w-96 left-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-center`}>
-                <div className="relative bg-red-400 rounded-lg h-[75%] w-3/4 flex flex-col items-center justify-start">
+            <div className={`${cart ? "" : "hidden"} fixed bg-gray-700 h-4/5 w-96 top-1/2 -translate-y-1/2 left-0 bg-opacity-60 flex rounded-lg flex-col items-center justify-evenly grow`}>
+                <div className="relative bg-red-400 rounded-lg h-3/4 w-3/4 flex flex-col items-center justify-start">
                     <div className="text-gray-800 font-bold text-2xl">Your Items:</div>
                     <div className="text-black flex flex-col h-4/5 gap-y-6 w-2/3 overflow-y-auto">{listCartItems()}</div>
                     <div className="absolute w-full h-10 bottom-0 rounded-lg bg-white flex flex-row justify-around items-center">
@@ -227,8 +227,12 @@ export default function ShoppingCart() {
                     </div>
                     </div>
                 </div>
-                <Link href="/customerView"><button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button></Link>
-                <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => {showConformation(true); toggleCart()}}>Checkout</button>
+                <Link href="/"><button onClick= {() => removeAllItems()} className="p-5 bg-white mt-4 text-gray-800 rounded-lg">Log Out</button></Link>
+                <div className="flex gap-x-5">
+                    <Link href="/customerView"><button className="p-5 bg-white mt-4 text-gray-800 rounded-lg" onClick={() => removeAllItems()}>Reset Order</button></Link>
+                    <button className="p-5 bg-green-500 mt-4 text-gray-800 rounded-lg" onClick = {() => {showConformation(true); toggleCart()}}>Checkout</button>
+
+                </div>
 
             </div>
             <div className= {`${conformation ? "" : "hidden"} absolute left-1/2 top-1/4 -translate-y-2/4 -translate-x-1/2 h-fit w-1/2 rounded-lg bg-gray-200 flex flex-col items-center gap-y-10 py-10`}>

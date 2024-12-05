@@ -393,7 +393,7 @@ export default function ManagerView() {
       <div className="flex space-x-4 border-b-2 border-red-500 pb-2 mb-6">
       {[ 
         "X-Report", 
-        "Z-Report", 
+        // "Z-Report", 
         "Manage Inventory", 
         "Manage Employees", 
         "Inventory Usage", 
