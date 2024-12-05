@@ -14,9 +14,9 @@ interface WindowWithGoogleLogout extends Window {
 }
 
 // Ensure this matches the Google Cloud Console configuration
-// const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 
-//   "49243162226-hsvtotstbj808vdmp0k2jvhf0asfre40.apps.googleusercontent.com";
-const clientId ="32164770538-122jpqmmlep5hfeuhv2cu2l9n29k92gp.apps.googleusercontent.com";
+const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 
+   "49243162226-hsvtotstbj808vdmp0k2jvhf0asfre40.apps.googleusercontent.com";
+//const clientId ="32164770538-122jpqmmlep5hfeuhv2cu2l9n29k92gp.apps.googleusercontent.com";
 
 // Mock employee database (in a real app, this would be a database query)
 const employees = [
