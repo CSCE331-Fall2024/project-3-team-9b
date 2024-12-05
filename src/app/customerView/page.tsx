@@ -69,7 +69,7 @@ export default function CustomerView() {
               }
             }} href = "/sides">
             {/* <Image src ={"/" + size.size_name + ".png"} width = {500} height = {500} alt = "sizes" className='w-full'/> */}
-            <Image src = {`/${size.size_name}.png`} width = {500} height = {500} alt = "sizes" className='w-full'/>
+            <Image src = {size.size_name === 'bowl' ? "/TheOriginalOrangeChicken.png" : size.size_name === "plate" ? "/ChowMein.png" : "/" + size.size_name + ".png"} width = {500} height = {500} alt = "sizes" className='w-full'/>
 
             <div className='text-2xl font-bold'>{size.size_name[0].toUpperCase() + size.size_name.substring(1).replaceAll("_", " ")}</div>
             <div className='mt-4'>{size.size_id === 0 ? `1 Side & 1 Entree`: size.size_id == 1 ? "1 Side & 2 Entrees" : size.size_id === 2 ? "1 Side & 3 Entrees" : ""}</div>
